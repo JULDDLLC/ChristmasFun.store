@@ -28,7 +28,7 @@ export const ChristmasCartDrawer: React.FC<ChristmasCartDrawerProps> = ({
     }
   }, [initialEmail]);
 
-  // Persist valid email
+  // Persist email when valid
   useEffect(() => {
     if (email && email.includes('@')) {
       localStorage.setItem('christmas_customer_email', email);
@@ -68,14 +68,19 @@ export const ChristmasCartDrawer: React.FC<ChristmasCartDrawerProps> = ({
     setEmailError('');
 
     try {
-      // Supabase functions base URL with fallback
+      // Use Supabase URL with safe fallback
       const functionsBaseUrl =
         import.meta.env.VITE_SUPABASE_URL ??
         'https://kvnbguoboqvkveojifwt.supabase.co';
 
       const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+      if (!functionsBaseUrl || !supabaseAnonKey) {
+        console.error('Supabase env vars missing');
+        setEmailError('Configuration error. Please try again later.');
+        return;
+      }
 
-      console.log('starting checkout with items:', items, 'email:', email);
+      console.log('Starting checkout with items:', items, 'email:', email);
 
       const response = await fetch(
         `${functionsBaseUrl}/functions/v1/christmas-multi-checkout`,
@@ -87,10 +92,11 @@ export const ChristmasCartDrawer: React.FC<ChristmasCartDrawerProps> = ({
             apikey: supabaseAnonKey,
           },
           body: JSON.stringify({
+            // send the structured shape the edge function expects
             items: items.map((item) => ({
               type: item.type,
-              designNumber: item.designNumber,
-              noteNumber: item.noteNumber,
+              designNumber: item.designNumber ?? null,
+              noteNumber: item.noteNumber ?? null,
               name: item.name,
               price: item.price,
             })),
@@ -167,9 +173,7 @@ export const ChristmasCartDrawer: React.FC<ChristmasCartDrawerProps> = ({
             <div className="flex flex-col items-center justify-center h-full text-center">
               <ShoppingBag className="w-16 h-16 text-white/30 mb-4" />
               <p className="text-white/60 text-lg mb-2">Your cart is empty</p>
-              <p className="text-white/40 text-sm">
-                Add some magical designs to get started
-              </p>
+              <p className="text-white/40 text-sm">Add some magical designs to get started</p>
             </div>
           ) : (
             <div className="space-y-6">
@@ -272,8 +276,8 @@ export const ChristmasCartDrawer: React.FC<ChristmasCartDrawerProps> = ({
                     </p>
                   </div>
                   <p className="text-white/80 text-sm">
-                    You could save {formatPrice(totalSavings)} with the Complete
-                    Bundle (18 designs) for just $9.99!
+                    You could save {formatPrice(totalSavings)} with the Complete Bundle
+                    (18 designs) for just $9.99!
                   </p>
                 </div>
               )}
