@@ -42,7 +42,7 @@ export default function Terms() {
               <section>
                 <h2 className="text-2xl font-serif text-white mb-4">2. Use License</h2>
                 <p className="leading-relaxed mb-4">
-                  Permission is granted to download and print materials from ChristmasMagicDesigns.com for personal, non-commercial use only. This license shall automatically terminate if you violate any of these restrictions.
+                  Permission is granted to download and print materials from ChristmasFun.store for personal, non-commercial use only. This license shall automatically terminate if you violate any of these restrictions.
                 </p>
                 <ul className="list-disc list-inside space-y-2 ml-4">
                   <li>Personal use includes printing for your own household and family</li>
