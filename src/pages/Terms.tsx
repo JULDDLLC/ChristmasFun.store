@@ -109,7 +109,7 @@ export default function Terms() {
               <section>
                 <h2 className="text-2xl font-serif text-white mb-4">9. Limitations</h2>
                 <p className="leading-relaxed">
-                  In no event shall JULDD or its suppliers be liable for any damages (including, without limitation, damages for loss of data or profit) arising out of the use or inability to use the materials on ChristmasMagicDesigns.com.
+                  In no event shall JULDD or its suppliers be liable for any damages (including, without limitation, damages for loss of data or profit) arising out of the use or inability to use the materials on ChristmasMFun.store.
                 </p>
               </section>
 
