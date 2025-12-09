@@ -102,7 +102,7 @@ export default function Terms() {
               <section>
                 <h2 className="text-2xl font-serif text-white mb-4">8. Disclaimer</h2>
                 <p className="leading-relaxed">
-                  The materials on ChristmasMagicDesigns.com are provided on an 'as is' basis. We make no warranties, expressed or implied, and hereby disclaim all warranties including, without limitation, implied warranties of merchantability, fitness for a particular purpose, or non-infringement.
+                  The materials on ChristmasFun.Store are provided on an 'as is' basis. We make no warranties, expressed or implied, and hereby disclaim all warranties including, without limitation, implied warranties of merchantability, fitness for a particular purpose, or non-infringement.
                 </p>
               </section>
 
