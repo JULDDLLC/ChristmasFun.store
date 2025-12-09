@@ -35,7 +35,7 @@ export default function Privacy() {
               <section>
                 <h2 className="text-2xl font-serif text-white mb-4">1. Introduction</h2>
                 <p className="leading-relaxed">
-                  JULDD ("we," "our," or "us") respects your privacy and is committed to protecting your personal data. This privacy policy explains how we collect, use, and safeguard your information when you visit ChristmasMagicDesigns.com.
+                  JULDD ("we," "our," or "us") respects your privacy and is committed to protecting your personal data. This privacy policy explains how we collect, use, and safeguard your information when you visit ChristmasFun.store.
                 </p>
               </section>
 
@@ -187,7 +187,7 @@ export default function Privacy() {
 
               <section className="pt-8 border-t border-white/10">
                 <p className="text-sm text-white/60 leading-relaxed">
-                  By using ChristmasMagicDesigns.com, you acknowledge that you have read and understood this Privacy Policy and agree to its terms.
+                  By using ChristmasFun.store, you acknowledge that you have read and understood this Privacy Policy and agree to its terms.
                 </p>
               </section>
             </div>
