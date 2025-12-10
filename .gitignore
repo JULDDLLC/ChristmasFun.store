@@ -33,6 +33,7 @@ notes/
 prompts/
 private/
 *.txt
+deploy.sh
 
 # Ignore Bolt-specific metadata
 .bolt/
