@@ -145,7 +145,7 @@ Deno.serve(async (req: Request) => {
       productType = 'bundle';
     }
 
-  // Create order record in Supabase
+    // 1) Create the order record in Supabase
     const { data: order, error: orderError } = await supabase
       .from('orders')
       .insert({
@@ -166,11 +166,16 @@ Deno.serve(async (req: Request) => {
         {
           status: 500,
           headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        },
+        }
       );
     }
 
-    // Create Stripe Checkout Session
+    // 2) Get a safe origin for redirect URLs
+    const url = new URL(req.url);
+    const originHeader = req.headers.get('origin');
+    const origin = originHeader ?? `${url.protocol}//${url.host}`;
+
+    // 3) Create Stripe Checkout session
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
       mode: 'payment',
@@ -182,7 +187,7 @@ Deno.serve(async (req: Request) => {
               name: product.name,
               description: product.description,
             },
-            unit_amount: product.amount,
+            unit_amount: product.amount, // in cents
           },
           quantity: 1,
         },
@@ -191,7 +196,7 @@ Deno.serve(async (req: Request) => {
       cancel_url: `${origin}`,
       customer_email: customerEmail,
       metadata: {
-        // IMPORTANT: this must come from the order row we just inserted
+        // IMPORTANT: use the real order.id, **not** an undefined variable
         order_id: order.id.toString(),
         product_type: productType,
         product_id: productId.toString(),
@@ -199,7 +204,7 @@ Deno.serve(async (req: Request) => {
       },
     });
 
-    // Store Stripe session details on the order
+    // 4) Store Stripe session details on the order
     const { error: updateError } = await supabase
       .from('orders')
       .update({
@@ -209,27 +214,23 @@ Deno.serve(async (req: Request) => {
       .eq('id', order.id);
 
     if (updateError) {
-      console.error(
-        'Failed to update order with Stripe session:',
-        updateError,
-      );
+      console.error('Failed to update order with Stripe session:', updateError);
       return new Response(
-        JSON.stringify({
-          error: 'Failed to link order with payment session',
-        }),
+        JSON.stringify({ error: 'Failed to prepare checkout' }),
         {
           status: 500,
           headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        },
+        }
       );
     }
 
+    // 5) Return session info to the frontend
     return new Response(
       JSON.stringify({ sessionId: session.id, url: session.url }),
       {
         status: 200,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      },
+      }
     );
   } catch (err: any) {
     console.error('Payment error:', err);
@@ -240,7 +241,7 @@ Deno.serve(async (req: Request) => {
       {
         status: 500,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      },
+      }
     );
   }
 });
