@@ -6,36 +6,38 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-node_modules
-dist
-dist-ssr
+node_modules/
+dist/
+dist-ssr/
 *.local
 
+# IDE files
 .vscode/*
 !.vscode/extensions.json
-.idea
+.idea/
 .DS_Store
 *.suo
 *.ntvs*
 *.njsproj
 *.sln
 *.sw?
-# Ignore env files
+
+# Environment & sensitive keys
 .env
-.env.* 
+.env.*
 *.key
 *.pem
 
-# Personal files, docs, prompts, notes
+# Personal files, docs, prompts, notes (HIDDEN from GitHub)
 *.md
-!README.md          # Allow ONLY your public README
+!README.md
 notes/
 prompts/
 private/
 *.txt
 deploy.sh
 
-# Ignore Bolt-specific metadata
+# Bolt-specific metadata (keeps repo clean)
 .bolt/
 bolt-output/
 bolt-cache/
