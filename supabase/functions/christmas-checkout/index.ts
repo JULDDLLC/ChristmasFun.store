@@ -2,17 +2,17 @@ import 'jsr:@supabase/functions-js/edge-runtime.d.ts';
 import Stripe from 'npm:stripe@14.21.0';
 import { createClient } from 'npm:@supabase/supabase-js@2.49.1';
 
-const supabase = createClient(
-  Deno.env.get('SUPABASE_URL') ?? '',
-  Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
-);
+// ---------- Supabase + Stripe setup ----------
 
-const stripeSecret = Deno.env.get('STRIPE_SECRET_KEY');
+const supabaseUrl = Deno.env.get('SUPABASE_URL') ?? '';
+const serviceRoleKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '';
+
+const supabase = createClient(supabaseUrl, serviceRoleKey);
+
+const stripeSecret = Deno.env.get('STRIPE_SECRET_KEY') ?? '';
 
 const stripe = stripeSecret
-  ? new Stripe(stripeSecret, {
-      apiVersion: '2023-10-16',
-    })
+  ? new Stripe(stripeSecret, { apiVersion: '2023-10-16' })
   : null;
 
 const corsHeaders = {
@@ -21,6 +21,8 @@ const corsHeaders = {
   'Access-Control-Allow-Headers':
     'Content-Type, Authorization, X-Client-Info, Apikey',
 };
+
+// ---------- Types ----------
 
 interface CheckoutRequest {
   productId:
@@ -40,7 +42,7 @@ const PRODUCT_CONFIG: Record<
 > = {
   single_letter_99: {
     name: 'Single Santa Letter Design',
-    amount: 99,
+    amount: 99, // cents
     description: 'One premium Santa letter design',
   },
   bundle_14_999: {
@@ -61,7 +63,8 @@ const PRODUCT_CONFIG: Record<
   teacher_license_499: {
     name: 'Teacher License + All Designs',
     amount: 499,
-    description: 'Unlimited classroom printing + all 14 Santa letters',
+    description:
+      'Unlimited classroom printing + all 14 Santa letters + notes bundle',
   },
   coloring_bundle_free: {
     name: 'Free Coloring Sheets Bundle',
@@ -70,14 +73,13 @@ const PRODUCT_CONFIG: Record<
   },
 };
 
+// ---------- Main handler ----------
+
 Deno.serve(async (req: Request) => {
   try {
     // CORS preflight
     if (req.method === 'OPTIONS') {
-      return new Response(null, {
-        status: 200,
-        headers: corsHeaders,
-      });
+      return new Response(null, { status: 200, headers: corsHeaders });
     }
 
     if (req.method !== 'POST') {
@@ -86,25 +88,24 @@ Deno.serve(async (req: Request) => {
         {
           status: 405,
           headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        }
+        },
       );
     }
 
-    if (!stripeSecret || !stripe) {
-      console.error('Stripe is not configured correctly');
+    let body: CheckoutRequest;
+    try {
+      body = await req.json();
+    } catch {
       return new Response(
-        JSON.stringify({
-          error: 'Payment system not configured. Please contact support.',
-        }),
+        JSON.stringify({ error: 'Invalid JSON in request body' }),
         {
-          status: 500,
+          status: 400,
           headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        }
+        },
       );
     }
 
-    const { productId, customerEmail, designNumber }: CheckoutRequest =
-      await req.json();
+    const { productId, customerEmail, designNumber } = body;
 
     if (!productId || !customerEmail) {
       return new Response(
@@ -114,7 +115,7 @@ Deno.serve(async (req: Request) => {
         {
           status: 400,
           headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        }
+        },
       );
     }
 
@@ -126,7 +127,7 @@ Deno.serve(async (req: Request) => {
         {
           status: 400,
           headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        }
+        },
       );
     }
 
@@ -137,25 +138,20 @@ Deno.serve(async (req: Request) => {
         {
           status: 400,
           headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        }
+        },
       );
     }
 
-    // Figure out product_type for the DB
+    // Figure out product_type for the orders table
     let productType = 'single_letter';
-    if (productId.includes('teacher')) {
-      productType = 'teacher_license';
-    } else if (productId.includes('coloring')) {
-      productType = 'coloring_bundle';
-    } else if (productId === 'notes_bundle_299') {
-      productType = 'notes_bundle';
-    } else if (productId === 'complete_bundle_999') {
-      productType = 'complete_bundle';
-    } else if (productId.includes('bundle')) {
-      productType = 'bundle';
-    }
+    if (productId === 'notes_bundle_299') productType = 'notes_bundle';
+    else if (productId === 'complete_bundle_999') productType = 'complete_bundle';
+    else if (productId === 'teacher_license_499') productType = 'teacher_license';
+    else if (productId === 'coloring_bundle_free') productType = 'coloring_bundle';
+    else if (productId.includes('bundle')) productType = 'bundle';
 
-    // 1) Create the order record in Supabase
+    // ---------- 1) Create order in Supabase ----------
+
     const { data: order, error: orderError } = await supabase
       .from('orders')
       .insert({
@@ -163,7 +159,7 @@ Deno.serve(async (req: Request) => {
         product_type: productType,
         product_id: productId,
         amount: product.amount,
-        status: 'pending',
+        status: product.amount === 0 ? 'completed' : 'pending',
         download_links: [],
       })
       .select()
@@ -176,39 +172,47 @@ Deno.serve(async (req: Request) => {
         {
           status: 500,
           headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        }
+        },
       );
     }
 
-    // 2) Get a safe origin for redirect URLs (fixes `origin is not defined`)
-    const url = new URL(req.url);
-    const originHeader = req.headers.get('origin');
-    const origin = originHeader ?? `${url.protocol}//${url.host}`;
+    // ---------- 2) FREE PRODUCT: skip Stripe completely ----------
 
-    // Special case: free coloring bundle – you may want to bypass Stripe here
-    if (productId === 'coloring_bundle_free') {
-      // Mark order as completed; frontend will handle calling your email function
-      await supabase
-        .from('orders')
-        .update({
-          status: 'completed',
-        })
-        .eq('id', order.id);
-
+    if (product.amount === 0) {
+      // Your frontend can still call the Resend function to email the files,
+      // but checkout itself is "done" here – no Stripe needed.
       return new Response(
         JSON.stringify({
+          ok: true,
           free: true,
-          message: 'Free coloring bundle – no payment required.',
           orderId: order.id,
         }),
         {
           status: 200,
           headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        }
+        },
       );
     }
 
-    // 3) Create Stripe Checkout session for paid products
+    // ---------- 3) PAID PRODUCTS: create Stripe Checkout session ----------
+
+    if (!stripe) {
+      console.error('Stripe not configured');
+      return new Response(
+        JSON.stringify({
+          error: 'Payment system not configured. Please contact support.',
+        }),
+        {
+          status: 500,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        },
+      );
+    }
+
+    const url = new URL(req.url);
+    const originHeader = req.headers.get('origin');
+    const origin = originHeader ?? `${url.protocol}//${url.host}`;
+
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
       mode: 'payment',
@@ -236,36 +240,22 @@ Deno.serve(async (req: Request) => {
       },
     });
 
-    // 4) Store Stripe session details on the order
+    // Optional: update order status, but DO NOT fail checkout if this breaks
     const { error: updateError } = await supabase
       .from('orders')
-      .update({
-        stripe_session_id: session.id,
-        checkout_url: session.url,
-      })
+      .update({ status: 'checkout_created' })
       .eq('id', order.id);
 
     if (updateError) {
-      console.error(
-        'Failed to update order with Stripe session:',
-        updateError
-      );
-      return new Response(
-        JSON.stringify({ error: 'Failed to prepare checkout' }),
-        {
-          status: 500,
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        }
-      );
+      console.error('Non-fatal: failed to update order after Stripe:', updateError);
     }
 
-    // 5) Return session info to the frontend
     return new Response(
       JSON.stringify({ sessionId: session.id, url: session.url }),
       {
         status: 200,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      }
+      },
     );
   } catch (err: any) {
     console.error('Payment error:', err);
@@ -276,7 +266,7 @@ Deno.serve(async (req: Request) => {
       {
         status: 500,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      }
+      },
     );
   }
 });
