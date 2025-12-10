@@ -1,12 +1,20 @@
 import { useState, useEffect } from 'react';
-import { ShoppingCart, Download, GraduationCap, ChevronRight, Sparkles, Gift, Star, Plus, Check } from 'lucide-react';
-import { supabase } from '../lib/supabase';
+import {
+  ShoppingCart,
+  Download,
+  GraduationCap,
+  ChevronRight,
+  Sparkles,
+  Gift,
+  Star,
+  Plus,
+  Check,
+} from 'lucide-react';
 import { BackgroundMusic } from '../components/BackgroundMusic';
 import { PremiumSnowfall } from '../components/PremiumSnowfall';
 import { ChristmasCartProvider, useChristmasCart } from '../contexts/ChristmasCartContext';
 import { ChristmasCartButton } from '../components/ChristmasCartButton';
 import { ChristmasCartDrawer } from '../components/ChristmasCartDrawer';
-
 
 interface DesignCardProps {
   number: number;
@@ -17,7 +25,17 @@ interface DesignCardProps {
   isInCart: boolean;
 }
 
-const DesignCard = ({ number, title, description, image, onAddToCart, isInCart }: DesignCardProps) => {
+const SUPABASE_URL = 'https://kvnbgubooykiveogifwt.supabase.co';
+const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY as string;
+
+const DesignCard = ({
+  number,
+  title,
+  description,
+  image,
+  onAddToCart,
+  isInCart,
+}: DesignCardProps) => {
   const [isHovered, setIsHovered] = useState(false);
 
   return (
@@ -95,7 +113,6 @@ const DesignCard = ({ number, title, description, image, onAddToCart, isInCart }
 
 function ChristmasContent() {
   const [email, setEmail] = useState('');
-  const [selectedDesign, setSelectedDesign] = useState<number | null>(null);
   const [expandedFaq, setExpandedFaq] = useState<number | null>(null);
   const [isSubmittingFreebie, setIsSubmittingFreebie] = useState(false);
   const [freebieMessage, setFreebieMessage] = useState<string | null>(null);
@@ -122,70 +139,205 @@ function ChristmasContent() {
   }, [email]);
 
   const designs = [
-    { title: 'Vintage Ribbons', description: 'Sparkling gold and red traditional design', image: 'https://cdn1.site-media.eu/images/0/21587768/design1-Z3wu6c1nLAh3ACrbe46Gmg.png' },
-    { title: 'Candy Cane', description: 'Perfect for video game loving kids', image: 'https://cdn1.site-media.eu/images/0/21587759/design2-Xs-oos-r7fL_Gn4-yusolg.png' },
-    { title: 'Holly Santa', description: 'Blocky fun with festive flair', image: 'https://cdn1.site-media.eu/images/0/21587758/design3-rpLHL3OeUCdrIqzMr7wNYA.png' },
-    { title: 'Felt Santa Reindeer', description: 'Cozy felt-textured Santa and reindeer design', image: 'https://cdn1.site-media.eu/images/0/21587450/DearSanta2-EyDV0P1Wf8rh1mYm0lQwew.png' },
-    { title: 'Felt Santa Elves', description: "Adorable felt-style Santa's helpers", image: 'https://cdn1.site-media.eu/images/0/21587438/DearSantaLetter-X4mrLdblVYGmVh_xVEIdhg.png' },
-    { title: 'Snowflake Wonder', description: 'Delicate winter crystals', image: 'https://cdn1.site-media.eu/images/0/21587392/DearSantaLetter4-_CjR-X24vAzawUhHvsEB7A.png' },
-    { title: 'Bold Metallic Shine', description: 'Shimmering metallic Christmas glamour', image: 'https://cdn1.site-media.eu/images/0/21587432/DearSantaLetter1-Gr0SVAqpn4KVS5U8qkGlfQ.png' },
-    { title: 'Bold Faux Glitter', description: 'Sparkling glitter effect design', image: 'https://cdn1.site-media.eu/images/0/21587416/DearSantaLetter2-3iGVMx_c3Va-NcPSt486AA.png' },
-    { title: 'Gamer', description: 'Video game inspired Christmas letter', image: 'https://cdn1.site-media.eu/images/0/21587763/design9-be-BNu7ELngHsB4-prRBsw.png' },
-    { title: 'Fortnite Inspired', description: "Battle royale meets Santa's workshop", image: 'https://cdn1.site-media.eu/images/0/21587361/DearSantaLetter8-7XA4wULg3muTEB7z7NkmXg.png' },
-    { title: 'Bold Santa Reindeer Ribbon', description: 'Festive ribbons and classic characters', image: 'https://cdn1.site-media.eu/images/0/21587888/design11-y92iFyQtYnasvWXozYAjTg.png' },
-    { title: 'Comic Bold Glitter', description: 'Fun comic style with metallic accents', image: 'https://cdn1.site-media.eu/images/0/21587761/design12-mVBhwMJJ1BEl0y8ocesZlQ.png' },
-    { title: 'Roblox Inspired', description: 'Pixelated blocky Christmas adventure', image: 'https://cdn1.site-media.eu/images/0/21587363/DearSantaLetter7-hENBo0gX6c_LqXxJD56whQ.png' },
-    { title: 'Traditional Christmas Glitter', description: 'Timeless classic holiday design', image: 'https://cdn1.site-media.eu/images/0/21587399/DearSantaLetter3-PmrmOxSHQkpwG_jKh2M2vQ.png' },
+    {
+      title: 'Vintage Ribbons',
+      description: 'Sparkling gold and red traditional design',
+      image:
+        'https://cdn1.site-media.eu/images/0/21587768/design1-Z3wu6c1nLAh3ACrbe46Gmg.png',
+    },
+    {
+      title: 'Candy Cane',
+      description: 'Perfect for video game loving kids',
+      image:
+        'https://cdn1.site-media.eu/images/0/21587759/design2-Xs-oos-r7fL_Gn4-yusolg.png',
+    },
+    {
+      title: 'Holly Santa',
+      description: 'Blocky fun with festive flair',
+      image:
+        'https://cdn1.site-media.eu/images/0/21587758/design3-rpLHL3OeUCdrIqzMr7wNYA.png',
+    },
+    {
+      title: 'Felt Santa Reindeer',
+      description: 'Cozy felt-textured Santa and reindeer design',
+      image:
+        'https://cdn1.site-media.eu/images/0/21587450/DearSanta2-EyDV0P1Wf8rh1mYm0lQwew.png',
+    },
+    {
+      title: 'Felt Santa Elves',
+      description: "Adorable felt-style Santa's helpers",
+      image:
+        'https://cdn1.site-media.eu/images/0/21587438/DearSantaLetter-X4mrLdblVYGmVh_xVEIdhg.png',
+    },
+    {
+      title: 'Snowflake Wonder',
+      description: 'Delicate winter crystals',
+      image:
+        'https://cdn1.site-media.eu/images/0/21587392/DearSantaLetter4-_CjR-X24vAzawUhHvsEB7A.png',
+    },
+    {
+      title: 'Bold Metallic Shine',
+      description: 'Shimmering metallic Christmas glamour',
+      image:
+        'https://cdn1.site-media.eu/images/0/21587432/DearSantaLetter1-Gr0SVAqpn4KVS5U8qkGlfQ.png',
+    },
+    {
+      title: 'Bold Faux Glitter',
+      description: 'Sparkling glitter effect design',
+      image:
+        'https://cdn1.site-media.eu/images/0/21587416/DearSantaLetter2-3iGVMx_c3Va-NcPSt486AA.png',
+    },
+    {
+      title: 'Gamer',
+      description: 'Video game inspired Christmas letter',
+      image:
+        'https://cdn1.site-media.eu/images/0/21587763/design9-be-BNu7ELngHsB4-prRBsw.png',
+    },
+    {
+      title: 'Fortnite Inspired',
+      description: "Battle royale meets Santa's workshop",
+      image:
+        'https://cdn1.site-media.eu/images/0/21587361/DearSantaLetter8-7XA4wULg3muTEB7z7NkmXg.png',
+    },
+    {
+      title: 'Bold Santa Reindeer Ribbon',
+      description: 'Festive ribbons and classic characters',
+      image:
+        'https://cdn1.site-media.eu/images/0/21587888/design11-y92iFyQtYnasvWXozYAjTg.png',
+    },
+    {
+      title: 'Comic Bold Glitter',
+      description: 'Fun comic style with metallic accents',
+      image:
+        'https://cdn1.site-media.eu/images/0/21587761/design12-mVBhwMJJ1BEl0y8ocesZlQ.png',
+    },
+    {
+      title: 'Roblox Inspired',
+      description: 'Pixelated blocky Christmas adventure',
+      image:
+        'https://cdn1.site-media.eu/images/0/21587363/DearSantaLetter7-hENBo0gX6c_LqXxJD56whQ.png',
+    },
+    {
+      title: 'Traditional Christmas Glitter',
+      description: 'Timeless classic holiday design',
+      image:
+        'https://cdn1.site-media.eu/images/0/21587399/DearSantaLetter3-PmrmOxSHQkpwG_jKh2M2vQ.png',
+    },
   ];
 
   const christmasNotes = [
-    { title: 'Vintage Christmas Notes Lined', description: 'Watercolor Woodland with lined writing space', image: 'https://cdn1.site-media.eu/images/0/21587536/ChristmasNotes-RFAy0MOttbNqrOGEc3EkCg.png' },
-    { title: "Santa's Workshop Notes Lined", description: 'Whimsical workshop scene with guided lines', image: 'https://cdn1.site-media.eu/images/0/21587693/ChristmasNotes3-lined-J0xhPIRuUzj56rqkQCSn0A.png' },
-    { title: "Santa's Workshop Notes", description: 'Festive border with blank space for creativity', image: 'https://cdn1.site-media.eu/images/0/21587575/ChristmasNotes3-KfzspG5RqPBYZ-u3jxt5tQ.png' },
-    { title: 'Vintage Christmas Notes', description: 'Watercolor Woodland frame for freeform writing', image: 'https://cdn1.site-media.eu/images/0/21587542/ChristmasNotes-blank-FeUDnrdQLKzZkZEYLgmt-A.png' },
+    {
+      title: 'Vintage Christmas Notes Lined',
+      description: 'Watercolor Woodland with lined writing space',
+      image:
+        'https://cdn1.site-media.eu/images/0/21587536/ChristmasNotes-RFAy0MOttbNqrOGEc3EkCg.png',
+    },
+    {
+      title: "Santa's Workshop Notes Lined",
+      description: 'Whimsical workshop scene with guided lines',
+      image:
+        'https://cdn1.site-media.eu/images/0/21587693/ChristmasNotes3-lined-J0xhPIRuUzj56rqkQCSn0A.png',
+    },
+    {
+      title: "Santa's Workshop Notes",
+      description: 'Festive border with blank space for creativity',
+      image:
+        'https://cdn1.site-media.eu/images/0/21587575/ChristmasNotes3-KfzspG5RqPBYZ-u3jxt5tQ.png',
+    },
+    {
+      title: 'Vintage Christmas Notes',
+      description: 'Watercolor Woodland frame for freeform writing',
+      image:
+        'https://cdn1.site-media.eu/images/0/21587542/ChristmasNotes-blank-FeUDnrdQLKzZkZEYLgmt-A.png',
+    },
   ];
 
   const adultColoringSheets = [
-    { title: 'Intricate Mandala Wreath', file: 'https://cdn1.site-media.eu/images/0/21587522/coloringsheet-IntricateMandalaChristmasWreath-N0MesPRJvpIQqMoOqSjpLA.jpg', description: 'Detailed mandala patterns in festive wreath' },
-    { title: 'Ornamental Tree', file: 'https://cdn1.site-media.eu/images/0/21587521/coloringsheet-OrnamentalChristmasTreeWithFiligreePatterns-iK1VBjuqWCToeWeFUV82TQ.jpg', description: 'Filigree patterns and ornate details' },
-    { title: 'Victorian Street Scene', file: 'https://cdn1.site-media.eu/images/0/21587716/coloringsheet-VictorianChristmasStreetScene-uFxaHo7iSJBtVTTmNiphMQ.jpg', description: 'Classic Victorian Christmas setting' },
-    { title: "Santa's Workshop", file: "https://cdn1.site-media.eu/images/0/21587507/coloringpages-SantasWorkshopHyper-DetailedLineArt-HXMJtPgkf0CVY6dm6DZDdw.jpg", description: 'Hyper-detailed workshop scene' },
-    { title: 'Gingerbread Cityscape', file: 'https://cdn1.site-media.eu/images/0/21587494/coloringpages-GingerbreadCityscape-Sikuj3H5mHfruzhOqXPrOg.jpg', description: 'Whimsical gingerbread city' },
+    {
+      title: 'Intricate Mandala Wreath',
+      file: 'https://cdn1.site-media.eu/images/0/21587522/coloringsheet-IntricateMandalaChristmasWreath-N0MesPRJvpIQqMoOqSjpLA.jpg',
+      description: 'Detailed mandala patterns in festive wreath',
+    },
+    {
+      title: 'Ornamental Tree',
+      file: 'https://cdn1.site-media.eu/images/0/21587521/coloringsheet-OrnamentalChristmasTreeWithFiligreePatterns-iK1VBjuqWCToeWeFUV82TQ.jpg',
+      description: 'Filigree patterns and ornate details',
+    },
+    {
+      title: 'Victorian Street Scene',
+      file: 'https://cdn1.site-media.eu/images/0/21587716/coloringsheet-VictorianChristmasStreetScene-uFxaHo7iSJBtVTTmNiphMQ.jpg',
+      description: 'Classic Victorian Christmas setting',
+    },
+    {
+      title: "Santa's Workshop",
+      file: 'https://cdn1.site-media.eu/images/0/21587507/coloringpages-SantasWorkshopHyper-DetailedLineArt-HXMJtPgkf0CVY6dm6DZDdw.jpg',
+      description: 'Hyper-detailed workshop scene',
+    },
+    {
+      title: 'Gingerbread Cityscape',
+      file: 'https://cdn1.site-media.eu/images/0/21587494/coloringpages-GingerbreadCityscape-Sikuj3H5mHfruzhOqXPrOg.jpg',
+      description: 'Whimsical gingerbread city',
+    },
   ];
 
   const kidsColoringSheets = [
-    { title: 'Festive Patterns', file: 'https://cdn1.site-media.eu/images/0/21587509/coloringsheet2-f9nybkb9Ilb3N2Tjv0ChRw.jpg', description: 'Fun Christmas patterns for kids' },
-    { title: 'Holiday Fun', file: 'https://cdn1.site-media.eu/images/0/21587515/coloringsheet5-K_VmLl_kgh-1P-4C0WD-tA.jpg', description: 'Kid-friendly holiday artwork' },
-    { title: 'Winter Wonderland', file: 'https://cdn1.site-media.eu/images/0/21587506/coloringsheet6-QccnrzfbkCEPUmckBjmE9A.jpg', description: 'Magical winter scene' },
-    { title: 'Christmas Joy', file: 'https://cdn1.site-media.eu/images/0/21587530/coloringsheet10-c9V0SulK6cYd1YRMhljGEQ.jpg', description: 'Festive design for young artists' },
-    { title: 'Holiday Magic', file: 'https://cdn1.site-media.eu/images/0/21587501/coloringsheet12-WBA6Fy9wbtojx_ncIim57Q.jpg', description: 'Cheerful Christmas artwork' },
+    {
+      title: 'Festive Patterns',
+      file: 'https://cdn1.site-media.eu/images/0/21587509/coloringsheet2-f9nybkb9Ilb3N2Tjv0ChRw.jpg',
+      description: 'Fun Christmas patterns for kids',
+    },
+    {
+      title: 'Holiday Fun',
+      file: 'https://cdn1.site-media.eu/images/0/21587515/coloringsheet5-K_VmLl_kgh-1P-4C0WD-tA.jpg',
+      description: 'Kid-friendly holiday artwork',
+    },
+    {
+      title: 'Winter Wonderland',
+      file: 'https://cdn1.site-media.eu/images/0/21587506/coloringsheet6-QccnrzfbkCEPUmckBjmE9A.jpg',
+      description: 'Magical winter scene',
+    },
+    {
+      title: 'Christmas Joy',
+      file: 'https://cdn1.site-media.eu/images/0/21587530/coloringsheet10-c9V0SulK6cYd1YRMhljGEQ.jpg',
+      description: 'Festive design for young artists',
+    },
+    {
+      title: 'Holiday Magic',
+      file: 'https://cdn1.site-media.eu/images/0/21587501/coloringsheet12-WBA6Fy9wbtojx_ncIim57Q.jpg',
+      description: 'Cheerful Christmas artwork',
+    },
   ];
 
   const faqs = [
     {
       question: 'How quickly will I receive my designs?',
-      answer: 'Instantly! As soon as your payment is complete, you\'ll receive an email with download links to all your purchased designs.',
+      answer:
+        "Instantly! As soon as your payment is complete, you'll receive an email with download links to all your purchased designs.",
     },
     {
       question: 'What format are the designs in?',
-      answer: 'Free coloring sheets are provided as high-resolution PDF files. Santa Letters and Christmas Notes are PNG files. All designs are optimized for printing on standard 8.5" x 11" paper.',
+      answer:
+        'Free coloring sheets are provided as high-resolution PDF files. Santa Letters and Christmas Notes are PNG files. All designs are optimized for printing on standard 8.5" x 11" paper.',
     },
     {
       question: 'Can I use these in my classroom?',
-      answer: 'Yes! With the Teacher License, you can print unlimited copies for your students and use them in classroom activities.',
+      answer:
+        'Yes! With the Teacher License, you can print unlimited copies for your students and use them in classroom activities.',
     },
     {
       question: 'Can I resell or share the digital files?',
-      answer: 'No. These are for personal or licensed classroom use only. You may not resell, redistribute, or share the digital files.',
+      answer:
+        'No. These are for personal or licensed classroom use only. You may not resell, redistribute, or share the digital files.',
     },
     {
       question: 'What if I have printing issues?',
-      answer: 'We recommend printing on white cardstock for best results. If you experience issues, contact us at ChristmasMagicDesigns@juldd.com',
+      answer:
+        'We recommend printing on white cardstock for best results. If you experience issues, contact us at ChristmasMagicDesigns@juldd.com',
     },
   ];
 
   const scrollToEmailInput = () => {
-    const emailInput = document.querySelector('input[type="email"]') as HTMLInputElement;
+    const emailInput = document.querySelector('input[type="email"]') as HTMLInputElement | null;
     if (emailInput) {
       emailInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
       emailInput.focus();
@@ -210,17 +362,12 @@ function ChristmasContent() {
     }
 
     try {
-      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-      const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
-
-      console.log('Starting checkout for product:', productId);
-
-      const response = await fetch(`${supabaseUrl}/functions/v1/christmas-checkout`, {
+      const response = await fetch(`${SUPABASE_URL}/functions/v1/christmas-checkout`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${supabaseAnonKey}`,
-          apikey: supabaseAnonKey,
+          Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+          apikey: SUPABASE_ANON_KEY,
         },
         body: JSON.stringify({
           productId,
@@ -229,14 +376,12 @@ function ChristmasContent() {
         }),
       });
 
-      console.log('Checkout response status:', response.status);
-
       if (!response.ok) {
-        const errorText = await response.text();
-        console.error('Checkout failed:', errorText);
+        const text = await response.text();
+        console.error('Checkout failed:', text);
         try {
-          const errorData = JSON.parse(errorText);
-          setFreebieMessage(errorData.error || 'Checkout failed. Please try again.');
+          const parsed = JSON.parse(text);
+          setFreebieMessage(parsed.error || 'Checkout failed. Please try again.');
         } catch {
           setFreebieMessage('Checkout failed. Please try again.');
         }
@@ -244,7 +389,6 @@ function ChristmasContent() {
       }
 
       const data = await response.json();
-      console.log('Checkout response data:', data);
 
       if (data.error) {
         setFreebieMessage(data.error);
@@ -277,25 +421,46 @@ function ChristmasContent() {
             </div>
 
             <div className="hidden md:flex items-center gap-8">
-              <a href="#home" className="text-white/90 hover:text-amber-300 transition-colors font-medium">
+              <a
+                href="#home"
+                className="text-white/90 hover:text-amber-300 transition-colors font-medium"
+              >
                 Home
               </a>
-              <a href="#designs" className="text-white/90 hover:text-amber-300 transition-colors font-medium">
+              <a
+                href="#designs"
+                className="text-white/90 hover:text-amber-300 transition-colors font-medium"
+              >
                 Santa Letters
               </a>
-              <a href="#christmas-notes" className="text-white/90 hover:text-amber-300 transition-colors font-medium">
+              <a
+                href="#christmas-notes"
+                className="text-white/90 hover:text-amber-300 transition-colors font-medium"
+              >
                 Christmas Notes
               </a>
-              <a href="#adult-coloring" className="text-white/90 hover:text-amber-300 transition-colors font-medium">
+              <a
+                href="#adult-coloring"
+                className="text-white/90 hover:text-amber-300 transition-colors font-medium"
+              >
                 Free Coloring
               </a>
-              <a href="#bundle" className="text-white/90 hover:text-amber-300 transition-colors font-medium">
+              <a
+                href="#bundle"
+                className="text-white/90 hover:text-amber-300 transition-colors font-medium"
+              >
                 Bundle
               </a>
-              <a href="#teachers" className="text-white/90 hover:text-amber-300 transition-colors font-medium">
+              <a
+                href="#teachers"
+                className="text-white/90 hover:text-amber-300 transition-colors font-medium"
+              >
                 Teachers
               </a>
-              <a href="#faq" className="text-white/90 hover:text-amber-300 transition-colors font-medium">
+              <a
+                href="#faq"
+                className="text-white/90 hover:text-amber-300 transition-colors font-medium"
+              >
                 FAQ
               </a>
             </div>
@@ -319,12 +484,15 @@ function ChristmasContent() {
             <div className="bg-gradient-to-r from-amber-500/95 to-amber-600/95 backdrop-blur-xl border-2 border-amber-400 rounded-2xl px-8 py-4 shadow-2xl shadow-amber-500/50">
               <div className="flex items-center gap-3">
                 <div className="w-2 h-2 rounded-full bg-white animate-pulse" />
-                <p className="text-white font-semibold text-lg">Please enter your email address to continue</p>
+                <p className="text-white font-semibold text-lg">
+                  Please enter your email address to continue
+                </p>
               </div>
             </div>
           </div>
         )}
 
+        {/* HERO */}
         <section id="home" className="relative overflow-hidden">
           <div className="absolute inset-0 bg-gradient-to-br from-red-900/70 via-red-800/60 to-red-950/70"></div>
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(218,165,32,0.2),transparent_50%)]"></div>
@@ -337,30 +505,32 @@ function ChristmasContent() {
                 Limited Time Holiday Collection
               </div>
 
-              <h1 className="text-6xl md:text-8xl font-serif text-white leading-tight tracking-tight">
-                Make Christmas
-                <span className="block mt-4 bg-gradient-to-r from-amber-300 via-amber-200 to-amber-300 bg-clip-text text-transparent animate-shimmer drop-shadow-[0_0_30px_rgba(218,165,32,0.5)] pb-4">
-                  Magic Unforgettable
+              <h1 className="text-5xl md:text-6xl font-serif text-white leading-tight tracking-tight">
+                <span className="block">
+                  Santa Letters &amp; Christmas Notes
+                </span>
+                <span className="block mt-4 text-4xl md:text-5xl text-amber-200 drop-shadow-[0_0_30px_rgba(218,165,32,0.5)]">
+                  Printable Stationery &amp; Coloring Sheets
                 </span>
               </h1>
 
-            <p className="text-2xl md:text-3xl text-white/80 max-w-3xl mx-auto leading-relaxed">
-              18 Premium Designs - 14 Santa Letters + 4 Festive Note Designs
-            </p>
+              <p className="text-2xl md:text-3xl text-white/80 max-w-3xl mx-auto leading-relaxed">
+                14 Santa Letters · 4 Christmas Notes · 10 Free Christmas Coloring Pages
+              </p>
 
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-6 mt-12">
-              <input
-                id="hero-email"
-                name="email"
-                type="email"
-                placeholder="Enter your email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className={`w-full sm:w-96 px-6 py-4 rounded-2xl bg-white/10 backdrop-blur-xl border border-white/20 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-amber-400 transition-all ${
-                  emailInputShake ? 'animate-shake border-amber-400 ring-2 ring-amber-400' : ''
-                }`}
-              />
-            </div>
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-6 mt-12">
+                <input
+                  id="hero-email"
+                  name="email"
+                  type="email"
+                  placeholder="Enter your email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className={`w-full sm:w-96 px-6 py-4 rounded-2xl bg-white/10 backdrop-blur-xl border border-white/20 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-amber-400 transition-all ${
+                    emailInputShake ? 'animate-shake border-amber-400 ring-2 ring-amber-400' : ''
+                  }`}
+                />
+              </div>
 
               <div className="flex flex-col sm:flex-row items-center justify-center gap-6 mt-8">
                 <button
@@ -388,11 +558,10 @@ function ChristmasContent() {
           </div>
         </section>
 
+        {/* SANTA LETTERS */}
         <section id="designs" className="container mx-auto px-6 py-24">
           <div className="text-center mb-16">
-            <h2 className="text-5xl md:text-6xl font-serif text-white mb-6">
-              14 Magical Designs
-            </h2>
+            <h2 className="text-5xl md:text-6xl font-serif text-white mb-6">14 Magical Designs</h2>
             <p className="text-xl text-white/70 max-w-2xl mx-auto">
               Each design is carefully crafted to bring joy and wonder to your holiday season
             </p>
@@ -423,6 +592,7 @@ function ChristmasContent() {
           </div>
         </section>
 
+        {/* CHRISTMAS NOTES */}
         <section id="christmas-notes" className="container mx-auto px-6 py-24">
           <div className="text-center mb-16">
             <div className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-gradient-to-r from-red-600/30 to-red-700/30 backdrop-blur-xl border border-amber-400/40 text-amber-200 font-medium mb-6">
@@ -430,10 +600,11 @@ function ChristmasContent() {
               New Christmas Notes Collection
             </div>
             <h2 className="text-5xl md:text-6xl font-serif text-white mb-6">
-              Christmas Notes & Stationery
+              Christmas Notes &amp; Stationery
             </h2>
             <p className="text-xl text-white/70 max-w-2xl mx-auto">
-              Beautiful lined and blank note designs perfect for holiday greetings, gift tags, and festive correspondence
+              Beautiful lined and blank note designs perfect for holiday greetings, gift tags, and
+              festive correspondence
             </p>
           </div>
 
@@ -443,7 +614,10 @@ function ChristmasContent() {
               const inCart = isInCart(noteId);
 
               return (
-                <div key={index} className="group relative overflow-hidden rounded-3xl bg-white/10 backdrop-blur-xl border border-white/20 shadow-2xl transition-all duration-500 hover:scale-105 hover:shadow-amber-500/30">
+                <div
+                  key={index}
+                  className="group relative overflow-hidden rounded-3xl bg-white/10 backdrop-blur-xl border border-white/20 shadow-2xl transition-all duration-500 hover:scale-105 hover:shadow-amber-500/30"
+                >
                   <div className="absolute inset-0 bg-gradient-to-br from-red-500/20 via-transparent to-amber-600/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                   <div className="relative p-6">
                     <div className="aspect-[3/4] bg-gradient-to-br from-white/5 to-white/10 rounded-2xl mb-4 flex items-center justify-center overflow-hidden">
@@ -499,9 +673,7 @@ function ChristmasContent() {
               <p className="text-2xl text-white font-semibold mb-4">
                 Individual Notes: $0.99 each
               </p>
-              <p className="text-xl text-amber-200">
-                Or get all 4 Christmas Notes for just $2.99
-              </p>
+              <p className="text-xl text-amber-200">Or get all 4 Christmas Notes for just $2.99</p>
             </div>
 
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-6">
@@ -509,15 +681,13 @@ function ChristmasContent() {
                 onClick={() => handleCheckout('notes_bundle_299')}
                 className="group relative px-8 py-3 rounded-xl bg-gradient-to-r from-red-600 to-red-700 text-amber-100 text-lg font-bold shadow-lg hover:shadow-red-500/50 transition-all duration-300 transform hover:scale-105 border-2 border-amber-400/40"
               >
-                <div className="relative flex items-center gap-2">
-                  Get All 4 Notes — $2.99
-                </div>
+                <div className="relative flex items-center gap-2">Get All 4 Notes — $2.99</div>
               </button>
             </div>
-
           </div>
         </section>
 
+        {/* FREE COLORING */}
         <section id="adult-coloring" className="container mx-auto px-6 py-24">
           <div className="text-center mb-16">
             <div className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-white/10 backdrop-blur-xl border border-amber-400/30 text-amber-300 font-medium mb-6">
@@ -528,7 +698,8 @@ function ChristmasContent() {
               Free Coloring Collection
             </h2>
             <p className="text-xl text-white/70 max-w-2xl mx-auto mb-8">
-              10 beautiful coloring sheets - 5 intricate designs for adults and 5 fun designs for kids
+              10 beautiful coloring sheets - 5 intricate designs for adults and 5 fun designs for
+              kids
             </p>
 
             <div className="flex items-center justify-center gap-4 mb-12">
@@ -556,30 +727,32 @@ function ChristmasContent() {
           </div>
 
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6 mb-12">
-            {(coloringTab === 'adult' ? adultColoringSheets : kidsColoringSheets).map((sheet, index) => (
-              <div
-                key={index}
-                className="group relative overflow-hidden rounded-2xl bg-white/10 backdrop-blur-xl border border-white/20 shadow-xl transition-all duration-500 hover:scale-105 hover:shadow-amber-500/30"
-              >
-                <div className="absolute inset-0 bg-gradient-to-br from-amber-500/20 via-transparent to-amber-600/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+            {(coloringTab === 'adult' ? adultColoringSheets : kidsColoringSheets).map(
+              (sheet, index) => (
+                <div
+                  key={index}
+                  className="group relative overflow-hidden rounded-2xl bg-white/10 backdrop-blur-xl border border-white/20 shadow-xl transition-all duration-500 hover:scale-105 hover:shadow-amber-500/30"
+                >
+                  <div className="absolute inset-0 bg-gradient-to-br from-amber-500/20 via-transparent to-amber-600/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
-                <div className="relative p-4">
-                  <div className="aspect-[3/4] bg-gradient-to-br from-white/5 to-white/10 rounded-xl mb-3 flex items-center justify-center overflow-hidden">
-                    <img
-                      src={sheet.file}
-                      alt={sheet.title}
-                      loading="lazy"
-                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                    />
-                  </div>
+                  <div className="relative p-4">
+                    <div className="aspect-[3/4] bg-gradient-to-br from-white/5 to-white/10 rounded-xl mb-3 flex items-center justify-center overflow-hidden">
+                      <img
+                        src={sheet.file}
+                        alt={sheet.title}
+                        loading="lazy"
+                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                      />
+                    </div>
 
-                  <div className="space-y-1">
-                    <h3 className="text-sm font-serif text-white">{sheet.title}</h3>
-                    <p className="text-xs text-white/70">{sheet.description}</p>
+                    <div className="space-y-1">
+                      <h3 className="text-sm font-serif text-white">{sheet.title}</h3>
+                      <p className="text-xs text-white/70">{sheet.description}</p>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              ),
+            )}
           </div>
 
           <div className="max-w-4xl mx-auto">
@@ -607,7 +780,13 @@ function ChristmasContent() {
                 </div>
 
                 {freebieMessage && (
-                  <div className={`mb-6 p-4 rounded-xl ${freebieMessage.includes('Success') ? 'bg-green-900/40 border border-green-500/50 text-green-200' : 'bg-red-900/40 border border-red-500/50 text-red-200'}`}>
+                  <div
+                    className={`mb-6 p-4 rounded-xl ${
+                      freebieMessage.includes('Success')
+                        ? 'bg-green-900/40 border border-green-500/50 text-green-200'
+                        : 'bg-red-900/40 border border-red-500/50 text-red-200'
+                    }`}
+                  >
                     {freebieMessage}
                   </div>
                 )}
@@ -623,25 +802,27 @@ function ChristmasContent() {
                     setFreebieMessage(null);
 
                     try {
-                      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-                      const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
-
-                      const response = await fetch(`${supabaseUrl}/functions/v1/send-freebie-coloring`, {
-                        method: 'POST',
-                        headers: {
-                          'Content-Type': 'application/json',
-                          Authorization: `Bearer ${supabaseAnonKey}`,
-                          apikey: supabaseAnonKey,
+                      const response = await fetch(
+                        `${SUPABASE_URL}/functions/v1/send-freebie-coloring`,
+                        {
+                          method: 'POST',
+                          headers: {
+                            'Content-Type': 'application/json',
+                            Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+                            apikey: SUPABASE_ANON_KEY,
+                          },
+                          body: JSON.stringify({ email }),
                         },
-                        body: JSON.stringify({ email }),
-                      });
+                      );
 
                       const data = await response.json();
 
                       if (!response.ok) {
                         setFreebieMessage(data.error || 'An error occurred');
                       } else {
-                        setFreebieMessage('Success! Check your email for download links to all 10 coloring sheets!');
+                        setFreebieMessage(
+                          'Success! Check your email for download links to all 10 coloring sheets!',
+                        );
                         setEmail('');
                       }
                     } catch (error) {
@@ -674,6 +855,7 @@ function ChristmasContent() {
           </div>
         </section>
 
+        {/* TEACHERS */}
         <section id="teachers" className="container mx-auto px-6 py-24">
           <div className="max-w-4xl mx-auto">
             <div className="relative overflow-hidden rounded-3xl bg-white/10 backdrop-blur-xl border-2 border-white/20 p-12 shadow-2xl">
@@ -723,6 +905,7 @@ function ChristmasContent() {
           </div>
         </section>
 
+        {/* BUNDLE */}
         <section id="bundle" className="container mx-auto px-6 py-24">
           <div className="max-w-4xl mx-auto">
             <div className="relative overflow-hidden rounded-3xl bg-white/10 backdrop-blur-xl border-2 border-white/20 p-12 shadow-2xl">
@@ -738,10 +921,10 @@ function ChristmasContent() {
                 <h2 className="text-5xl md:text-6xl font-serif text-white mb-4">
                   Get All 18 Designs
                 </h2>
-                <p className="text-xl text-white/80 mb-4">14 Santa Letters + 4 Christmas Notes</p>
-                <div className="text-7xl font-bold text-amber-300 mb-8">
-                  Only $9.99
-                </div>
+                <p className="text-xl text-white/80 mb-4">
+                  14 Santa Letters + 4 Christmas Notes
+                </p>
+                <div className="text-7xl font-bold text-amber-300 mb-8">Only $9.99</div>
 
                 <div className="space-y-4 mb-10">
                   <div className="flex items-center justify-center gap-3 text-lg text-white/90">
@@ -777,6 +960,7 @@ function ChristmasContent() {
           </div>
         </section>
 
+        {/* FAQ */}
         <section id="faq" className="container mx-auto px-6 py-24">
           <div className="max-w-3xl mx-auto">
             <h2 className="text-5xl md:text-6xl font-serif text-white text-center mb-16">
@@ -816,7 +1000,12 @@ function ChristmasContent() {
         <div className="container mx-auto px-6 py-12">
           <div className="flex flex-col items-center gap-6">
             <div className="flex items-center gap-3">
-              <img src="/logo_(2).png" alt="JULDD" loading="lazy" className="h-10 w-auto opacity-80" />
+              <img
+                src="/logo_(2).png"
+                alt="JULDD"
+                loading="lazy"
+                className="h-10 w-auto opacity-80"
+              />
             </div>
             <p className="text-white/60 text-center">
               © 2025 JULDD. All rights reserved. Made with love for magical holidays.
