@@ -158,83 +158,60 @@ Deno.serve(async (req: Request) => {
       .select()
       .single();
 
-    if (orderError) {
+    if (orderError || !order) {
       console.error('Failed to create order:', orderError);
       return new Response(
         JSON.stringify({ error: 'Failed to create order' }),
         {
           status: 500,
           headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        }
-      );
-    }
-
-    const origin = req.headers.get('origin') || 'https://christmasmagicdesigns.juldd.com';
-
-    try {
- const session = await stripe.checkout.sessions.create({
-  payment_method_types: ['card'],
-  line_items: [
-    {
-      price_data: {
-        currency: 'usd',
-        product_data: {
-          name: product.name,
-          description: product.description,
         },
-        unit_amount: product.amount,
-      },
-      quantity: 1,
-    },
-  ],
-  mode: 'payment',
-  allow_promotion_codes: true,     // <-- ADD THIS
-  success_url: `${origin}/thank-you?session_id={CHECKOUT_SESSION_ID}`,
-  cancel_url: `${origin}`,
-  customer_email: customerEmail,
-  metadata: {
-    orderId: order_id,
-    productId,
-    designNumber: designNumber?.toString() || "",
-  },
-});
-
-      await supabase
-        .from('orders')
-        .update({ stripe_session_id: session.id })
-        .eq('id', order.id);
-
-      return new Response(
-        JSON.stringify({ sessionId: session.id, url: session.url }),
-        {
-          status: 200,
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        }
-      );
-    } catch (stripeError: any) {
-      console.error('Stripe session creation failed:', stripeError.message, stripeError.type, stripeError.code);
-      
-      await supabase
-        .from('orders')
-        .delete()
-        .eq('id', order.id);
-
-      return new Response(
-        JSON.stringify({ error: `Payment error: ${stripeError.message}` }),
-        {
-          status: 500,
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        }
       );
     }
-  } catch (error: any) {
-    console.error('Checkout error:', error);
+
+    // Create Stripe Checkout session
+    const session = await stripe.checkout.sessions.create({
+      payment_method_types: ['card'],
+      line_items: [
+        {
+          price_data: {
+            currency: 'usd',
+            product_data: {
+              name: product.name,
+              description: product.description,
+            },
+            unit_amount: product.amount,
+          },
+          quantity: 1,
+        },
+      ],
+      mode: 'payment',
+      success_url: `${origin}/thank-you?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${origin}`,
+      customer_email: customerEmail,
+      metadata: {
+        // IMPORTANT: define this explicitly instead of using an undefined `order_id`
+        order_id: order.id.toString(),
+        product_type: productType,
+        product_id: productId.toString(),
+        design_number: designNumber?.toString() ?? '',
+      },
+    });
+
+    // Store Stripe session details on the order
+    await supabase
+      .from('orders')
+      .update({
+        stripe_session_id: session.id,
+        checkout_url: session.url,
+      })
+      .eq('id', order.id);
+
     return new Response(
-      JSON.stringify({ error: error.message || 'Internal server error' }),
+      JSON.stringify({ sessionId: session.id, url: session.url }),
       {
-        status: 500,
+        status: 200,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      }
+      },
     );
-  }
-});
+    
