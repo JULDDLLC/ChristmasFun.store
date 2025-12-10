@@ -39,3 +39,5 @@ deploy.sh
 .bolt/
 bolt-output/
 bolt-cache/
+bolt.json
+bolt.config.json
