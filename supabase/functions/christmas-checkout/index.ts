@@ -9,23 +9,35 @@ const supabase = createClient(
 
 const stripeSecret = Deno.env.get('STRIPE_SECRET_KEY');
 
-const stripe = stripeSecret ? new Stripe(stripeSecret, {
-  apiVersion: '2023-10-16',
-}) : null;
+const stripe = stripeSecret
+  ? new Stripe(stripeSecret, {
+      apiVersion: '2023-10-16',
+    })
+  : null;
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-  'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-Client-Info, Apikey',
+  'Access-Control-Allow-Headers':
+    'Content-Type, Authorization, X-Client-Info, Apikey',
 };
 
 interface CheckoutRequest {
-  productId: 'single_letter_99' | 'bundle_14_999' | 'notes_bundle_299' | 'complete_bundle_999' | 'teacher_license_499' | 'coloring_bundle_free';
+  productId:
+    | 'single_letter_99'
+    | 'bundle_14_999'
+    | 'notes_bundle_299'
+    | 'complete_bundle_999'
+    | 'teacher_license_499'
+    | 'coloring_bundle_free';
   customerEmail: string;
   designNumber?: number;
 }
 
-const PRODUCT_CONFIG = {
+const PRODUCT_CONFIG: Record<
+  CheckoutRequest['productId'],
+  { name: string; amount: number; description: string }
+> = {
   single_letter_99: {
     name: 'Single Santa Letter Design',
     amount: 99,
@@ -60,6 +72,7 @@ const PRODUCT_CONFIG = {
 
 Deno.serve(async (req: Request) => {
   try {
+    // CORS preflight
     if (req.method === 'OPTIONS') {
       return new Response(null, {
         status: 200,
@@ -77,10 +90,12 @@ Deno.serve(async (req: Request) => {
       );
     }
 
-    if (!stripeSecret) {
-      console.error('STRIPE_SECRET_KEY is missing');
+    if (!stripeSecret || !stripe) {
+      console.error('Stripe is not configured correctly');
       return new Response(
-        JSON.stringify({ error: 'Payment system not configured. Please contact support.' }),
+        JSON.stringify({
+          error: 'Payment system not configured. Please contact support.',
+        }),
         {
           status: 500,
           headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -88,22 +103,14 @@ Deno.serve(async (req: Request) => {
       );
     }
 
-    if (!stripe) {
-      console.error('Stripe client failed to initialize');
-      return new Response(
-        JSON.stringify({ error: 'Payment system error. Please try again.' }),
-        {
-          status: 500,
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        }
-      );
-    }
-
-    const { productId, customerEmail, designNumber }: CheckoutRequest = await req.json();
+    const { productId, customerEmail, designNumber }: CheckoutRequest =
+      await req.json();
 
     if (!productId || !customerEmail) {
       return new Response(
-        JSON.stringify({ error: 'Missing required fields: productId and customerEmail' }),
+        JSON.stringify({
+          error: 'Missing required fields: productId and customerEmail',
+        }),
         {
           status: 400,
           headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -113,7 +120,9 @@ Deno.serve(async (req: Request) => {
 
     if (productId === 'single_letter_99' && !designNumber) {
       return new Response(
-        JSON.stringify({ error: 'designNumber is required for single letter purchases' }),
+        JSON.stringify({
+          error: 'designNumber is required for single letter purchases',
+        }),
         {
           status: 400,
           headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -132,6 +141,7 @@ Deno.serve(async (req: Request) => {
       );
     }
 
+    // Figure out product_type for the DB
     let productType = 'single_letter';
     if (productId.includes('teacher')) {
       productType = 'teacher_license';
@@ -170,12 +180,35 @@ Deno.serve(async (req: Request) => {
       );
     }
 
-    // 2) Get a safe origin for redirect URLs
+    // 2) Get a safe origin for redirect URLs (fixes `origin is not defined`)
     const url = new URL(req.url);
     const originHeader = req.headers.get('origin');
     const origin = originHeader ?? `${url.protocol}//${url.host}`;
 
-    // 3) Create Stripe Checkout session
+    // Special case: free coloring bundle – you may want to bypass Stripe here
+    if (productId === 'coloring_bundle_free') {
+      // Mark order as completed; frontend will handle calling your email function
+      await supabase
+        .from('orders')
+        .update({
+          status: 'completed',
+        })
+        .eq('id', order.id);
+
+      return new Response(
+        JSON.stringify({
+          free: true,
+          message: 'Free coloring bundle – no payment required.',
+          orderId: order.id,
+        }),
+        {
+          status: 200,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        }
+      );
+    }
+
+    // 3) Create Stripe Checkout session for paid products
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
       mode: 'payment',
@@ -187,7 +220,7 @@ Deno.serve(async (req: Request) => {
               name: product.name,
               description: product.description,
             },
-            unit_amount: product.amount, // in cents
+            unit_amount: product.amount, // cents
           },
           quantity: 1,
         },
@@ -196,7 +229,6 @@ Deno.serve(async (req: Request) => {
       cancel_url: `${origin}`,
       customer_email: customerEmail,
       metadata: {
-        // IMPORTANT: use the real order.id, **not** an undefined variable
         order_id: order.id.toString(),
         product_type: productType,
         product_id: productId.toString(),
@@ -214,7 +246,10 @@ Deno.serve(async (req: Request) => {
       .eq('id', order.id);
 
     if (updateError) {
-      console.error('Failed to update order with Stripe session:', updateError);
+      console.error(
+        'Failed to update order with Stripe session:',
+        updateError
+      );
       return new Response(
         JSON.stringify({ error: 'Failed to prepare checkout' }),
         {
