@@ -146,32 +146,18 @@ Deno.serve(async (req: Request) => {
     }
 
   // Create order record in Supabase
-const { data: order, error: orderError } = await supabase
-  .from('orders')
-  .insert({
-    customer_email: customerEmail,
-    product_type: productType,
-    product_id: productId,
-    amount: product.amount,
-    status: 'pending',
-    download_links: [],
-  })
-  .select()
-  .single();
-
-if (orderError || !order) {
-  console.error('Failed to create order:', orderError);
-  return new Response(
-    JSON.stringify({ error: 'Failed to create order' }),
-    {
-      status: 500,
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-    }
-  );
-}
-
-// this is the ONLY source of truth for the order id
-const orderId = order.id;
+    const { data: order, error: orderError } = await supabase
+      .from('orders')
+      .insert({
+        customer_email: customerEmail,
+        product_type: productType,
+        product_id: productId,
+        amount: product.amount,
+        status: 'pending',
+        download_links: [],
+      })
+      .select()
+      .single();
 
     if (orderError || !order) {
       console.error('Failed to create order:', orderError);
@@ -184,9 +170,10 @@ const orderId = order.id;
       );
     }
 
-    // Create Stripe Checkout session
+    // Create Stripe Checkout Session
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
+      mode: 'payment',
       line_items: [
         {
           price_data: {
@@ -200,12 +187,11 @@ const orderId = order.id;
           quantity: 1,
         },
       ],
-      mode: 'payment',
       success_url: `${origin}/thank-you?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${origin}`,
       customer_email: customerEmail,
       metadata: {
-        // IMPORTANT: define this explicitly instead of using an undefined `order_id`
+        // IMPORTANT: this must come from the order row we just inserted
         order_id: order.id.toString(),
         product_type: productType,
         product_id: productId.toString(),
@@ -214,13 +200,29 @@ const orderId = order.id;
     });
 
     // Store Stripe session details on the order
-    await supabase
+    const { error: updateError } = await supabase
       .from('orders')
       .update({
         stripe_session_id: session.id,
         checkout_url: session.url,
       })
       .eq('id', order.id);
+
+    if (updateError) {
+      console.error(
+        'Failed to update order with Stripe session:',
+        updateError,
+      );
+      return new Response(
+        JSON.stringify({
+          error: 'Failed to link order with payment session',
+        }),
+        {
+          status: 500,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        },
+      );
+    }
 
     return new Response(
       JSON.stringify({ sessionId: session.id, url: session.url }),
@@ -229,4 +231,16 @@ const orderId = order.id;
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       },
     );
-    
+  } catch (err: any) {
+    console.error('Payment error:', err);
+    return new Response(
+      JSON.stringify({
+        error: `Payment error: ${err?.message ?? 'Unknown error'}`,
+      }),
+      {
+        status: 500,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      },
+    );
+  }
+});
