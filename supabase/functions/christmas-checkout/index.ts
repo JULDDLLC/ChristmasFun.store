@@ -172,31 +172,32 @@ Deno.serve(async (req: Request) => {
     const origin = req.headers.get('origin') || 'https://christmasmagicdesigns.juldd.com';
 
     try {
-      const session = await stripe.checkout.sessions.create({
-        payment_method_types: ['card'],
-        line_items: [
-          {
-            price_data: {
-              currency: 'usd',
-              product_data: {
-                name: product.name,
-                description: product.description,
-              },
-              unit_amount: product.amount,
-            },
-            quantity: 1,
-          },
-        ],
-        mode: 'payment',
-        success_url: `${origin}/thank-you?session_id={CHECKOUT_SESSION_ID}`,
-        cancel_url: `${origin}`,
-        customer_email: customerEmail,
-        metadata: {
-          orderId: order.id,
-          productId,
-          designNumber: designNumber?.toString() || '',
+ const session = await stripe.checkout.sessions.create({
+  payment_method_types: ['card'],
+  line_items: [
+    {
+      price_data: {
+        currency: 'usd',
+        product_data: {
+          name: product.name,
+          description: product.description,
         },
-      });
+        unit_amount: product.amount,
+      },
+      quantity: 1,
+    },
+  ],
+  mode: 'payment',
+  allow_promotion_codes: true,     // <-- ADD THIS
+  success_url: `${origin}/thank-you?session_id={CHECKOUT_SESSION_ID}`,
+  cancel_url: `${origin}`,
+  customer_email: customerEmail,
+  metadata: {
+    orderId: order_id,
+    productId,
+    designNumber: designNumber?.toString() || "",
+  },
+});
 
       await supabase
         .from('orders')
