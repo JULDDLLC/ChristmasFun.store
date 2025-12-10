@@ -145,18 +145,33 @@ Deno.serve(async (req: Request) => {
       productType = 'bundle';
     }
 
-    const { data: order, error: orderError } = await supabase
-      .from('orders')
-      .insert({
-        customer_email: customerEmail,
-        product_type: productType,
-        product_id: productId,
-        amount: product.amount,
-        status: 'pending',
-        download_links: [],
-      })
-      .select()
-      .single();
+  // Create order record in Supabase
+const { data: order, error: orderError } = await supabase
+  .from('orders')
+  .insert({
+    customer_email: customerEmail,
+    product_type: productType,
+    product_id: productId,
+    amount: product.amount,
+    status: 'pending',
+    download_links: [],
+  })
+  .select()
+  .single();
+
+if (orderError || !order) {
+  console.error('Failed to create order:', orderError);
+  return new Response(
+    JSON.stringify({ error: 'Failed to create order' }),
+    {
+      status: 500,
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+    }
+  );
+}
+
+// this is the ONLY source of truth for the order id
+const orderId = order.id;
 
     if (orderError || !order) {
       console.error('Failed to create order:', orderError);
