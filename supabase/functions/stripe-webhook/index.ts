@@ -4,6 +4,7 @@ import { createClient } from 'npm:@supabase/supabase-js@2.49.1';
 
 const stripeSecret = Deno.env.get('STRIPE_SECRET_KEY')!;
 const stripeWebhookSecret = Deno.env.get('STRIPE_WEBHOOK_SECRET')!;
+
 const stripe = new Stripe(stripeSecret, {
   appInfo: {
     name: 'Bolt Integration',
@@ -11,7 +12,10 @@ const stripe = new Stripe(stripeSecret, {
   },
 });
 
-const supabase = createClient(Deno.env.get('SUPABASE_URL')!, Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!);
+const supabase = createClient(
+  Deno.env.get('SUPABASE_URL')!,
+  Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!,
+);
 
 // URL mappings for all products
 const SANTA_LETTER_URLS: Record<string, string> = {
@@ -72,11 +76,20 @@ Deno.serve(async (req) => {
     let event: Stripe.Event;
 
     try {
-      event = await stripe.webhooks.constructEventAsync(body, signature, stripeWebhookSecret);
+      event = await stripe.webhooks.constructEventAsync(
+        body,
+        signature,
+        stripeWebhookSecret,
+      );
     } catch (error: any) {
       console.error(`Webhook signature verification failed: ${error.message}`);
-      return new Response(`Webhook signature verification failed: ${error.message}`, { status: 400 });
+      return new Response(
+        `Webhook signature verification failed: ${error.message}`,
+        { status: 400 },
+      );
     }
+
+    console.info('Received Stripe event:', event.type);
 
     EdgeRuntime.waitUntil(handleEvent(event));
 
@@ -91,39 +104,50 @@ async function handleEvent(event: Stripe.Event) {
   const stripeData = event?.data?.object ?? {};
 
   if (!stripeData) {
+    console.error('No stripeData on event');
     return;
   }
 
+  // Our custom Christmas orders (have metadata.orderId)
   if (event.type === 'checkout.session.completed') {
     const session = stripeData as Stripe.Checkout.Session;
 
     if (session.metadata?.orderId) {
+      console.info(
+        'Handling Christmas checkout.session.completed with metadata:',
+        session.metadata,
+      );
       await handleChristmasOrder(session);
       return;
     }
   }
 
+  // Everything else below is the more generic subscription / one-time logic
   if (!('customer' in stripeData)) {
     return;
   }
 
-  if (event.type === 'payment_intent.succeeded' && event.data.object.invoice === null) {
+  if (event.type === 'payment_intent.succeeded' &&
+      (event.data.object as any).invoice === null) {
     return;
   }
 
-  const { customer: customerId } = stripeData;
+  const { customer: customerId } = stripeData as { customer?: string };
 
   if (!customerId || typeof customerId !== 'string') {
-    console.error(`No customer received on event: ${JSON.stringify(event)}`);
+    console.error(
+      `No customer received on event: ${JSON.stringify(event)}`,
+    );
   } else {
     let isSubscription = true;
 
     if (event.type === 'checkout.session.completed') {
       const { mode } = stripeData as Stripe.Checkout.Session;
-
       isSubscription = mode === 'subscription';
 
-      console.info(`Processing ${isSubscription ? 'subscription' : 'one-time payment'} checkout session`);
+      console.info(
+        `Processing ${isSubscription ? 'subscription' : 'one-time payment'} checkout session`,
+      );
     }
 
     const { mode, payment_status } = stripeData as Stripe.Checkout.Session;
@@ -141,22 +165,27 @@ async function handleEvent(event: Stripe.Event) {
           currency,
         } = stripeData as Stripe.Checkout.Session;
 
-        const { error: orderError } = await supabase.from('stripe_orders').insert({
-          checkout_session_id,
-          payment_intent_id: payment_intent,
-          customer_id: customerId,
-          amount_subtotal,
-          amount_total,
-          currency,
-          payment_status,
-          status: 'completed',
-        });
+        const { error: orderError } = await supabase
+          .from('stripe_orders')
+          .insert({
+            checkout_session_id,
+            payment_intent_id: payment_intent,
+            customer_id: customerId,
+            amount_subtotal,
+            amount_total,
+            currency,
+            payment_status,
+            status: 'completed',
+          });
 
         if (orderError) {
           console.error('Error inserting order:', orderError);
           return;
         }
-        console.info(`Successfully processed one-time payment for session: ${checkout_session_id}`);
+
+        console.info(
+          `Successfully processed one-time payment for session: ${checkout_session_id}`,
+        );
       } catch (error) {
         console.error('Error processing one-time payment:', error);
       }
@@ -170,6 +199,14 @@ async function handleChristmasOrder(session: Stripe.Checkout.Session) {
     const productId = session.metadata?.productId;
     const productType = session.metadata?.productType;
 
+    console.info('handleChristmasOrder session metadata:', {
+      orderId,
+      productId,
+      productType,
+      items: session.metadata?.items,
+      designNumber: session.metadata?.designNumber,
+    });
+
     if (!orderId) {
       console.error('No orderId in session metadata');
       return;
@@ -178,11 +215,19 @@ async function handleChristmasOrder(session: Stripe.Checkout.Session) {
     let downloadLinks: string[];
 
     if (productType === 'multi_item_cart') {
-      downloadLinks = generateMultiItemDownloadLinks(session.metadata?.items);
+      downloadLinks = generateMultiItemDownloadLinks(
+        session.metadata?.items,
+      );
     } else {
-      downloadLinks = generateDownloadLinks(productId, session.metadata?.designNumber);
+      downloadLinks = generateDownloadLinks(
+        productId,
+        session.metadata?.designNumber,
+      );
     }
 
+    console.info('Generated downloadLinks:', downloadLinks);
+
+    // Try to update the DB, but DO NOT abort email if this fails
     const { error: updateError } = await supabase
       .from('orders')
       .update({
@@ -193,12 +238,13 @@ async function handleChristmasOrder(session: Stripe.Checkout.Session) {
       .eq('id', orderId);
 
     if (updateError) {
-      console.error('Error updating Christmas order:', updateError);
-      return;
+      console.error('Error updating Christmas order in DB:', updateError);
+      // important: continue anyway so customer still receives the email
+    } else {
+      console.info('Christmas order row updated successfully in DB');
     }
 
-    console.info(`Successfully processed Christmas order: ${orderId}`);
-
+    console.info(`Sending email for Christmas order: ${orderId}`);
     await sendOrderEmail(session, productId, downloadLinks, orderId);
   } catch (error) {
     console.error('Error handling Christmas order:', error);
@@ -209,7 +255,7 @@ async function sendOrderEmail(
   session: Stripe.Checkout.Session,
   productId: string | undefined,
   downloadLinks: string[],
-  orderId: string
+  orderId: string,
 ) {
   try {
     const supabaseUrl = Deno.env.get('SUPABASE_URL');
@@ -230,23 +276,36 @@ async function sendOrderEmail(
       multi_item_cart: 'Your Selected Christmas Designs',
     };
 
-    const productName = productId ? productNames[productId] || 'Christmas Design' : 'Christmas Design';
+    const productName = productId
+      ? productNames[productId] || 'Christmas Design'
+      : 'Christmas Design';
 
-    const emailResponse = await fetch(`${supabaseUrl}/functions/v1/send-order-email`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${supabaseServiceKey}`,
-        apikey: supabaseServiceKey,
-      },
-      body: JSON.stringify({
-        to: session.customer_email,
-        productName,
-        productType: productId,
-        downloadLinks,
-        orderNumber: orderId,
-      }),
+    console.info('Calling send-order-email function with:', {
+      to: session.customer_email,
+      productName,
+      productType: productId,
+      orderId,
+      downloadLinksCount: downloadLinks.length,
     });
+
+    const emailResponse = await fetch(
+      `${supabaseUrl}/functions/v1/send-order-email`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${supabaseServiceKey}`,
+          apikey: supabaseServiceKey,
+        },
+        body: JSON.stringify({
+          to: session.customer_email,
+          productName,
+          productType: productId,
+          downloadLinks,
+          orderNumber: orderId,
+        }),
+      },
+    );
 
     if (!emailResponse.ok) {
       const errorText = await emailResponse.text();
@@ -259,26 +318,29 @@ async function sendOrderEmail(
   }
 }
 
-function generateDownloadLinks(productId: string | undefined, designNumber: string | undefined): string[] {
+function generateDownloadLinks(
+  productId: string | undefined,
+  designNumber: string | undefined,
+): string[] {
   const links: string[] = [];
 
   if (productId === 'single_letter_99' && designNumber) {
     const url = SANTA_LETTER_URLS[designNumber];
-    if (url) {
-      links.push(url);
-    }
+    if (url) links.push(url);
   } else if (productId === 'bundle_14_999') {
-    Object.values(SANTA_LETTER_URLS).forEach(url => links.push(url));
+    Object.values(SANTA_LETTER_URLS).forEach((url) => links.push(url));
   } else if (productId === 'notes_bundle_299') {
-    Object.values(CHRISTMAS_NOTE_URLS).forEach(url => links.push(url));
+    Object.values(CHRISTMAS_NOTE_URLS).forEach((url) => links.push(url));
   } else if (productId === 'complete_bundle_999') {
-    Object.values(SANTA_LETTER_URLS).forEach(url => links.push(url));
-    Object.values(CHRISTMAS_NOTE_URLS).forEach(url => links.push(url));
+    Object.values(SANTA_LETTER_URLS).forEach((url) => links.push(url));
+    Object.values(CHRISTMAS_NOTE_URLS).forEach((url) => links.push(url));
   } else if (productId === 'teacher_license_499') {
-    Object.values(SANTA_LETTER_URLS).forEach(url => links.push(url));
+    Object.values(SANTA_LETTER_URLS).forEach((url) => links.push(url));
   } else if (productId === 'coloring_bundle_free') {
-    COLORING_SHEET_URLS.forEach(url => links.push(url));
+    COLORING_SHEET_URLS.forEach((url) => links.push(url));
   }
+
+  console.info('generateDownloadLinks result:', { productId, designNumber, links });
 
   return links;
 }
@@ -287,6 +349,7 @@ function generateMultiItemDownloadLinks(itemsString: string | undefined): string
   const links: string[] = [];
 
   if (!itemsString) {
+    console.warn('generateMultiItemDownloadLinks called with no itemsString');
     return links;
   }
 
@@ -298,17 +361,15 @@ function generateMultiItemDownloadLinks(itemsString: string | undefined): string
     if (trimmedItem.startsWith('letter_')) {
       const letterNumber = trimmedItem.replace('letter_', '');
       const url = SANTA_LETTER_URLS[letterNumber];
-      if (url) {
-        links.push(url);
-      }
+      if (url) links.push(url);
     } else if (trimmedItem.startsWith('note_')) {
       const noteNumber = trimmedItem.replace('note_', '');
       const url = CHRISTMAS_NOTE_URLS[noteNumber];
-      if (url) {
-        links.push(url);
-      }
+      if (url) links.push(url);
     }
   }
+
+  console.info('generateMultiItemDownloadLinks result:', { itemsString, links });
 
   return links;
 }
@@ -323,53 +384,69 @@ async function syncCustomerFromStripe(customerId: string) {
     });
 
     if (subscriptions.data.length === 0) {
-      console.info(`No active subscriptions found for customer: ${customerId}`);
-      const { error: noSubError } = await supabase.from('stripe_subscriptions').upsert(
+      console.info(
+        `No active subscriptions found for customer: ${customerId}`,
+      );
+      const { error: noSubError } = await supabase
+        .from('stripe_subscriptions')
+        .upsert(
+          {
+            customer_id: customerId,
+            subscription_status: 'not_started',
+          },
+          {
+            onConflict: 'customer_id',
+          },
+        );
+
+      if (noSubError) {
+        console.error('Error updating subscription status:', noSubError);
+        throw new Error('Failed to update subscription status in database');
+      }
+      return;
+    }
+
+    const subscription = subscriptions.data[0];
+
+    const { error: subError } = await supabase
+      .from('stripe_subscriptions')
+      .upsert(
         {
           customer_id: customerId,
-          subscription_status: 'not_started',
+          subscription_id: subscription.id,
+          price_id: subscription.items.data[0].price.id,
+          current_period_start: subscription.current_period_start,
+          current_period_end: subscription.current_period_end,
+          cancel_at_period_end: subscription.cancel_at_period_end,
+          ...(subscription.default_payment_method &&
+          typeof subscription.default_payment_method !== 'string'
+            ? {
+                payment_method_brand:
+                  subscription.default_payment_method.card?.brand ?? null,
+                payment_method_last4:
+                  subscription.default_payment_method.card?.last4 ?? null,
+              }
+            : {}),
+          status: subscription.status,
         },
         {
           onConflict: 'customer_id',
         },
       );
 
-      if (noSubError) {
-        console.error('Error updating subscription status:', noSubError);
-        throw new Error('Failed to update subscription status in database');
-      }
-    }
-
-    const subscription = subscriptions.data[0];
-
-    const { error: subError } = await supabase.from('stripe_subscriptions').upsert(
-      {
-        customer_id: customerId,
-        subscription_id: subscription.id,
-        price_id: subscription.items.data[0].price.id,
-        current_period_start: subscription.current_period_start,
-        current_period_end: subscription.current_period_end,
-        cancel_at_period_end: subscription.cancel_at_period_end,
-        ...(subscription.default_payment_method && typeof subscription.default_payment_method !== 'string'
-          ? {
-              payment_method_brand: subscription.default_payment_method.card?.brand ?? null,
-              payment_method_last4: subscription.default_payment_method.card?.last4 ?? null,
-            }
-          : {}),
-        status: subscription.status,
-      },
-      {
-        onConflict: 'customer_id',
-      },
-    );
-
     if (subError) {
       console.error('Error syncing subscription:', subError);
       throw new Error('Failed to sync subscription in database');
     }
-    console.info(`Successfully synced subscription for customer: ${customerId}`);
+
+    console.info(
+      `Successfully synced subscription for customer: ${customerId}`,
+    );
   } catch (error) {
-    console.error(`Failed to sync subscription for customer ${customerId}:`, error);
+    console.error(
+      `Failed to sync subscription for customer ${customerId}:`,
+      error,
+    );
     throw error;
   }
 }
