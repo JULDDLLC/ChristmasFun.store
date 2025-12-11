@@ -69,7 +69,7 @@ export const ChristmasCartDrawer: React.FC<ChristmasCartDrawerProps> = ({
 
       try {
       // IMPORTANT: use the actual Supabase project URL directly
-      const functionsBaseUrl = 'PASTE_YOUR_SUPABASE_URL_HERE';  
+      const functionsBaseUrl = 'https://kvnbgubooykiveogifwt.supabase.co';  
 
       const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
       if (!functionsBaseUrl || !supabaseAnonKey) {
