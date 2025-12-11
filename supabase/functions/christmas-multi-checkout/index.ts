@@ -92,6 +92,7 @@ export const ChristmasCartDrawer: React.FC<ChristmasCartDrawerProps> = ({
             apikey: supabaseAnonKey,
           },
           body: JSON.stringify({
+            // send the structured shape the edge function expects
             items: items.map((item) => ({
               type: item.type,
               designNumber: item.designNumber ?? null,
@@ -331,4 +332,20 @@ export const ChristmasCartDrawer: React.FC<ChristmasCartDrawerProps> = ({
               ) : (
                 <>
                   <ShoppingBag className="w-5 h-5" />
-                  <span>Pro
+                  <span>Proceed to Checkout</span>
+                </>
+              )}
+            </button>
+            <button
+              onClick={clearCart}
+              disabled={loading}
+              className="w-full mt-2 text-white/60 hover:text-white text-sm py-2 transition-colors"
+            >
+              Clear Cart
+            </button>
+          </div>
+        )}
+      </div>
+    </>
+  );
+};
