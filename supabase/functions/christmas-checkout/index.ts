@@ -1,15 +1,15 @@
+// supabase/functions/christmas-checkout/index.ts
+
 import 'jsr:@supabase/functions-js/edge-runtime.d.ts';
 import Stripe from 'npm:stripe@14.21.0';
 import { createClient } from 'npm:@supabase/supabase-js@2.49.1';
 
-// ---------- Supabase + Stripe setup ----------
+const supabase = createClient(
+  Deno.env.get('SUPABASE_URL') ?? '',
+  Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '',
+);
 
-const supabaseUrl = Deno.env.get('SUPABASE_URL') ?? '';
-const serviceRoleKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '';
-
-const supabase = createClient(supabaseUrl, serviceRoleKey);
-
-const stripeSecret = Deno.env.get('STRIPE_SECRET_KEY') ?? '';
+const stripeSecret = Deno.env.get('STRIPE_SECRET_KEY');
 
 const stripe = stripeSecret
   ? new Stripe(stripeSecret, { apiVersion: '2023-10-16' })
@@ -22,58 +22,66 @@ const corsHeaders = {
     'Content-Type, Authorization, X-Client-Info, Apikey',
 };
 
-// ---------- Types ----------
+type ProductId =
+  | 'single_letter_99'
+  | 'bundle_14_999'
+  | 'notes_bundle_299'
+  | 'complete_bundle_999'
+  | 'teacher_license_499';
 
 interface CheckoutRequest {
-  productId:
-    | 'single_letter_99'
-    | 'bundle_14_999'
-    | 'notes_bundle_299'
-    | 'complete_bundle_999'
-    | 'teacher_license_499'
-    | 'coloring_bundle_free';
+  productId: ProductId;
   customerEmail: string;
   designNumber?: number;
 }
 
-const PRODUCT_CONFIG: Record<
-  CheckoutRequest['productId'],
-  { name: string; amount: number; description: string }
-> = {
-  single_letter_99: {
-    name: 'Single Santa Letter Design',
-    amount: 99, // cents
-    description: 'One premium Santa letter design',
-  },
-  bundle_14_999: {
-    name: 'Santa Letters Bundle - All 14 Designs',
-    amount: 999,
-    description: 'All 14 Santa letter designs',
-  },
-  notes_bundle_299: {
-    name: 'Christmas Notes Bundle - All 4 Designs',
-    amount: 299,
-    description: 'All 4 Christmas note designs',
-  },
-  complete_bundle_999: {
-    name: 'Complete Bundle - All 18 Designs',
-    amount: 999,
-    description: '14 Santa letters + 4 Christmas notes',
-  },
-  teacher_license_499: {
-    name: 'Teacher License + All Designs',
-    amount: 499,
-    description:
-      'Unlimited classroom printing + all 14 Santa letters + notes bundle',
-  },
-  coloring_bundle_free: {
-    name: 'Free Coloring Sheets Bundle',
-    amount: 0,
-    description: '10 beautiful coloring sheets',
-  },
+type ProductConfig = {
+  name: string;
+  description: string;
+  amount: number; // in cents, for storing in orders table
+  stripePriceId: string;
+  productType: string;
 };
 
-// ---------- Main handler ----------
+// IMPORTANT: these use your real Stripe Price IDs
+const PRODUCT_CONFIG: Record<ProductId, ProductConfig> = {
+  single_letter_99: {
+    name: 'Santa Letter (Single) - $0.99',
+    description: 'One premium Santa letter design',
+    amount: 99,
+    stripePriceId: 'price_1ScHCUBsr66TjEhQI5HBQqtU',
+    productType: 'single_letter',
+  },
+  bundle_14_999: {
+    // If this product id is used anywhere it will share the full bundle price
+    name: 'All 18 Designs Bundle - $9.99',
+    description: 'All 14 Santa letters + 4 Christmas notes',
+    amount: 999,
+    stripePriceId: 'price_1ScGjvBsr66TjEhQ4cRtPYm1',
+    productType: 'letters_bundle',
+  },
+  notes_bundle_299: {
+    name: 'Christmas Notes Bundle - All 4 Designs - $2.99',
+    description: 'All 4 Christmas note designs',
+    amount: 299,
+    stripePriceId: 'price_1ScH30Bsr66TjEhQhwLwFAME',
+    productType: 'notes_bundle',
+  },
+  complete_bundle_999: {
+    name: 'All 18 Designs Bundle - $9.99',
+    description: '14 Santa letters + 4 Christmas notes',
+    amount: 999,
+    stripePriceId: 'price_1ScGjvBsr66TjEhQ4cRtPYm1',
+    productType: 'complete_bundle',
+  },
+  teacher_license_499: {
+    name: 'Teacher License – $4.99 (One-Time)',
+    description: 'Unlimited classroom printing + all 14 Santa letters',
+    amount: 499,
+    stripePriceId: 'price_1ScH6KBsr66TjEhQAhED4Lsd',
+    productType: 'teacher_license',
+  },
+};
 
 Deno.serve(async (req: Request) => {
   try {
@@ -92,20 +100,22 @@ Deno.serve(async (req: Request) => {
       );
     }
 
-    let body: CheckoutRequest;
-    try {
-      body = await req.json();
-    } catch {
+    if (!stripeSecret || !stripe) {
+      console.error('Stripe secret key missing or Stripe client not created');
       return new Response(
-        JSON.stringify({ error: 'Invalid JSON in request body' }),
+        JSON.stringify({
+          error:
+            'Payment system is not configured. Please contact support if this continues.',
+        }),
         {
-          status: 400,
+          status: 500,
           headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         },
       );
     }
 
-    const { productId, customerEmail, designNumber } = body;
+    const { productId, customerEmail, designNumber }: CheckoutRequest =
+      await req.json();
 
     if (!productId || !customerEmail) {
       return new Response(
@@ -119,10 +129,11 @@ Deno.serve(async (req: Request) => {
       );
     }
 
+    // Single letter requires a design number so you know which file to send
     if (productId === 'single_letter_99' && !designNumber) {
       return new Response(
         JSON.stringify({
-          error: 'designNumber is required for single letter purchases',
+          error: 'designNumber is required for a single Santa letter purchase',
         }),
         {
           status: 400,
@@ -133,6 +144,7 @@ Deno.serve(async (req: Request) => {
 
     const product = PRODUCT_CONFIG[productId];
     if (!product) {
+      console.error('Invalid productId:', productId);
       return new Response(
         JSON.stringify({ error: 'Invalid product ID' }),
         {
@@ -142,24 +154,15 @@ Deno.serve(async (req: Request) => {
       );
     }
 
-    // Figure out product_type for the orders table
-    let productType = 'single_letter';
-    if (productId === 'notes_bundle_299') productType = 'notes_bundle';
-    else if (productId === 'complete_bundle_999') productType = 'complete_bundle';
-    else if (productId === 'teacher_license_499') productType = 'teacher_license';
-    else if (productId === 'coloring_bundle_free') productType = 'coloring_bundle';
-    else if (productId.includes('bundle')) productType = 'bundle';
-
-    // ---------- 1) Create order in Supabase ----------
-
+    // Create order in Supabase
     const { data: order, error: orderError } = await supabase
       .from('orders')
       .insert({
         customer_email: customerEmail,
-        product_type: productType,
+        product_type: product.productType,
         product_id: productId,
         amount: product.amount,
-        status: product.amount === 0 ? 'completed' : 'pending',
+        status: 'pending',
         download_links: [],
       })
       .select()
@@ -176,78 +179,49 @@ Deno.serve(async (req: Request) => {
       );
     }
 
-    // ---------- 2) FREE PRODUCT: skip Stripe completely ----------
-
-    if (product.amount === 0) {
-      // Your frontend can still call the Resend function to email the files,
-      // but checkout itself is "done" here – no Stripe needed.
-      return new Response(
-        JSON.stringify({
-          ok: true,
-          free: true,
-          orderId: order.id,
-        }),
-        {
-          status: 200,
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        },
-      );
-    }
-
-    // ---------- 3) PAID PRODUCTS: create Stripe Checkout session ----------
-
-    if (!stripe) {
-      console.error('Stripe not configured');
-      return new Response(
-        JSON.stringify({
-          error: 'Payment system not configured. Please contact support.',
-        }),
-        {
-          status: 500,
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        },
-      );
-    }
-
+    // Derive origin safely (fixes the "origin is not defined" errors)
     const url = new URL(req.url);
     const originHeader = req.headers.get('origin');
     const origin = originHeader ?? `${url.protocol}//${url.host}`;
 
+    // Create Stripe Checkout session using your saved Prices
     const session = await stripe.checkout.sessions.create({
-      payment_method_types: ['card'],
       mode: 'payment',
+      payment_method_types: ['card'],
       line_items: [
         {
-          price_data: {
-            currency: 'usd',
-            product_data: {
-              name: product.name,
-              description: product.description,
-            },
-            unit_amount: product.amount, // cents
-          },
+          price: product.stripePriceId,
           quantity: 1,
         },
       ],
+      // This shows the promo-code box on the Stripe page
+      allow_promotion_codes: true,
+      customer_email: customerEmail,
       success_url: `${origin}/thank-you?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${origin}`,
-      customer_email: customerEmail,
       metadata: {
         order_id: order.id.toString(),
-        product_type: productType,
-        product_id: productId.toString(),
+        product_type: product.productType,
+        product_id: productId,
         design_number: designNumber?.toString() ?? '',
       },
     });
 
-    // Optional: update order status, but DO NOT fail checkout if this breaks
+    // Store Stripe session info on the order (non-fatal if it fails)
     const { error: updateError } = await supabase
       .from('orders')
-      .update({ status: 'checkout_created' })
+      .update({
+        stripe_session_id: session.id,
+        checkout_url: session.url,
+        status: 'checkout_created',
+      })
       .eq('id', order.id);
 
     if (updateError) {
-      console.error('Non-fatal: failed to update order after Stripe:', updateError);
+      console.error(
+        'Non-fatal: failed to update order after Stripe session create:',
+        updateError,
+      );
     }
 
     return new Response(
