@@ -73,11 +73,22 @@ export const ChristmasCartDrawer: React.FC<ChristmasCartDrawerProps> = ({
         import.meta.env.VITE_SUPABASE_URL ??
         'https://kvnbguoboqvkveojifwt.supabase.co';
 
-      const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
-      if (!functionsBaseUrl || !supabaseAnonKey) {
-        console.error('Supabase env vars missing');
+      if (!functionsBaseUrl) {
+        console.error('Supabase URL missing');
         setEmailError('Configuration error. Please try again later.');
         return;
+      }
+
+      const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+
+      // Build headers and only include auth if we actually have a key
+      const headers: Record<string, string> = {
+        'Content-Type': 'application/json',
+      };
+
+      if (supabaseAnonKey) {
+        headers.Authorization = `Bearer ${supabaseAnonKey}`;
+        headers.apikey = supabaseAnonKey;
       }
 
       console.log('Starting checkout with items:', items, 'email:', email);
@@ -86,13 +97,8 @@ export const ChristmasCartDrawer: React.FC<ChristmasCartDrawerProps> = ({
         `${functionsBaseUrl}/functions/v1/christmas-multi-checkout`,
         {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${supabaseAnonKey}`,
-            apikey: supabaseAnonKey,
-          },
+          headers,
           body: JSON.stringify({
-            // send the structured shape the edge function expects
             items: items.map((item) => ({
               type: item.type,
               designNumber: item.designNumber ?? null,
