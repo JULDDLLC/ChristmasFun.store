@@ -604,10 +604,10 @@ function ChristmasContent() {
               Christmas Notes &amp; Stationery
             </h2>
             <p className="text-lg md:text-xl text-white/80 max-w-2xl mx-auto leading-relaxed">
-  Beautiful lined and blank note designs perfect for holiday greetings, gift tags, and festive correspondence.
+   Beautiful lined and blank note designs perfect for holiday greetings, gift tags, and Christmas messages
   <br />
   <span className="text-amber-100/90">
-    Each illustration is an original, hand-crafted design created exclusively for this collection.
+    Exclusive curated artwork thoughtfully crafted for holiday letters, stationery, and keepsakes.
   </span>
 </p>
           </div>
