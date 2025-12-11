@@ -515,7 +515,8 @@ function ChristmasContent() {
               </h1>
 
               <p className="text-lg md:text-xl text-amber-100/80 max-w-2xl mx-auto leading-relaxed tracking-wide">
-  Includes 14 Santa Letters · 4 Christmas Notes · 10 Bonus Christmas Coloring Pages
+  Includes 14 Santa Letters · 4 Christmas Notes 
+                · 10 Bonus Christmas Coloring Pages
 </p>
 
               <div className="flex flex-col sm:flex-row items-center justify-center gap-6 mt-12">
