@@ -564,7 +564,7 @@ function ChristmasContent() {
           <div className="text-center mb-16">
             <h2 className="text-5xl md:text-6xl font-serif text-white mb-6">14 Magical Designs</h2>
             <p className="text-xl text-white/70 max-w-2xl mx-auto">
-              Each design is carefully crafted to bring joy and wonder to your holiday season
+              Each design is an original, handcrafted illustration created exclusively for this collection.
             </p>
           </div>
 
