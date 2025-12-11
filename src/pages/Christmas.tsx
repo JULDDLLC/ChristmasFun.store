@@ -607,7 +607,7 @@ function ChristmasContent() {
    Beautiful lined and blank note designs perfect for holiday greetings, gift tags, and Christmas messages
   <br />
   <span className="text-amber-100/90">
-    Exclusive curated artwork thoughtfully crafted for holiday letters, stationery, and keepsakes.
+    Exclusive artwork created only for this collection.
   </span>
 </p>
           </div>
