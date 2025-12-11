@@ -1,215 +1,364 @@
-// supabase/functions/christmas-multi-checkout/index.ts
+import React, { useState, useEffect } from 'react';
+import { X, Trash2, ShoppingBag, Loader2, Sparkles, Gift, Mail } from 'lucide-react';
+import { useChristmasCart } from '../contexts/ChristmasCartContext';
 
-import 'jsr:@supabase/functions-js/edge-runtime.d.ts';
-import Stripe from 'npm:stripe@14.21.0';
-import { createClient } from 'npm:@supabase/supabase-js@2.49.1';
-
-// ---------- Supabase + Stripe setup ----------
-
-const supabaseUrl = Deno.env.get('SUPABASE_URL') ?? '';
-const serviceRoleKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '';
-
-const supabase = createClient(supabaseUrl, serviceRoleKey);
-
-const stripeSecret = Deno.env.get('STRIPE_SECRET_KEY') ?? '';
-
-const stripe = stripeSecret
-  ? new Stripe(stripeSecret, { apiVersion: '2023-10-16' })
-  : null;
-
-const corsHeaders: Record<string, string> = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-  // include the headers your frontend actually sends
-  'Access-Control-Allow-Headers':
-    'Content-Type, Authorization, apikey, X-Client-Info',
-};
-
-// ---------- Types ----------
-
-interface CartItem {
-  type: string; // e.g. "santa_letter", "christmas_note", "bundle_complete", etc.
-  designNumber?: number | null;
-  noteNumber?: number | null;
-  name: string;
-  price: number; // price in dollars (0.99, 2.99, 9.99, etc.)
+interface ChristmasCartDrawerProps {
+  isOpen: boolean;
+  onClose: () => void;
+  customerEmail?: string;
 }
 
-interface MultiCheckoutRequest {
-  items: CartItem[];
-  customerEmail: string;
-}
+export const ChristmasCartDrawer: React.FC<ChristmasCartDrawerProps> = ({
+  isOpen,
+  onClose,
+  customerEmail: initialEmail,
+}) => {
+  const { items, removeFromCart, getCartTotal, clearCart } = useChristmasCart();
+  const [loading, setLoading] = useState(false);
+  const [email, setEmail] = useState('');
+  const [emailError, setEmailError] = useState('');
 
-// ---------- Helper to create JSON responses with CORS ----------
+  // Load email from localStorage or prop
+  useEffect(() => {
+    const savedEmail = localStorage.getItem('christmas_customer_email');
+    if (savedEmail) {
+      setEmail(savedEmail);
+    } else if (initialEmail) {
+      setEmail(initialEmail);
+    }
+  }, [initialEmail]);
 
-function jsonResponse(body: unknown, status = 200): Response {
-  return new Response(JSON.stringify(body), {
-    status,
-    headers: {
-      ...corsHeaders,
-      'Content-Type': 'application/json',
-    },
-  });
-}
+  // Persist email when valid
+  useEffect(() => {
+    if (email && email.includes('@')) {
+      localStorage.setItem('christmas_customer_email', email);
+      setEmailError('');
+    }
+  }, [email]);
 
-// ---------- Main handler ----------
+  const formatPrice = (price: number) => {
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+    }).format(price);
+  };
 
-Deno.serve(async (req: Request) => {
-  // CORS preflight
-  if (req.method === 'OPTIONS') {
-    return new Response(null, {
-      status: 200,
-      headers: corsHeaders,
-    });
-  }
+  const validateEmail = (emailToValidate: string) => {
+    if (!emailToValidate) {
+      return 'Email is required';
+    }
+    if (!emailToValidate.includes('@') || !emailToValidate.includes('.')) {
+      return 'Please enter a valid email address';
+    }
+    return '';
+  };
 
-  if (req.method !== 'POST') {
-    return jsonResponse({ error: 'Method not allowed' }, 405);
-  }
-
-  if (!stripe || !stripeSecret) {
-    console.error('Stripe is not configured correctly in environment variables.');
-    return jsonResponse(
-      { error: 'Payment system not configured. Please contact support.' },
-      500,
-    );
-  }
-
-  try {
-    const body = (await req.json()) as MultiCheckoutRequest;
-    const { items, customerEmail } = body;
-
-    // ---- Basic validation ----
-    if (!customerEmail || typeof customerEmail !== 'string') {
-      return jsonResponse(
-        { error: 'Missing or invalid customerEmail' },
-        400,
-      );
+  const handleCheckout = async () => {
+    const validationError = validateEmail(email);
+    if (validationError) {
+      setEmailError(validationError);
+      return;
     }
 
-    if (!Array.isArray(items) || items.length === 0) {
-      return jsonResponse(
-        { error: 'Cart is empty. Please add items before checkout.' },
-        400,
-      );
+    if (items.length === 0) {
+      return;
     }
 
-    // Validate items and build Stripe line_items
-    const lineItems: Stripe.Checkout.SessionCreateParams.LineItem[] = [];
-    let totalAmountCents = 0;
+    setLoading(true);
+    setEmailError('');
 
-    for (const item of items) {
-      if (!item || typeof item.price !== 'number' || !item.name) {
-        return jsonResponse(
-          { error: 'Invalid item in cart. Please refresh and try again.' },
-          400,
-        );
+    try {
+      // Get Supabase URL from env or hardcoded fallback
+      const rawSupabaseUrl =
+        (import.meta.env.VITE_SUPABASE_URL as string | undefined)?.trim() ||
+        'https://kvnbgubooykiveogifwt.supabase.co';
+
+      // Normalize: ensure it starts with https:// and has no trailing slash
+      let normalizedBase = rawSupabaseUrl;
+      if (!normalizedBase.startsWith('http')) {
+        normalizedBase = `https://${normalizedBase}`;
+      }
+      normalizedBase = normalizedBase.replace(/\/+$/, '');
+
+      const functionsBaseUrl = normalizedBase;
+
+      const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY as string | undefined;
+
+      if (!functionsBaseUrl || !supabaseAnonKey) {
+        console.error('Supabase env vars missing or invalid', {
+          functionsBaseUrl,
+          supabaseAnonKeyPresent: !!supabaseAnonKey,
+        });
+        setEmailError('Configuration error. Please try again later.');
+        return;
       }
 
-      // Convert dollars to cents safely
-      const amountCents = Math.round(item.price * 100);
+      console.log('Using functionsBaseUrl:', functionsBaseUrl);
+      console.log('Starting checkout with items:', items, 'email:', email);
 
-      if (amountCents < 0) {
-        return jsonResponse(
-          { error: 'Invalid item price in cart' },
-          400,
-        );
-      }
-
-      totalAmountCents += amountCents;
-
-      lineItems.push({
-        price_data: {
-          currency: 'usd',
-          product_data: {
-            name: item.name,
-            // optional: you could include more descriptive info here later
+      const response = await fetch(
+        `${functionsBaseUrl}/functions/v1/christmas-multi-checkout`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${supabaseAnonKey}`,
+            apikey: supabaseAnonKey,
           },
-          unit_amount: amountCents,
-        },
-        quantity: 1,
-      });
-    }
-
-    // If somehow total is zero, bail
-    if (totalAmountCents <= 0) {
-      return jsonResponse(
-        { error: 'Cart total is zero. Please check your items.' },
-        400,
+          body: JSON.stringify({
+            items: items.map((item) => ({
+              type: item.type,
+              designNumber: item.designNumber ?? null,
+              noteNumber: item.noteNumber ?? null,
+              name: item.name,
+              price: item.price,
+            })),
+            customerEmail: email,
+          }),
+        }
       );
+
+      console.log('Checkout response status:', response.status);
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error('Checkout failed:', errorText);
+        try {
+          const errorData = JSON.parse(errorText);
+          setEmailError(errorData.error || 'Checkout failed. Please try again.');
+        } catch {
+          setEmailError('Checkout failed. Please try again.');
+        }
+        return;
+      }
+
+      const data = await response.json();
+      console.log('Checkout response data:', data);
+
+      if (data.error) {
+        setEmailError(data.error);
+        return;
+      }
+
+      if (data.url) {
+        clearCart();
+        window.location.href = data.url;
+      } else {
+        setEmailError('Failed to create checkout session. Please try again.');
+      }
+    } catch (error) {
+      console.error('Checkout error:', error);
+      setEmailError('An error occurred. Please try again.');
+    } finally {
+      setLoading(false);
     }
+  };
 
-    // ---- Create order record in Supabase ----
-    const { data: order, error: orderError } = await supabase
-      .from('orders')
-      .insert({
-        customer_email: customerEmail,
-        product_type: items.length === 1 ? items[0].type ?? 'cart' : 'cart',
-        product_id: 'cart',
-        amount: totalAmountCents,
-        status: 'pending',
-        download_links: [],
-      })
-      .select()
-      .single();
+  const santaLetters = items.filter((item) => item.type === 'santa_letter');
+  const christmasNotes = items.filter((item) => item.type === 'christmas_note');
+  const totalSavings = items.length >= 14 ? items.length * 0.99 - 9.99 : 0;
 
-    if (orderError || !order) {
-      console.error('Failed to create order:', orderError);
-      return jsonResponse(
-        { error: 'Failed to create order' },
-        500,
-      );
-    }
+  if (!isOpen) return null;
 
-    // ---- Determine origin for redirect URLs ----
-    const url = new URL(req.url);
-    const originHeader = req.headers.get('origin');
-    const origin = originHeader ?? `${url.protocol}//${url.host}`;
+  return (
+    <>
+      <div
+        className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40 transition-opacity"
+        onClick={onClose}
+      />
+      <div className="fixed right-0 top-0 h-full w-full max-w-md bg-gradient-to-br from-slate-950 via-blue-950 to-slate-950 shadow-2xl z-50 transform transition-transform duration-300 ease-in-out flex flex-col border-l border-white/20">
+        <div className="flex items-center justify-between p-6 border-b border-white/20 bg-white/5 backdrop-blur-xl">
+          <h2 className="text-2xl font-serif text-white flex items-center space-x-2">
+            <ShoppingBag className="w-6 h-6 text-amber-300" />
+            <span>Your Cart</span>
+          </h2>
+          <button
+            onClick={onClose}
+            className="p-2 rounded-lg hover:bg-white/10 transition-colors"
+            aria-label="Close cart"
+          >
+            <X className="w-6 h-6 text-white" />
+          </button>
+        </div>
 
-    // ---- Create Stripe Checkout Session ----
-    const session = await stripe.checkout.sessions.create({
-      mode: 'payment',
-      payment_method_types: ['card'],
-      allow_promotion_codes: true,
-      customer_email: customerEmail,
-      line_items: lineItems,
-      success_url: `${origin}/thank-you?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${origin}`,
-      metadata: {
-        order_id: order.id.toString(),
-        product_type: items.length === 1 ? items[0].type ?? 'cart' : 'cart',
-        product_id: 'cart',
-        // You can add more metadata later (e.g. cart JSON) if needed
-      },
-    });
+        <div className="flex-1 overflow-y-auto p-6">
+          {items.length === 0 ? (
+            <div className="flex flex-col items-center justify-center h-full text-center">
+              <ShoppingBag className="w-16 h-16 text-white/30 mb-4" />
+              <p className="text-white/60 text-lg mb-2">Your cart is empty</p>
+              <p className="text-white/40 text-sm">Add some magical designs to get started</p>
+            </div>
+          ) : (
+            <div className="space-y-6">
+              {santaLetters.length > 0 && (
+                <div>
+                  <h3 className="text-amber-300 font-serif text-lg mb-3 flex items-center gap-2">
+                    <Sparkles className="w-5 h-5" />
+                    Santa Letters ({santaLetters.length})
+                  </h3>
+                  <div className="space-y-3">
+                    {santaLetters.map((item) => (
+                      <div
+                        key={item.id}
+                        className="bg-white/10 backdrop-blur-md rounded-xl p-4 border border-white/20 group hover:bg-white/15 transition-all"
+                      >
+                        <div className="flex items-start gap-3">
+                          <div className="w-16 h-20 rounded-lg overflow-hidden flex-shrink-0 bg-white/5">
+                            <img
+                              src={item.image}
+                              alt={item.name}
+                              className="w-full h-full object-cover"
+                            />
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <h4 className="text-white font-semibold text-sm mb-1 truncate">
+                              {item.name}
+                            </h4>
+                            <p className="text-white/60 text-xs mb-2 line-clamp-2">
+                              {item.description}
+                            </p>
+                            <p className="text-amber-300 font-bold text-sm">
+                              {formatPrice(item.price)}
+                            </p>
+                          </div>
+                          <button
+                            onClick={() => removeFromCart(item.id)}
+                            className="p-2 rounded-lg hover:bg-red-500/20 transition-colors flex-shrink-0"
+                            aria-label="Remove item"
+                          >
+                            <Trash2 className="w-4 h-4 text-red-400" />
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
 
-    // ---- Update order with Stripe session info ----
-    const { error: updateError } = await supabase
-      .from('orders')
-      .update({
-        stripe_session_id: session.id,
-        checkout_url: session.url,
-        status: 'checkout_created',
-      })
-      .eq('id', order.id);
+              {christmasNotes.length > 0 && (
+                <div>
+                  <h3 className="text-amber-300 font-serif text-lg mb-3 flex items-center gap-2">
+                    <Gift className="w-5 h-5" />
+                    Christmas Notes ({christmasNotes.length})
+                  </h3>
+                  <div className="space-y-3">
+                    {christmasNotes.map((item) => (
+                      <div
+                        key={item.id}
+                        className="bg-white/10 backdrop-blur-md rounded-xl p-4 border border-white/20 group hover:bg-white/15 transition-all"
+                      >
+                        <div className="flex items-start gap-3">
+                          <div className="w-16 h-20 rounded-lg overflow-hidden flex-shrink-0 bg-white/5">
+                            <img
+                              src={item.image}
+                              alt={item.name}
+                              className="w-full h-full object-cover"
+                            />
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <h4 className="text-white font-semibold text-sm mb-1 truncate">
+                              {item.name}
+                            </h4>
+                            <p className="text-white/60 text-xs mb-2 line-clamp-2">
+                              {item.description}
+                            </p>
+                            <p className="text-amber-300 font-bold text-sm">
+                              {formatPrice(item.price)}
+                            </p>
+                          </div>
+                          <button
+                            onClick={() => removeFromCart(item.id)}
+                            className="p-2 rounded-lg hover:bg-red-500/20 transition-colors flex-shrink-0"
+                            aria-label="Remove item"
+                          >
+                            <Trash2 className="w-4 h-4 text-red-400" />
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
 
-    if (updateError) {
-      console.error('Non-fatal: failed to update order after Stripe:', updateError);
-      // We still return success to the client, because the Stripe session exists.
-    }
+              {totalSavings > 0 && (
+                <div className="bg-gradient-to-r from-amber-500/20 to-amber-600/20 backdrop-blur-md rounded-xl p-4 border border-amber-400/30">
+                  <div className="flex items-center gap-2 mb-2">
+                    <Sparkles className="w-5 h-5 text-amber-300" />
+                    <p className="text-amber-200 font-semibold">
+                      Bundle Savings Available!
+                    </p>
+                  </div>
+                  <p className="text-white/80 text-sm">
+                    You could save {formatPrice(totalSavings)} with the Complete Bundle
+                    (18 designs) for just $9.99!
+                  </p>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
 
-    // ---- Return session URL to frontend ----
-    return jsonResponse(
-      { sessionId: session.id, url: session.url },
-      200,
-    );
-  } catch (err: any) {
-    console.error('Multi-checkout error:', err);
-    return jsonResponse(
-      {
-        error: `Payment error: ${err?.message ?? 'Unknown error'}`,
-      },
-      500,
-    );
-  }
-});
+        {items.length > 0 && (
+          <div className="border-t border-white/20 p-6 bg-black/20 backdrop-blur-xl">
+            <div className="flex items-center justify-between mb-4">
+              <span className="text-white text-lg font-semibold">Total:</span>
+              <span className="text-amber-300 text-2xl font-bold">
+                {formatPrice(getCartTotal())}
+              </span>
+            </div>
+
+            <div className="mb-4">
+              <label
+                htmlFor="cart-email"
+                className="block text-white text-sm font-medium mb-2 flex items-center gap-2"
+              >
+                <Mail className="w-4 h-4" />
+                Email Address
+              </label>
+              <input
+                id="cart-email"
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="your.email@example.com"
+                className={`w-full px-4 py-3 rounded-xl bg-white/10 backdrop-blur-md border ${
+                  emailError
+                    ? 'border-red-400 ring-2 ring-red-400/50'
+                    : 'border-white/20'
+                } text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-amber-400 transition-all`}
+              />
+              {emailError && (
+                <p className="mt-2 text-red-300 text-sm flex items-center gap-1">
+                  <span className="text-red-400">⚠</span>
+                  {emailError}
+                </p>
+              )}
+            </div>
+
+            <button
+              onClick={handleCheckout}
+              disabled={loading || items.length === 0}
+              className="w-full bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 disabled:opacity-50 disabled:cursor-not-allowed text-amber-100 py-3 rounded-xl font-bold transition-all duration-200 flex items-center justify-center space-x-2 border border-amber-400/30 shadow-lg hover:shadow-red-500/50"
+            >
+              {loading ? (
+                <Loader2 className="w-5 h-5 animate-spin" />
+              ) : (
+                <>
+                  <ShoppingBag className="w-5 h-5" />
+                  <span>Proceed to Checkout</span>
+                </>
+              )}
+            </button>
+            <button
+              onClick={clearCart}
+              disabled={loading}
+              className="w-full mt-2 text-white/60 hover:text-white text-sm py-2 transition-colors"
+            >
+              Clear Cart
+            </button>
+          </div>
+        )}
+      </div>
+    </>
+  );
+};
