@@ -71,7 +71,7 @@ export const ChristmasCartDrawer: React.FC<ChristmasCartDrawerProps> = ({
       // Use Supabase URL with safe fallback
       const functionsBaseUrl =
         import.meta.env.VITE_SUPABASE_URL ??
-        'https://kvnbguoboqvkveojifwt.supabase.co';
+        'https://kvnbgubooykiveogifwt.supabase.co';
 
       if (!functionsBaseUrl) {
         console.error('Supabase URL missing');
