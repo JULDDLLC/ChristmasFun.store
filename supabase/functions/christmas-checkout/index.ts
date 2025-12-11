@@ -169,7 +169,7 @@ Deno.serve(async (req: Request) => {
         product_id: productId,
         amount: product.amount,
         status: 'pending',
-        download_links: [],
+        // download_links removed here
       })
       .select()
       .single();
