@@ -52,7 +52,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose }) => {
 
       const mode = hasSubscription ? 'subscription' : 'payment';
 
-      const response = await fetch(`${https://kvnbgubooykiveogifwt.supabase.co/functions/v1/send-freebie-coloring}/functions/v1/stripe-checkout`, {
+      const response = await fetch(`${https://kvnbgubooykiveogifwt.supabase.co/functions/v1/send-freebie-coloring}/functions/v1/stripe-checkout, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
