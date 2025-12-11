@@ -38,7 +38,7 @@ const PRICE_IDS: Record<string, string> = {
   santa_letter: "price_1ScHCUBsr66TjEhQI5HBQqtU",
   christmas_note: "price_1ScGfNBsr66TjEhQxdfKXMcn",
 
-  // bundles and extras, in case they appear in the cart
+  // bundles / extras
   notes_bundle: "price_1ScH30Bsr66TjEhQhwLwFAME",
   all_18_bundle: "price_1ScGjvBsr66TjEhQ4cRtPYm1",
   teacher_license: "price_1ScH6KBsr66TjEhQAhED4Lsd",
@@ -46,7 +46,7 @@ const PRICE_IDS: Record<string, string> = {
 };
 
 serve(async (req) => {
-  // Handle CORS preflight
+  // CORS preflight
   if (req.method === "OPTIONS") {
     return new Response("ok", {
       headers: corsHeaders,
@@ -109,7 +109,6 @@ serve(async (req) => {
       );
     }
 
-    // Build Stripe line items from cart items
     const lineItems: Stripe.Checkout.SessionCreateParams.LineItem[] = [];
 
     for (const item of items) {
@@ -151,6 +150,9 @@ serve(async (req) => {
       metadata: {
         source: "christmas-multi-checkout",
       },
+
+      // 👇 THIS is the important bit for showing a promo code box
+      allow_promotion_codes: true,
     });
 
     if (!session.url) {
