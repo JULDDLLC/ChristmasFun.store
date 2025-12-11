@@ -68,19 +68,18 @@ export const ChristmasCartDrawer: React.FC<ChristmasCartDrawerProps> = ({
     setEmailError('');
 
     try {
-      // Use Supabase URL with safe fallback
-      const functionsBaseUrl =
-        import.meta.env.VITE_SUPABASE_URL ??
-        'https://kvnbgubooykiveogifwt.supabase.co';
+      // IMPORTANT: use the actual Supabase project URL directly
+      const functionsBaseUrl = 'https://kvnbgubooykiveogifwt.supabase.co';
 
       const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
       if (!functionsBaseUrl || !supabaseAnonKey) {
-        console.error('Supabase env vars missing');
+        console.error('Supabase env vars missing', { functionsBaseUrl, supabaseAnonKeyPresent: !!supabaseAnonKey });
         setEmailError('Configuration error. Please try again later.');
         return;
       }
 
       console.log('Starting checkout with items:', items, 'email:', email);
+      console.log('Using functionsBaseUrl:', functionsBaseUrl);
 
       const response = await fetch(
         `${functionsBaseUrl}/functions/v1/christmas-multi-checkout`,
@@ -92,7 +91,6 @@ export const ChristmasCartDrawer: React.FC<ChristmasCartDrawerProps> = ({
             apikey: supabaseAnonKey,
           },
           body: JSON.stringify({
-            // send the structured shape the edge function expects
             items: items.map((item) => ({
               type: item.type,
               designNumber: item.designNumber ?? null,
