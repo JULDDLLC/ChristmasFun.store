@@ -68,19 +68,19 @@ export const ChristmasCartDrawer: React.FC<ChristmasCartDrawerProps> = ({
     setEmailError('');
 
     try {
-      // HARD-CODED Supabase functions base URL to avoid DNS / env issues
-      const functionsBaseUrl = 'https://kvnbgubooykiveogifwt.supabase.co';
+      // Use Supabase URL with safe fallback
+      const functionsBaseUrl =
+        import.meta.env.VITE_SUPABASE_URL ??
+        'https://kvnbgubooykiveogifwt.supabase.co';
 
-      const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY as string | undefined;
-
-      if (!supabaseAnonKey) {
-        console.error('Supabase anon key missing');
+      const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+      if (!functionsBaseUrl || !supabaseAnonKey) {
+        console.error('Supabase env vars missing');
         setEmailError('Configuration error. Please try again later.');
         return;
       }
 
-      console.log('Using functionsBaseUrl:', functionsBaseUrl);
-      console.log('Starting multi-checkout with items:', items, 'email:', email);
+      console.log('Starting checkout with items:', items, 'email:', email);
 
       const response = await fetch(
         `${functionsBaseUrl}/functions/v1/christmas-multi-checkout`,
@@ -296,7 +296,7 @@ export const ChristmasCartDrawer: React.FC<ChristmasCartDrawerProps> = ({
             <div className="mb-4">
               <label
                 htmlFor="cart-email"
-                className="block text-white text-sm font-medium mb-2 flex itemsCENTER gap-2"
+                className="block text-white text-sm font-medium mb-2 flex items-center gap-2"
               >
                 <Mail className="w-4 h-4" />
                 Email Address
@@ -307,8 +307,7 @@ export const ChristmasCartDrawer: React.FC<ChristmasCartDrawerProps> = ({
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="your.email@example.com"
-                className={`w-full px-4 py-3 rounded-xl bg
-white/10 backdrop-blur-md border ${
+                className={`w-full px-4 py-3 rounded-xl bg-white/10 backdrop-blur-md border ${
                   emailError
                     ? 'border-red-400 ring-2 ring-red-400/50'
                     : 'border-white/20'
@@ -325,17 +324,11 @@ white/10 backdrop-blur-md border ${
             <button
               onClick={handleCheckout}
               disabled={loading || items.length === 0}
-              className="w-full bg-gradient-to-r from-red-600 to red-700 hover:from-red-700 hover:to-red-800 disabled:opacity-50 disabled:cursor-not-allowed text-amber-100 py-3 rounded-xl font-bold transition-all duration-200 flex items-center justify-center space-x-2 border border-amber-400/30 shadow-lg hover:shadow-red-500/50"
+              className="w-full bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 disabled:opacity-50 disabled:cursor-not-allowed text-amber-100 py-3 rounded-xl font-bold transition-all duration-200 flex items-center justify-center space-x-2 border border-amber-400/30 shadow-lg hover:shadow-red-500/50"
             >
               {loading ? (
                 <Loader2 className="w-5 h-5 animate-spin" />
               ) : (
                 <>
                   <ShoppingBag className="w-5 h-5" />
-                  <span>Proceed to Checkout</span>
-                </>
-              )}
-            </button>
-            <button
-              onClick={clearCart}
-              disabled={loading}
+                  <span>Pro
