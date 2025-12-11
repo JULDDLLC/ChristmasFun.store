@@ -36,7 +36,13 @@ Deno.serve(async (req: Request) => {
       );
     }
 
-    const { to, productName, productType, downloadLinks, orderNumber }: EmailRequest = await req.json();
+    const {
+      to,
+      productName,
+      productType,
+      downloadLinks,
+      orderNumber,
+    }: EmailRequest = await req.json();
 
     if (!to || !productName) {
       return new Response(
@@ -48,11 +54,51 @@ Deno.serve(async (req: Request) => {
       );
     }
 
-    const downloadLinksHtml = downloadLinks
-      .map(
-        (link) =>
-          `<li style="margin-bottom: 10px;"><a href="${link}" style="color: #16a34a; text-decoration: none; font-weight: 500;">${link.split('/').pop()}</a></li>`
-      )
+    // Build nicer labels + button HTML per link
+    const downloadButtonsHtml = downloadLinks
+      .map((link, index) => {
+        const filename = link.split('/').pop() ?? '';
+        let label = `Download File ${index + 1}`;
+
+        const designMatch = filename.match(/design[-_]?(\d+)/i);
+        const noteMatch = filename.match(/ChristmasNotes?[-_]?(\d*)/i);
+        const colorMatch = filename.match(/color(?:ing)?(?:sheet|page|pages)?[-_]?(\d*)/i);
+
+        if (designMatch?.[1]) {
+          label = `Download Design ${designMatch[1]}`;
+        } else if (noteMatch) {
+          const num = noteMatch[1] || `${index + 1}`;
+          label = `Download Note ${num}`;
+        } else if (colorMatch) {
+          const num = colorMatch[1] || `${index + 1}`;
+          label = `Download Coloring Page ${num}`;
+        } else if (productType === 'teacher_license_499') {
+          label = 'Download Teacher License';
+        }
+
+        return `
+          <tr>
+            <td align="center" style="padding: 6px 0;">
+              <a
+                href="${link}"
+                style="
+                  display: inline-block;
+                  padding: 12px 24px;
+                  border-radius: 999px;
+                  background-color: #16a34a;
+                  color: #ffffff;
+                  text-decoration: none;
+                  font-weight: 600;
+                  font-size: 14px;
+                  letter-spacing: 0.02em;
+                "
+              >
+                ${label}
+              </a>
+            </td>
+          </tr>
+        `;
+      })
       .join('');
 
     const htmlContent = `
@@ -77,7 +123,9 @@ Deno.serve(async (req: Request) => {
                   
                   <tr>
                     <td style="padding: 40px 30px;">
-                      <p style="color: #374151; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;">Thank you for your purchase! Your magical Christmas designs are ready to download and print.</p>
+                      <p style="color: #374151; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;">
+                        Thank you for your purchase! Your magical Christmas designs are ready to download and print.
+                      </p>
                       
                       <div style="background-color: #f0fdf4; border-left: 4px solid #16a34a; padding: 20px; margin: 20px 0; border-radius: 8px;">
                         <p style="color: #15803d; margin: 0 0 10px 0; font-weight: bold;">Order Details:</p>
@@ -86,21 +134,25 @@ Deno.serve(async (req: Request) => {
                       </div>
 
                       <h2 style="color: #1f2937; font-size: 20px; margin: 30px 0 15px 0;">Download Your Designs:</h2>
-                      <ul style="list-style: none; padding: 0; margin: 0 0 30px 0;">
-                        ${downloadLinksHtml}
-                      </ul>
+
+                      <table cellpadding="0" cellspacing="0" border="0" width="100%" style="margin: 0 0 30px 0;">
+                        ${downloadButtonsHtml}
+                      </table>
 
                       <div style="background-color: #fef3c7; border-radius: 8px; padding: 20px; margin: 20px 0;">
                         <h3 style="color: #78350f; font-size: 16px; margin: 0 0 10px 0;">Printing Tips:</h3>
                         <ul style="color: #92400e; font-size: 14px; margin: 0; padding-left: 20px; line-height: 1.6;">
                           <li>Print on white cardstock for best results</li>
                           <li>Use high-quality printer settings</li>
-                          <li>Standard 8.5" x 11" paper size</li>
+                          <li>Standard 8.5&quot; x 11&quot; paper size</li>
                           <li>Save your files for future use</li>
                         </ul>
                       </div>
 
-                      <p style="color: #6b7280; font-size: 14px; line-height: 1.6; margin: 20px 0;">If you have any questions or need assistance, please contact us at <a href="mailto:support@juldd.com" style="color: #16a34a; text-decoration: none;">support@juldd.com</a></p>
+                      <p style="color: #6b7280; font-size: 14px; line-height: 1.6; margin: 20px 0;">
+                        If you have any questions or need assistance, please contact us at
+                        <a href="mailto:support@juldd.com" style="color: #16a34a; text-decoration: none;">support@juldd.com</a>
+                      </p>
                     </td>
                   </tr>
 
