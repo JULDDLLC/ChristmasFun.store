@@ -16,6 +16,21 @@ interface EmailRequest {
   orderNumber: string;
 }
 
+function buildDownloadLabel(link: string, index: number): string {
+  const lower = link.toLowerCase();
+
+  if (lower.includes('coloring')) {
+    return `Download Coloring Page ${index + 1}`;
+  }
+  if (lower.includes('notes')) {
+    return `Download Christmas Note ${index + 1}`;
+  }
+  if (lower.includes('license')) {
+    return `Download License File`;
+  }
+  return `Download Design ${index + 1}`;
+}
+
 Deno.serve(async (req: Request) => {
   try {
     if (req.method === 'OPTIONS') {
@@ -54,42 +69,24 @@ Deno.serve(async (req: Request) => {
       );
     }
 
-    // Build nicer labels + button HTML per link
-    const downloadButtonsHtml = downloadLinks
+    const downloadLinksHtml = downloadLinks
       .map((link, index) => {
-        const filename = link.split('/').pop() ?? '';
-        let label = `Download File ${index + 1}`;
-
-        const designMatch = filename.match(/design[-_]?(\d+)/i);
-        const noteMatch = filename.match(/ChristmasNotes?[-_]?(\d*)/i);
-        const colorMatch = filename.match(/color(?:ing)?(?:sheet|page|pages)?[-_]?(\d*)/i);
-
-        if (designMatch?.[1]) {
-          label = `Download Design ${designMatch[1]}`;
-        } else if (noteMatch) {
-          const num = noteMatch[1] || `${index + 1}`;
-          label = `Download Note ${num}`;
-        } else if (colorMatch) {
-          const num = colorMatch[1] || `${index + 1}`;
-          label = `Download Coloring Page ${num}`;
-        } else if (productType === 'teacher_license_499') {
-          label = 'Download Teacher License';
-        }
-
+        const label = buildDownloadLabel(link, index);
         return `
           <tr>
             <td align="center" style="padding: 6px 0;">
               <a
                 href="${link}"
+                target="_blank"
                 style="
                   display: inline-block;
-                  padding: 12px 24px;
+                  padding: 10px 20px;
                   border-radius: 999px;
-                  background-color: #16a34a;
+                  background: linear-gradient(135deg, #7f1d1d, #14532d);
                   color: #ffffff;
                   text-decoration: none;
-                  font-weight: 600;
                   font-size: 14px;
+                  font-weight: 600;
                   letter-spacing: 0.02em;
                 "
               >
@@ -136,7 +133,7 @@ Deno.serve(async (req: Request) => {
                       <h2 style="color: #1f2937; font-size: 20px; margin: 30px 0 15px 0;">Download Your Designs:</h2>
 
                       <table cellpadding="0" cellspacing="0" border="0" width="100%" style="margin: 0 0 30px 0;">
-                        ${downloadButtonsHtml}
+                        ${downloadLinksHtml}
                       </table>
 
                       <div style="background-color: #fef3c7; border-radius: 8px; padding: 20px; margin: 20px 0;">
