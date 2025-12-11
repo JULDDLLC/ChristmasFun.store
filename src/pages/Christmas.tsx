@@ -140,8 +140,8 @@ function ChristmasContent() {
 
   const designs = [
     {
-      title: 'Vintage Ribbons',
-      description: 'Sparkling gold and red traditional design',
+      title: 'Vintage Storybook Santa Wish',
+      description: 'Charming soft watercolor design',
       image:
         'https://cdn1.site-media.eu/images/0/21587768/design1-Z3wu6c1nLAh3ACrbe46Gmg.png',
     },
