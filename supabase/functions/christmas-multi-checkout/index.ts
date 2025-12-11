@@ -68,33 +68,19 @@ export const ChristmasCartDrawer: React.FC<ChristmasCartDrawerProps> = ({
     setEmailError('');
 
     try {
-      // Get Supabase URL from env or hardcoded fallback
-      const rawSupabaseUrl =
-        (import.meta.env.VITE_SUPABASE_URL as string | undefined)?.trim() ||
-        'https://kvnbgubooykiveogifwt.supabase.co';
-
-      // Normalize: ensure it starts with https:// and has no trailing slash
-      let normalizedBase = rawSupabaseUrl;
-      if (!normalizedBase.startsWith('http')) {
-        normalizedBase = `https://${normalizedBase}`;
-      }
-      normalizedBase = normalizedBase.replace(/\/+$/, '');
-
-      const functionsBaseUrl = normalizedBase;
+      // HARD-CODED Supabase functions base URL to avoid DNS / env issues
+      const functionsBaseUrl = 'https://kvnbgubooykiveogifwt.supabase.co';
 
       const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY as string | undefined;
 
-      if (!functionsBaseUrl || !supabaseAnonKey) {
-        console.error('Supabase env vars missing or invalid', {
-          functionsBaseUrl,
-          supabaseAnonKeyPresent: !!supabaseAnonKey,
-        });
+      if (!supabaseAnonKey) {
+        console.error('Supabase anon key missing');
         setEmailError('Configuration error. Please try again later.');
         return;
       }
 
       console.log('Using functionsBaseUrl:', functionsBaseUrl);
-      console.log('Starting checkout with items:', items, 'email:', email);
+      console.log('Starting multi-checkout with items:', items, 'email:', email);
 
       const response = await fetch(
         `${functionsBaseUrl}/functions/v1/christmas-multi-checkout`,
@@ -310,7 +296,7 @@ export const ChristmasCartDrawer: React.FC<ChristmasCartDrawerProps> = ({
             <div className="mb-4">
               <label
                 htmlFor="cart-email"
-                className="block text-white text-sm font-medium mb-2 flex items-center gap-2"
+                className="block text-white text-sm font-medium mb-2 flex itemsCENTER gap-2"
               >
                 <Mail className="w-4 h-4" />
                 Email Address
@@ -321,7 +307,8 @@ export const ChristmasCartDrawer: React.FC<ChristmasCartDrawerProps> = ({
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="your.email@example.com"
-                className={`w-full px-4 py-3 rounded-xl bg-white/10 backdrop-blur-md border ${
+                className={`w-full px-4 py-3 rounded-xl bg
+white/10 backdrop-blur-md border ${
                   emailError
                     ? 'border-red-400 ring-2 ring-red-400/50'
                     : 'border-white/20'
@@ -338,7 +325,7 @@ export const ChristmasCartDrawer: React.FC<ChristmasCartDrawerProps> = ({
             <button
               onClick={handleCheckout}
               disabled={loading || items.length === 0}
-              className="w-full bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 disabled:opacity-50 disabled:cursor-not-allowed text-amber-100 py-3 rounded-xl font-bold transition-all duration-200 flex items-center justify-center space-x-2 border border-amber-400/30 shadow-lg hover:shadow-red-500/50"
+              className="w-full bg-gradient-to-r from-red-600 to red-700 hover:from-red-700 hover:to-red-800 disabled:opacity-50 disabled:cursor-not-allowed text-amber-100 py-3 rounded-xl font-bold transition-all duration-200 flex items-center justify-center space-x-2 border border-amber-400/30 shadow-lg hover:shadow-red-500/50"
             >
               {loading ? (
                 <Loader2 className="w-5 h-5 animate-spin" />
@@ -352,13 +339,3 @@ export const ChristmasCartDrawer: React.FC<ChristmasCartDrawerProps> = ({
             <button
               onClick={clearCart}
               disabled={loading}
-              className="w-full mt-2 text-white/60 hover:text-white text-sm py-2 transition-colors"
-            >
-              Clear Cart
-            </button>
-          </div>
-        )}
-      </div>
-    </>
-  );
-};
