@@ -67,9 +67,9 @@ export const ChristmasCartDrawer: React.FC<ChristmasCartDrawerProps> = ({
     setLoading(true);
     setEmailError('');
 
-    try {
+      try {
       // IMPORTANT: use the actual Supabase project URL directly
-      const functionsBaseUrl = 'https://kvnbgubooykiveogifwt.supabase.co';
+      const functionsBaseUrl = 'PASTE_YOUR_SUPABASE_URL_HERE';  
 
       const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
       if (!functionsBaseUrl || !supabaseAnonKey) {
