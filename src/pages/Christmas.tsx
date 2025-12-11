@@ -941,7 +941,7 @@ function ChristmasContent() {
                   </div>
                   <div className="flex items-center justify-center gap-3 text-lg text-white/90">
                     <div className="w-2 h-2 rounded-full bg-amber-400" />
-                    Save $4 vs buying individually
+                    Save Over $7 When You Bundle!
                   </div>
                 </div>
 
