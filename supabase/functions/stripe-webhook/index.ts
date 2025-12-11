@@ -1,9 +1,11 @@
+// supabase/functions/stripe-webhook/index.ts
 import 'jsr:@supabase/functions-js/edge-runtime.d.ts';
 import Stripe from 'npm:stripe@17.7.0';
 import { createClient } from 'npm:@supabase/supabase-js@2.49.1';
 
 const stripeSecret = Deno.env.get('STRIPE_SECRET_KEY')!;
 const stripeWebhookSecret = Deno.env.get('STRIPE_WEBHOOK_SECRET')!;
+const RESEND_API_KEY = Deno.env.get('RESEND_API_KEY');
 
 const stripe = new Stripe(stripeSecret, {
   appInfo: {
@@ -14,7 +16,7 @@ const stripe = new Stripe(stripeSecret, {
 
 const supabase = createClient(
   Deno.env.get('SUPABASE_URL')!,
-  Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!,
+  Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
 );
 
 // URL mappings for all products
@@ -79,17 +81,15 @@ Deno.serve(async (req) => {
       event = await stripe.webhooks.constructEventAsync(
         body,
         signature,
-        stripeWebhookSecret,
+        stripeWebhookSecret
       );
     } catch (error: any) {
       console.error(`Webhook signature verification failed: ${error.message}`);
       return new Response(
         `Webhook signature verification failed: ${error.message}`,
-        { status: 400 },
+        { status: 400 }
       );
     }
-
-    console.info('Received Stripe event:', event.type);
 
     EdgeRuntime.waitUntil(handleEvent(event));
 
@@ -104,40 +104,31 @@ async function handleEvent(event: Stripe.Event) {
   const stripeData = event?.data?.object ?? {};
 
   if (!stripeData) {
-    console.error('No stripeData on event');
     return;
   }
 
-  // Our custom Christmas orders (have metadata.orderId)
+  // Christmas orders go here
   if (event.type === 'checkout.session.completed') {
     const session = stripeData as Stripe.Checkout.Session;
 
     if (session.metadata?.orderId) {
-      console.info(
-        'Handling Christmas checkout.session.completed with metadata:',
-        session.metadata,
-      );
       await handleChristmasOrder(session);
       return;
     }
   }
 
-  // Everything else below is the more generic subscription / one-time logic
   if (!('customer' in stripeData)) {
     return;
   }
 
-  if (event.type === 'payment_intent.succeeded' &&
-      (event.data.object as any).invoice === null) {
+  if (event.type === 'payment_intent.succeeded' && event.data.object.invoice === null) {
     return;
   }
 
-  const { customer: customerId } = stripeData as { customer?: string };
+  const { customer: customerId } = stripeData;
 
   if (!customerId || typeof customerId !== 'string') {
-    console.error(
-      `No customer received on event: ${JSON.stringify(event)}`,
-    );
+    console.error(`No customer received on event: ${JSON.stringify(event)}`);
   } else {
     let isSubscription = true;
 
@@ -146,7 +137,7 @@ async function handleEvent(event: Stripe.Event) {
       isSubscription = mode === 'subscription';
 
       console.info(
-        `Processing ${isSubscription ? 'subscription' : 'one-time payment'} checkout session`,
+        `Processing ${isSubscription ? 'subscription' : 'one-time payment'} checkout session`
       );
     }
 
@@ -165,26 +156,23 @@ async function handleEvent(event: Stripe.Event) {
           currency,
         } = stripeData as Stripe.Checkout.Session;
 
-        const { error: orderError } = await supabase
-          .from('stripe_orders')
-          .insert({
-            checkout_session_id,
-            payment_intent_id: payment_intent,
-            customer_id: customerId,
-            amount_subtotal,
-            amount_total,
-            currency,
-            payment_status,
-            status: 'completed',
-          });
+        const { error: orderError } = await supabase.from('stripe_orders').insert({
+          checkout_session_id,
+          payment_intent_id: payment_intent,
+          customer_id: customerId,
+          amount_subtotal,
+          amount_total,
+          currency,
+          payment_status,
+          status: 'completed',
+        });
 
         if (orderError) {
           console.error('Error inserting order:', orderError);
           return;
         }
-
         console.info(
-          `Successfully processed one-time payment for session: ${checkout_session_id}`,
+          `Successfully processed one-time payment for session: ${checkout_session_id}`
         );
       } catch (error) {
         console.error('Error processing one-time payment:', error);
@@ -199,14 +187,6 @@ async function handleChristmasOrder(session: Stripe.Checkout.Session) {
     const productId = session.metadata?.productId;
     const productType = session.metadata?.productType;
 
-    console.info('handleChristmasOrder session metadata:', {
-      orderId,
-      productId,
-      productType,
-      items: session.metadata?.items,
-      designNumber: session.metadata?.designNumber,
-    });
-
     if (!orderId) {
       console.error('No orderId in session metadata');
       return;
@@ -215,19 +195,14 @@ async function handleChristmasOrder(session: Stripe.Checkout.Session) {
     let downloadLinks: string[];
 
     if (productType === 'multi_item_cart') {
-      downloadLinks = generateMultiItemDownloadLinks(
-        session.metadata?.items,
-      );
+      downloadLinks = generateMultiItemDownloadLinks(session.metadata?.items);
     } else {
       downloadLinks = generateDownloadLinks(
         productId,
-        session.metadata?.designNumber,
+        session.metadata?.designNumber
       );
     }
 
-    console.info('Generated downloadLinks:', downloadLinks);
-
-    // Try to update the DB, but DO NOT abort email if this fails
     const { error: updateError } = await supabase
       .from('orders')
       .update({
@@ -238,13 +213,12 @@ async function handleChristmasOrder(session: Stripe.Checkout.Session) {
       .eq('id', orderId);
 
     if (updateError) {
-      console.error('Error updating Christmas order in DB:', updateError);
-      // important: continue anyway so customer still receives the email
-    } else {
-      console.info('Christmas order row updated successfully in DB');
+      console.error('Error updating Christmas order:', updateError);
+      return;
     }
 
-    console.info(`Sending email for Christmas order: ${orderId}`);
+    console.info(`Successfully processed Christmas order: ${orderId}`);
+
     await sendOrderEmail(session, productId, downloadLinks, orderId);
   } catch (error) {
     console.error('Error handling Christmas order:', error);
@@ -255,14 +229,17 @@ async function sendOrderEmail(
   session: Stripe.Checkout.Session,
   productId: string | undefined,
   downloadLinks: string[],
-  orderId: string,
+  orderId: string
 ) {
   try {
-    const supabaseUrl = Deno.env.get('SUPABASE_URL');
-    const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
+    if (!RESEND_API_KEY) {
+      console.error('RESEND_API_KEY not configured');
+      return;
+    }
 
-    if (!supabaseUrl || !supabaseServiceKey) {
-      console.error('Missing Supabase configuration for email');
+    const recipient = session.customer_email;
+    if (!recipient) {
+      console.error('No customer_email on session, cannot send email');
       return;
     }
 
@@ -280,47 +257,153 @@ async function sendOrderEmail(
       ? productNames[productId] || 'Christmas Design'
       : 'Christmas Design';
 
-    console.info('Calling send-order-email function with:', {
-      to: session.customer_email,
-      productName,
-      productType: productId,
-      orderId,
-      downloadLinksCount: downloadLinks.length,
+    // Build button-style links
+    const downloadButtonsHtml = downloadLinks
+      .map((link, index) => {
+        const rawName = link.split('/').pop() || `Design-${index + 1}`;
+        const cleanName = rawName.replace(/\.[a-zA-Z0-9]+$/, '');
+        return `
+          <tr>
+            <td align="center" style="padding: 6px 0;">
+              <a href="${link}" 
+                 style="
+                   display:inline-block;
+                   padding: 10px 18px;
+                   background-color:#16a34a;
+                   color:#ffffff;
+                   text-decoration:none;
+                   border-radius:999px;
+                   font-size:14px;
+                   font-weight:600;
+                 ">
+                Download ${cleanName}
+              </a>
+            </td>
+          </tr>
+        `;
+      })
+      .join('');
+
+    const htmlContent = `
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <meta charset="utf-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <title>Your Christmas Magic Designs are Ready!</title>
+        </head>
+        <body style="margin:0;padding:0;font-family:Arial,Helvetica,sans-serif;background-color:#f9fafb;">
+          <table cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color:#f9fafb;padding:40px 20px;">
+            <tr>
+              <td align="center">
+                <table cellpadding="0" cellspacing="0" border="0" width="600" style="max-width:600px;background-color:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 4px 6px rgba(0,0,0,0.1);">
+                  <tr>
+                    <td style="background:linear-gradient(135deg,#7f1d1d 0%,#14532d 50%,#7f1d1d 100%);padding:40px 30px;text-align:center;">
+                      <h1 style="color:#ffffff;margin:0;font-size:28px;font-weight:bold;">
+                        Christmas Magic Designs
+                      </h1>
+                      <p style="color:#fef3c7;margin:10px 0 0 0;font-size:16px;">
+                        Your order is ready!
+                      </p>
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <td style="padding:32px 28px;">
+                      <p style="color:#374151;font-size:15px;line-height:1.6;margin:0 0 18px 0;">
+                        Thank you for your purchase! Your magical Christmas designs are ready to download and print.
+                      </p>
+
+                      <div style="background-color:#f0fdf4;border-left:4px solid #16a34a;padding:18px;margin:20px 0;border-radius:8px;">
+                        <p style="color:#15803d;margin:0 0 6px 0;font-weight:bold;font-size:14px;">Order Details</p>
+                        <p style="color:#166534;margin:4px 0;font-size:13px;"><strong>Product:</strong> ${productName}</p>
+                        <p style="color:#166534;margin:4px 0;font-size:13px;"><strong>Order Number:</strong> ${orderId}</p>
+                      </div>
+
+                      <h2 style="color:#1f2937;font-size:18px;margin:26px 0 12px 0;text-align:left;">
+                        Download Your Designs
+                      </h2>
+
+                      ${
+                        downloadLinks.length > 0
+                          ? `
+                        <table cellpadding="0" cellspacing="0" border="0" width="100%" style="margin-bottom:24px;">
+                          ${downloadButtonsHtml}
+                        </table>
+                        `
+                          : `
+                        <p style="color:#6b7280;font-size:14px;margin:0 0 24px 0;">
+                          Your payment was successful, and your order is being prepared. 
+                          If you don't receive a follow-up email with download links within a few minutes, 
+                          please reply and we'll send them manually.
+                        </p>
+                        `
+                      }
+
+                      <div style="background-color:#fef3c7;border-radius:8px;padding:18px;margin:16px 0;">
+                        <h3 style="color:#78350f;font-size:15px;margin:0 0 8px 0;">Printing Tips</h3>
+                        <ul style="color:#92400e;font-size:13px;margin:0;padding-left:20px;line-height:1.6;">
+                          <li>Print on white cardstock for best results</li>
+                          <li>Use high-quality printer settings</li>
+                          <li>Standard 8.5" x 11" paper size</li>
+                          <li>Save your files so you can reprint them later</li>
+                        </ul>
+                      </div>
+
+                      <p style="color:#6b7280;font-size:13px;line-height:1.6;margin:18px 0 0 0;">
+                        If you have any questions or need assistance, please contact us at
+                        <a href="mailto:support@juldd.com" style="color:#16a34a;text-decoration:none;">support@juldd.com</a>.
+                      </p>
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <td style="background-color:#f9fafb;padding:22px;text-align:center;border-top:1px solid #e5e7eb;">
+                      <p style="color:#9ca3af;font-size:13px;margin:0;">
+                        © 2024 Christmas Magic Designs by JULDD
+                      </p>
+                      <p style="color:#9ca3af;font-size:11px;margin:6px 0 0 0;">
+                        Made with love for magical holidays
+                      </p>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+          </table>
+        </body>
+      </html>
+    `;
+
+    const res = await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${RESEND_API_KEY}`,
+      },
+      body: JSON.stringify({
+        from: 'ChristmasMagicDesigns@juldd.com',
+        to: [recipient],
+        subject: `Your Christmas Magic Designs are Ready! 🎄`,
+        html: htmlContent,
+      }),
     });
 
-    const emailResponse = await fetch(
-      `${supabaseUrl}/functions/v1/send-order-email`,
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${supabaseServiceKey}`,
-          apikey: supabaseServiceKey,
-        },
-        body: JSON.stringify({
-          to: session.customer_email,
-          productName,
-          productType: productId,
-          downloadLinks,
-          orderNumber: orderId,
-        }),
-      },
-    );
-
-    if (!emailResponse.ok) {
-      const errorText = await emailResponse.text();
-      console.error('Failed to send order email:', errorText);
+    if (!res.ok) {
+      const errorText = await res.text();
+      console.error('Resend API error:', errorText);
     } else {
-      console.info('Order confirmation email sent successfully');
+      const data = await res.json();
+      console.info('Order email sent via Resend. Message ID:', data.id);
     }
   } catch (error) {
-    console.error('Error sending order email:', error);
+    console.error('Error sending order email via Resend:', error);
   }
 }
 
 function generateDownloadLinks(
   productId: string | undefined,
-  designNumber: string | undefined,
+  designNumber: string | undefined
 ): string[] {
   const links: string[] = [];
 
@@ -340,8 +423,6 @@ function generateDownloadLinks(
     COLORING_SHEET_URLS.forEach((url) => links.push(url));
   }
 
-  console.info('generateDownloadLinks result:', { productId, designNumber, links });
-
   return links;
 }
 
@@ -349,7 +430,6 @@ function generateMultiItemDownloadLinks(itemsString: string | undefined): string
   const links: string[] = [];
 
   if (!itemsString) {
-    console.warn('generateMultiItemDownloadLinks called with no itemsString');
     return links;
   }
 
@@ -369,8 +449,6 @@ function generateMultiItemDownloadLinks(itemsString: string | undefined): string
     }
   }
 
-  console.info('generateMultiItemDownloadLinks result:', { itemsString, links });
-
   return links;
 }
 
@@ -384,9 +462,7 @@ async function syncCustomerFromStripe(customerId: string) {
     });
 
     if (subscriptions.data.length === 0) {
-      console.info(
-        `No active subscriptions found for customer: ${customerId}`,
-      );
+      console.info(`No active subscriptions found for customer: ${customerId}`);
       const { error: noSubError } = await supabase
         .from('stripe_subscriptions')
         .upsert(
@@ -396,14 +472,13 @@ async function syncCustomerFromStripe(customerId: string) {
           },
           {
             onConflict: 'customer_id',
-          },
+          }
         );
 
       if (noSubError) {
         console.error('Error updating subscription status:', noSubError);
         throw new Error('Failed to update subscription status in database');
       }
-      return;
     }
 
     const subscription = subscriptions.data[0];
@@ -431,21 +506,18 @@ async function syncCustomerFromStripe(customerId: string) {
         },
         {
           onConflict: 'customer_id',
-        },
+        }
       );
 
     if (subError) {
       console.error('Error syncing subscription:', subError);
       throw new Error('Failed to sync subscription in database');
     }
-
-    console.info(
-      `Successfully synced subscription for customer: ${customerId}`,
-    );
+    console.info(`Successfully synced subscription for customer: ${customerId}`);
   } catch (error) {
     console.error(
       `Failed to sync subscription for customer ${customerId}:`,
-      error,
+      error
     );
     throw error;
   }
