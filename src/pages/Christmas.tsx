@@ -514,9 +514,9 @@ function ChristmasContent() {
                 </span>
               </h1>
 
-              <p className="text-2xl md:text-3xl text-white/80 max-w-3xl mx-auto leading-relaxed">
-                14 Santa Letters · 4 Christmas Notes · 10 Free Christmas Coloring Pages
-              </p>
+              <p className="text-lg md:text-xl text-amber-100/80 max-w-2xl mx-auto leading-relaxed tracking-wide">
+  Includes 14 Santa Letters · 4 Christmas Notes · 10 Bonus Christmas Coloring Pages
+</p>
 
               <div className="flex flex-col sm:flex-row items-center justify-center gap-6 mt-12">
                 <input
