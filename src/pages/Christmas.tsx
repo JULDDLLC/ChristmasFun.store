@@ -146,14 +146,14 @@ function ChristmasContent() {
         'https://cdn1.site-media.eu/images/0/21587768/design1-Z3wu6c1nLAh3ACrbe46Gmg.png',
     },
     {
-      title: 'Candy Cane',
-      description: 'Perfect for video game loving kids',
+      title: 'Christmas Eve Heartside Santa letter with woodland friends',
+      description: 'Heartwarming, storybook-style Santa letter',
       image:
         'https://cdn1.site-media.eu/images/0/21587759/design2-Xs-oos-r7fL_Gn4-yusolg.png',
     },
     {
-      title: 'Holly Santa',
-      description: 'Blocky fun with festive flair',
+      title: 'Snowy Cutie Santa & Reindeer Letter
+      description: 'Adorable chibi-style Santa and reindeer',
       image:
         'https://cdn1.site-media.eu/images/0/21587758/design3-rpLHL3OeUCdrIqzMr7wNYA.png',
     },
