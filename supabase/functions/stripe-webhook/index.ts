@@ -16,60 +16,72 @@ const supabase = createClient(
   Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
 );
 
-// URL mappings for all products
-const SANTA_LETTER_URLS: Record<string, string> = {
-  '1': 'https://cdn1.site-media.eu/images/0/21587768/design1-Z3wu6c1nLAh3ACrbe46Gmg.png',
-  '2': 'https://cdn1.site-media.eu/images/0/21587759/design2-Xs-oos-r7fL_Gn4-yusolg.png',
-  '3': 'https://cdn1.site-media.eu/images/0/21587758/design3-rpLHL3OeUCdrIqzMr7wNYA.png',
-  '4': 'https://cdn1.site-media.eu/images/0/21587450/DearSanta2-EyDV0P1Wf8rh1mYm0lQwew.png',
-  '5': 'https://cdn1.site-media.eu/images/0/21587438/DearSantaLetter-X4mrLdblVYGmVh_xVEIdhg.png',
-  '6': 'https://cdn1.site-media.eu/images/0/21587392/DearSantaLetter4-_CjR-X24vAzawUhHvsEB7A.png',
-  '7': 'https://cdn1.site-media.eu/images/0/21587432/DearSantaLetter1-Gr0SVAqpn4KVS5U8qkGlfQ.png',
-  '8': 'https://cdn1.site-media.eu/images/0/21587416/DearSantaLetter2-3iGVMx_c3Va-NcPSt486AA.png',
-  '9': 'https://cdn1.site-media.eu/images/0/21587763/design9-be-BNu7ELngHsB4-prRBsw.png',
-  '10': 'https://cdn1.site-media.eu/images/0/21587361/DearSantaLetter8-7XA4wULg3muTEB7z7NkmXg.png',
-  '11': 'https://cdn1.site-media.eu/images/0/21587888/design11-y92iFyQtYnasvWXozYAjTg.png',
-  '12': 'https://cdn1.site-media.eu/images/0/21587761/design12-mVBhwMJJ1BEl0y8ocesZlQ.png',
-  '13': 'https://cdn1.site-media.eu/images/0/21587399/DearSantaLetter3-PmrmOxSHQkpwG_jKh2M2vQ.png',
-  '14': 'https://cdn1.site-media.eu/images/0/21587399/DearSantaLetter3-PmrmOxSHQkpwG_jKh2M2vQ.png',
+/**
+ * IMPORTANT:
+ * Your files live in cPanel: /public_html/christmas-fun/*
+ * So public URLs should be: https://christmasfun.store/christmas-fun/<filename>
+ */
+const PUBLIC_DOWNLOAD_BASE = 'https://christmasfun.store/christmas-fun';
+
+function publicFileUrl(filename: string) {
+  // encodeURI keeps slashes intact and encodes spaces as %20 etc.
+  return encodeURI(`${PUBLIC_DOWNLOAD_BASE}/${filename}`);
+}
+
+/**
+ * File names as they exist in your cPanel folder (based on your screenshots)
+ */
+const SANTA_LETTER_FILES: Record<string, string> = {
+  '1': 'design1.png',
+  '2': 'design2.png',
+  '3': 'design3.png',
+  '4': 'design4.png',
+  '5': 'design5.png',
+  '6': 'design6.png',
+  '7': 'design7.png',
+  '8': 'design8.png',
+  '9': 'design9.png',
+  '10': 'design10.png',
+  '11': 'design11.png',
+  '12': 'design12.png',
+  '13': 'design13.png',
+  '14': 'design14.png',
 };
 
-const CHRISTMAS_NOTE_URLS: Record<string, string> = {
-  '1': 'https://cdn1.site-media.eu/images/0/21587542/ChristmasNotes-blank-FeUDnrdQLKzZkZEYLgmt-A.png',
-  '2': 'https://cdn1.site-media.eu/images/0/21587536/ChristmasNotes-RFAy0MOttbNqrOGEc3EkCg.png',
-  '3': 'https://cdn1.site-media.eu/images/0/21587575/ChristmasNotes3-KfzspG5RqPBYZ-u3jxt5tQ.png',
-  '4': 'https://cdn1.site-media.eu/images/0/21587693/ChristmasNotes3-lined-J0xhPIRuUzj56rqkQCSn0A.png',
+const CHRISTMAS_NOTE_FILES: Record<string, string> = {
+  // These names include spaces in your folder — encodeURI handles it
+  '1': 'Christmas Notes -blank.png',
+  '2': 'Christmas Notes.png',
+  '3': 'ChristmasNotes3.png',
+  '4': 'ChristmasNotes3-lined.png',
 };
 
-const COLORING_SHEET_URLS = [
-  'https://cdn1.site-media.eu/images/0/21587509/coloringsheet2-f9nybkb9Ilb3N2Tjv0ChRw.jpg',
-  'https://cdn1.site-media.eu/images/0/21587515/coloringsheet5-K_VmLl_kgh-1P-4C0WD-tA.jpg',
-  'https://cdn1.site-media.eu/images/0/21587506/coloringsheet6-QccnrzfbkCEPUmckBjmE9A.jpg',
-  'https://cdn1.site-media.eu/images/0/21587530/coloringsheet10-c9V0SulK6cYd1YRMhljGEQ.jpg',
-  'https://cdn1.site-media.eu/images/0/21587501/coloringsheet12-WBA6Fy9wbtojx_ncIim57Q.jpg',
-  'https://cdn1.site-media.eu/images/0/21587522/coloringsheet-IntricateMandalaChristmasWreath-N0MesPRJvpIQqMoOqSjpLA.jpg',
-  'https://cdn1.site-media.eu/images/0/21587521/coloringsheet-OrnamentalChristmasTreeWithFiligreePatterns-iK1VBjuqWCToeWeFUV82TQ.jpg',
-  'https://cdn1.site-media.eu/images/0/21587716/coloringsheet-VictorianChristmasStreetScene-uFxaHo7iSJBtVTTmNiphMQ.jpg',
-  'https://cdn1.site-media.eu/images/0/21587507/coloringpages-SantasWorkshopHyper-DetailedLineArt-HXMJtPgkf0CVY6dm6DZDdw.jpg',
-  'https://cdn1.site-media.eu/images/0/21587494/coloringpages-GingerbreadCityscape-Sikuj3H5mHfruzhOqXPrOg.jpg',
-];
+// Your bundles in the folder
+const ZIP_ALL_18 = 'all-18-designs.zip';
+const ZIP_NOTES_BUNDLE = 'christmas-notes-bundle.zip';
+
+// Teacher license file you said is present
+const TEACHER_LICENSE_PDF = 'teacher-license.pdf';
+
+// Free coloring PDF you showed in folder
+const COLORING_FREE_PDF = 'coloring-free.pdf';
 
 // Map Stripe price IDs -> internal product IDs
 const PRICE_ID_TO_PRODUCT_ID: Record<string, string> = {
-  // All 18 Designs Bundle
-  'price_1ScGjvBsr66TjEhQ4cRtPYm1': 'complete_bundle_999',
+  // All 18 Designs Bundle - $9.99
+  'price_1ScGjvBsr66TjEhQ4cRtPYm1': 'all_18_bundle_999',
 
-  // Teacher License
+  // Teacher License - $4.99
   'price_1ScH6KBsr66TjEhQAhED4Lsd': 'teacher_license_499',
 
-  // Christmas Notes Bundle
+  // Christmas Notes Bundle - $2.99
   'price_1ScH30Bsr66TjEhQhwLwFAME': 'notes_bundle_299',
 
-  // Single Santa Letter
+  // Single Santa Letter - $0.99
   'price_1ScHCUBsr66TjEhQI5HBQqtU': 'single_letter_99',
 
-  // Single Note (we can refine later if needed)
-  'price_1ScGfNBsr66TjEhQxdfKXMcn': 'notes_bundle_299',
+  // Christmas Note (Single) - $0.99  ✅ THIS WAS WRONG BEFORE
+  'price_1ScGfNBsr66TjEhQxdfKXMcn': 'single_note_99',
 
   // Free coloring sheets
   'price_1SctvEBsr66TjEhQ5XQ8NUxl': 'coloring_bundle_free',
@@ -224,12 +236,14 @@ async function handleChristmasOrder(session: Stripe.Checkout.Session) {
       // Simple type label for now
       if (productId === 'coloring_bundle_free') {
         productType = 'coloring_bundle';
-      } else if (productId === 'complete_bundle_999') {
+      } else if (productId === 'all_18_bundle_999') {
         productType = 'bundle';
       } else if (productId === 'teacher_license_499') {
         productType = 'teacher_license';
       } else if (productId === 'notes_bundle_299') {
         productType = 'notes_bundle';
+      } else if (productId === 'single_note_99') {
+        productType = 'single_note';
       } else {
         productType = productType || 'single_or_bundle';
       }
@@ -296,11 +310,11 @@ async function sendOrderEmail(
 
     const productNames: Record<string, string> = {
       single_letter_99: 'Single Santa Letter Design',
-      bundle_14_999: 'Complete Santa Letters Bundle - All 14 Designs',
+      single_note_99: 'Single Christmas Note Design',
       notes_bundle_299: 'Christmas Notes Bundle - All 4 Designs',
-      complete_bundle_999: 'Complete Bundle - 14 Letters + 4 Notes',
+      all_18_bundle_999: 'All 18 Designs Bundle',
       teacher_license_499: 'Teacher License + All Designs',
-      coloring_bundle_free: 'Free Coloring Sheets Bundle - 10 Designs',
+      coloring_bundle_free: 'Free Coloring Sheets Bundle',
       multi_item_cart: 'Your Selected Christmas Designs',
     };
 
@@ -344,22 +358,48 @@ function generateDownloadLinks(
 ): string[] {
   const links: string[] = [];
 
-  if (productId === 'single_letter_99' && designNumber) {
-    const url = SANTA_LETTER_URLS[designNumber];
-    if (url) {
-      links.push(url);
-    }
-  } else if (productId === 'bundle_14_999') {
-    Object.values(SANTA_LETTER_URLS).forEach((url) => links.push(url));
-  } else if (productId === 'notes_bundle_299') {
-    Object.values(CHRISTMAS_NOTE_URLS).forEach((url) => links.push(url));
-  } else if (productId === 'complete_bundle_999') {
-    Object.values(SANTA_LETTER_URLS).forEach((url) => links.push(url));
-    Object.values(CHRISTMAS_NOTE_URLS).forEach((url) => links.push(url));
-  } else if (productId === 'teacher_license_499') {
-    Object.values(SANTA_LETTER_URLS).forEach((url) => links.push(url));
-  } else if (productId === 'coloring_bundle_free') {
-    COLORING_SHEET_URLS.forEach((url) => links.push(url));
+  // Single Santa Letter: needs designNumber (1-14)
+  if (productId === 'single_letter_99') {
+    if (!designNumber) return links;
+    const file = SANTA_LETTER_FILES[designNumber];
+    if (file) links.push(publicFileUrl(file));
+    return links;
+  }
+
+  // Single Christmas Note: needs designNumber (1-4)
+  if (productId === 'single_note_99') {
+    if (!designNumber) return links;
+    const file = CHRISTMAS_NOTE_FILES[designNumber];
+    if (file) links.push(publicFileUrl(file));
+    return links;
+  }
+
+  // Notes bundle: include the ZIP + individual files
+  if (productId === 'notes_bundle_299') {
+    links.push(publicFileUrl(ZIP_NOTES_BUNDLE));
+    Object.values(CHRISTMAS_NOTE_FILES).forEach((f) => links.push(publicFileUrl(f)));
+    return links;
+  }
+
+  // All 18 bundle: include the ZIP + individual files
+  if (productId === 'all_18_bundle_999') {
+    links.push(publicFileUrl(ZIP_ALL_18));
+    Object.values(SANTA_LETTER_FILES).forEach((f) => links.push(publicFileUrl(f)));
+    Object.values(CHRISTMAS_NOTE_FILES).forEach((f) => links.push(publicFileUrl(f)));
+    return links;
+  }
+
+  // Teacher license: include PDF + (optional) the ZIP too (better UX)
+  if (productId === 'teacher_license_499') {
+    links.push(publicFileUrl(TEACHER_LICENSE_PDF));
+    links.push(publicFileUrl(ZIP_ALL_18));
+    return links;
+  }
+
+  // Free coloring: use your PDF (one click, done)
+  if (productId === 'coloring_bundle_free') {
+    links.push(publicFileUrl(COLORING_FREE_PDF));
+    return links;
   }
 
   return links;
@@ -367,10 +407,7 @@ function generateDownloadLinks(
 
 function generateMultiItemDownloadLinks(itemsString: string | undefined): string[] {
   const links: string[] = [];
-
-  if (!itemsString) {
-    return links;
-  }
+  if (!itemsString) return links;
 
   const items = itemsString.split(',');
 
@@ -379,16 +416,12 @@ function generateMultiItemDownloadLinks(itemsString: string | undefined): string
 
     if (trimmedItem.startsWith('letter_')) {
       const letterNumber = trimmedItem.replace('letter_', '');
-      const url = SANTA_LETTER_URLS[letterNumber];
-      if (url) {
-        links.push(url);
-      }
+      const file = SANTA_LETTER_FILES[letterNumber];
+      if (file) links.push(publicFileUrl(file));
     } else if (trimmedItem.startsWith('note_')) {
       const noteNumber = trimmedItem.replace('note_', '');
-      const url = CHRISTMAS_NOTE_URLS[noteNumber];
-      if (url) {
-        links.push(url);
-      }
+      const file = CHRISTMAS_NOTE_FILES[noteNumber];
+      if (file) links.push(publicFileUrl(file));
     }
   }
 
