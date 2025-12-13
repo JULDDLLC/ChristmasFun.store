@@ -1,135 +1,110 @@
-import Stripe from 'https://esm.sh/stripe@14.21.0?target=deno';
+import 'jsr:@supabase/functions-js/edge-runtime.d.ts'
+import Stripe from 'npm:stripe@14.21.0'
 
 const stripe = new Stripe(Deno.env.get('STRIPE_SECRET_KEY')!, {
-  apiVersion: '2024-09-30.acacia',
-});
+  apiVersion: '2023-10-16',
+})
+
+const endpointSecret = Deno.env.get('STRIPE_WEBHOOK_SECRET')!
 
 Deno.serve(async (req) => {
   if (req.method !== 'POST') {
-    return new Response('Method not allowed', { status: 405 });
+    return new Response('Method not allowed', { status: 405 })
   }
 
-  const signature = req.headers.get('stripe-signature');
-  if (!signature) {
-    return new Response('Missing Stripe signature', { status: 400 });
+  const sig = req.headers.get('stripe-signature')
+  if (!sig) {
+    return new Response('Missing signature', { status: 400 })
   }
 
-  const webhookSecret = Deno.env.get('STRIPE_WEBHOOK_SECRET');
-  if (!webhookSecret) {
-    return new Response('Missing webhook secret', { status: 500 });
-  }
-
-  const body = await req.text();
-
-  let event: Stripe.Event;
+  let event: Stripe.Event
 
   try {
-    // IMPORTANT: Supabase Edge + Deno requires the async verifier
-    event = await stripe.webhooks.constructEventAsync(body, signature, webhookSecret);
+    const body = await req.text()
+
+    // ✅ REQUIRED for Deno / Supabase Edge
+    event = await stripe.webhooks.constructEventAsync(
+      body,
+      sig,
+      endpointSecret
+    )
   } catch (err) {
-    console.error('Webhook signature verification failed', err);
-    return new Response('Invalid signature', { status: 400 });
+    console.error('❌ Webhook signature verification failed:', err)
+    return new Response('Invalid signature', { status: 400 })
   }
 
   if (event.type !== 'checkout.session.completed') {
-    return new Response(JSON.stringify({ received: true }), { status: 200 });
+    return new Response(JSON.stringify({ received: true }), { status: 200 })
   }
 
-  const session = event.data.object as Stripe.Checkout.Session;
+  const session = event.data.object as Stripe.Checkout.Session
 
-  const productId =
-    session.metadata?.product_id ||
-    session.metadata?.productId ||
-    session.metadata?.product_type ||
-    'unknown';
+  const productId = session.metadata?.product_id
+  const orderId = session.metadata?.order_id
 
-  const orderId = session.id;
+  if (!productId || !orderId) {
+    console.error('❌ Missing productId or orderId in metadata', session.metadata)
+    return new Response('Missing metadata', { status: 400 })
+  }
 
-  // --------------------------------------------------
-  // DOWNLOAD LINKS (YOUR PRODUCTS)
-  // --------------------------------------------------
+  // 🔗 BUILD DOWNLOAD LINKS (YOUR FILE LOGIC GOES HERE)
+  const downloadLinks: string[] = []
 
-  const BASE_URL = 'https://christmasfun.store/downloads';
+  // Example — replace paths if needed
+  if (productId === 'single_letter_99') {
+    downloadLinks.push(`https://christmasfun.store/download/santa-letter`)
+  }
 
-  const downloadMap: Record<string, string[]> = {
-    single_letter_99: [
-      `${BASE_URL}/letters/santa-letter.png`,
-    ],
+  if (productId === 'single_note_99') {
+    downloadLinks.push(`https://christmasfun.store/download/christmas-note`)
+  }
 
-    single_note_99: [
-      `${BASE_URL}/notes/christmas-note.png`,
-    ],
+  if (productId === 'notes_bundle_299') {
+    downloadLinks.push(`https://christmasfun.store/download/notes-bundle`)
+  }
 
-    notes_bundle_299: [
-      `${BASE_URL}/notes/note-1.png`,
-      `${BASE_URL}/notes/note-2.png`,
-      `${BASE_URL}/notes/note-3.png`,
-      `${BASE_URL}/notes/note-4.png`,
-    ],
+  if (productId === 'all_18_bundle_999') {
+    downloadLinks.push(
+      `https://christmasfun.store/download/all-18-bundle`
+    )
+  }
 
-    all_18_bundle_999: [
-      ...Array.from({ length: 14 }).map((_, i) => `${BASE_URL}/letters/santa-letter-${i + 1}.png`),
-      `${BASE_URL}/notes/note-1.png`,
-      `${BASE_URL}/notes/note-2.png`,
-      `${BASE_URL}/notes/note-3.png`,
-      `${BASE_URL}/notes/note-4.png`,
-    ],
+  if (productId === 'coloring_bundle_free') {
+    downloadLinks.push(
+      `https://christmasfun.store/download/free-coloring`
+    )
+  }
 
-    teacher_license_499: [
-      `${BASE_URL}/teacher/teacher-license.pdf`,
-    ],
-
-    coloring_bundle_free: [
-      ...Array.from({ length: 10 }).map((_, i) => `${BASE_URL}/coloring/coloring-${i + 1}.pdf`),
-    ],
-  };
-
-  const downloadLinks = downloadMap[productId] ?? [];
-
-  console.log('DOWNLOAD LINK DEBUG', {
+  console.log('✅ DOWNLOAD LINK DEBUG', {
     productId,
     linkCount: downloadLinks.length,
     links: downloadLinks,
-  });
+  })
 
-  // --------------------------------------------------
-  // SEND EMAIL
-  // --------------------------------------------------
-
-  const supabaseUrl = Deno.env.get('SUPABASE_URL');
-  const serviceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
-
-  if (!supabaseUrl || !serviceKey) {
-    console.error('Missing Supabase config for email');
-    return new Response(JSON.stringify({ received: true }), { status: 200 });
-  }
-
-  const to =
-    session.customer_details?.email ||
-    session.customer_email ||
-    null;
-
-  const emailRes = await fetch(`${supabaseUrl}/functions/v1/send-order-email`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${serviceKey}`,
-      apikey: serviceKey,
-    },
-    body: JSON.stringify({
-      to,
-      productType: productId,
-      downloadLinks,
-      orderNumber: orderId,
-    }),
-  });
+  // 📧 SEND EMAIL
+  const emailRes = await fetch(
+    `${Deno.env.get('SUPABASE_URL')}/functions/v1/send-order-email`,
+    {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')}`,
+        apikey: Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!,
+      },
+      body: JSON.stringify({
+        to: session.customer_details?.email,
+        productName: productId,
+        productType: productId,
+        downloadLinks,
+        orderNumber: orderId,
+      }),
+    }
+  )
 
   if (!emailRes.ok) {
-    const errText = await emailRes.text();
-    console.error('Email send failed', errText);
-  } else {
-    console.log('Order email sent successfully');
+    const txt = await emailRes.text()
+    console.error('❌ Email send failed:', txt)
   }
 
-  return new Response(JSON.stringify({ received: true }), { status: 200 });
-});
+  return new Response(JSON.stringify({ received: true }), { status: 200 })
+})
