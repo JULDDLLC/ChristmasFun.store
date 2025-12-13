@@ -32,6 +32,13 @@ async function sendOrderEmail(
       (session.customer_details?.email as string | null) ||
       (session.customer_email as string | null);
 
+    console.log('EMAIL DEBUG', {
+      orderId,
+      productId,
+      buyerEmail,
+      linkCount: Array.isArray(downloadLinks) ? downloadLinks.length : 0,
+    });
+
     if (!buyerEmail) {
       console.error('No buyer email found on session. Cannot send download email.', {
         sessionId: session.id,
@@ -39,63 +46,19 @@ async function sendOrderEmail(
       return;
     }
 
-  function generateDownloadLinks(
-  productId: string | undefined,
-  designNumber?: string,
-): string[] {
-  const links: string[] = [];
-
-  if (!productId) return links;
-
-  if (productId === 'single_letter_99' && designNumber) {
-    const url = SANTA_LETTER_URLS[designNumber];
-    if (url) links.push(url);
-  }
-
-  if (productId === 'single_note_99' && designNumber) {
-    const url = CHRISTMAS_NOTE_URLS[designNumber];
-    if (url) links.push(url);
-  }
-
-  if (productId === 'note_bundle_299') {
-    Object.values(CHRISTMAS_NOTE_URLS).forEach((url) => links.push(url));
-  }
-
-  if (productId === 'all_18_bundle_999') {
-    Object.values(SANTA_LETTER_URLS).forEach((url) => links.push(url));
-    Object.values(CHRISTMAS_NOTE_URLS).forEach((url) => links.push(url));
-  }
-
-  if (productId === 'teacher_license_499') {
-    // License = no files
-    return [];
-  }
-
-  if (productId === 'coloring_bundle_free') {
-    COLORING_SHEET_URLS.forEach((url) => links.push(url));
-  }
-
-  return links;
+    const productNames: Record<string, string> = {
+      single_letter_99: 'Single Santa Letter Design',
+      single_note_99: 'Single Christmas Note Design',
+      notes_bundle_299: 'Christmas Notes Bundle - All 4 Designs',
+      all_18_bundle_999: 'All 18 Designs Bundle (14 Letters + 4 Notes)',
+      teacher_license_499: 'Teacher License',
+      coloring_bundle_free: 'Free Coloring Sheets Bundle - 10 Designs',
+      multi_item_cart: 'Your Selected Christmas Designs',
     };
 
     const productName = productId
       ? productNames[productId] || 'Christmas Design'
       : 'Christmas Design';
-
-    const payload = {
-      to: buyerEmail,
-      productName,
-      productType: productId,
-      downloadLinks,
-      orderNumber: orderId,
-    };
-
-    console.info('Sending download email via send-order-email', {
-      buyerEmail,
-      productId,
-      orderId,
-      linksCount: Array.isArray(downloadLinks) ? downloadLinks.length : 0,
-    });
 
     const emailResponse = await fetch(`${supabaseUrl}/functions/v1/send-order-email`, {
       method: 'POST',
@@ -104,27 +67,23 @@ async function sendOrderEmail(
         Authorization: `Bearer ${authKey}`,
         apikey: authKey,
       },
-      body: JSON.stringify(payload),
+      body: JSON.stringify({
+        to: buyerEmail,
+        productName,
+        productType: productId || 'unknown',
+        downloadLinks: Array.isArray(downloadLinks) ? downloadLinks : [],
+        orderNumber: orderId,
+      }),
     });
 
-    const responseText = await emailResponse.text();
-
     if (!emailResponse.ok) {
-      console.error('send-order-email failed', {
-        status: emailResponse.status,
-        body: responseText,
-        orderId,
-        productId,
-      });
+      const errorText = await emailResponse.text();
+      console.error('Failed to send order email:', errorText);
       return;
     }
 
-    console.info('send-order-email success', {
-      status: emailResponse.status,
-      body: responseText,
-      orderId,
-      productId,
-    });
+    const okJson = await emailResponse.json().catch(() => null);
+    console.log('send-order-email response ok', okJson);
   } catch (error) {
     console.error('Error sending order email:', error);
   }
