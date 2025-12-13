@@ -32,7 +32,10 @@ interface CheckoutRequest {
   designNumber?: number;
 }
 
-const PRODUCT_CONFIG = {
+const PRODUCT_CONFIG: Record<
+  CheckoutRequest['productId'],
+  { name: string; amount: number; description: string }
+> = {
   single_letter_99: {
     name: 'Single Santa Letter Design',
     amount: 99,
@@ -72,66 +75,51 @@ Deno.serve(async (req: Request) => {
     }
 
     if (req.method !== 'POST') {
-      return new Response(
-        JSON.stringify({ error: 'Method not allowed' }),
-        {
-          status: 405,
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        }
-      );
+      return new Response(JSON.stringify({ error: 'Method not allowed' }), {
+        status: 405,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
     }
 
     if (!stripe || !stripeSecret) {
-      return new Response(
-        JSON.stringify({ error: 'Stripe configuration missing' }),
-        {
-          status: 500,
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        }
-      );
+      return new Response(JSON.stringify({ error: 'Stripe configuration missing' }), {
+        status: 500,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
     }
 
     const body: CheckoutRequest = await req.json();
     const { productId, customerEmail, designNumber } = body;
 
     if (!productId || !customerEmail) {
-      return new Response(
-        JSON.stringify({ error: 'Missing productId or customerEmail' }),
-        {
-          status: 400,
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        }
-      );
+      return new Response(JSON.stringify({ error: 'Missing productId or customerEmail' }), {
+        status: 400,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
     }
 
     if (productId === 'single_letter_99' && !designNumber) {
-      return new Response(
-        JSON.stringify({ error: 'designNumber is required for single letter' }),
-        {
-          status: 400,
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        }
-      );
+      return new Response(JSON.stringify({ error: 'designNumber is required for single letter' }), {
+        status: 400,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
     }
 
     const product = PRODUCT_CONFIG[productId];
     if (!product) {
-      return new Response(
-        JSON.stringify({ error: 'Invalid product ID' }),
-        {
-          status: 400,
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        }
-      );
+      return new Response(JSON.stringify({ error: 'Invalid product ID' }), {
+        status: 400,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
     }
 
+    // Keep your existing productType logic (but webhook will use productId anyway)
     let productType = 'single_letter';
     if (productId.includes('teacher')) productType = 'teacher_license';
     if (productId.includes('coloring')) productType = 'coloring_bundle';
     if (productId === 'notes_bundle_299') productType = 'notes_bundle';
     if (productId === 'complete_bundle_999') productType = 'complete_bundle';
-    if (productId.includes('bundle') && productType === 'single_letter')
-      productType = 'bundle';
+    if (productId.includes('bundle') && productType === 'single_letter') productType = 'bundle';
 
     /** CREATE ORDER IN SUPABASE */
     const { data: order, error: orderError } = await supabase
@@ -149,13 +137,10 @@ Deno.serve(async (req: Request) => {
 
     if (orderError || !order) {
       console.error('Order creation error:', orderError);
-      return new Response(
-        JSON.stringify({ error: 'Failed to create order' }),
-        {
-          status: 500,
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        }
-      );
+      return new Response(JSON.stringify({ error: 'Failed to create order' }), {
+        status: 500,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
     }
 
     const url = new URL(req.url);
@@ -179,11 +164,13 @@ Deno.serve(async (req: Request) => {
       success_url: `${origin}/thank-you?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${origin}`,
       customer_email: customerEmail,
+
+      // ✅ IMPORTANT: These metadata keys MUST match what stripe-webhook reads.
       metadata: {
-        order_id: order.id.toString(),
-        product_type: productType,
-        product_id: productId,
-        design_number: designNumber ? designNumber.toString() : '',
+        orderId: order.id.toString(),
+        productId: productId,
+        productType: productType,
+        designNumber: designNumber ? designNumber.toString() : '',
       },
     });
 
@@ -198,21 +185,15 @@ Deno.serve(async (req: Request) => {
 
     if (updateError) console.error('Stripe update error:', updateError);
 
-    return new Response(
-      JSON.stringify({ sessionId: session.id, url: session.url }),
-      {
-        status: 200,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      }
-    );
-  } catch (err) {
+    return new Response(JSON.stringify({ sessionId: session.id, url: session.url }), {
+      status: 200,
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+    });
+  } catch (err: any) {
     console.error('Checkout failed:', err);
-    return new Response(
-      JSON.stringify({ error: err.message ?? 'Unknown checkout error' }),
-      {
-        status: 500,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      }
-    );
+    return new Response(JSON.stringify({ error: err?.message ?? 'Unknown checkout error' }), {
+      status: 500,
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+    });
   }
 });
