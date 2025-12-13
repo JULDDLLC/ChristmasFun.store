@@ -141,7 +141,7 @@ function ChristmasContent() {
   const designs = [
     {
       title: 'Vintage Storybook Santa Wish',
-      description: 'Charming soft watercolor design',
+      description: 'Charming soft watercolor design with vintage Santa and Rudolph',
       image:
         'https://cdn1.site-media.eu/images/0/21587768/design1-Z3wu6c1nLAh3ACrbe46Gmg.png',
     },
