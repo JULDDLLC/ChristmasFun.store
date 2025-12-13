@@ -331,13 +331,13 @@ async function sendOrderEmail(
           Authorization: `Bearer ${supabaseServiceKey}`,
           apikey: supabaseServiceKey,
         },
-        body: JSON.stringify({
-          to: session.customer_email,
-          productName,
-          productType: productId,
-          downloadLinks,
-          orderNumber: orderId,
-        }),
+     body: JSON.stringify({
+  to: session.customer_details?.email || session.customer_email,
+  productName,
+  productType: productId,
+  downloadLinks,
+  orderNumber: orderId,
+}),
       },
     );
 
