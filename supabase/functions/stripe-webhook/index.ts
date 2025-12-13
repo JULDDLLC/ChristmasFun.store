@@ -40,13 +40,12 @@ async function sendOrderEmail(
     }
 
     const productNames: Record<string, string> = {
-      single_letter_99: 'Single Santa Letter Design',
-      bundle_14_999: 'Complete Santa Letters Bundle - All 14 Designs',
-      notes_bundle_299: 'Christmas Notes Bundle - All 4 Designs',
-      complete_bundle_999: 'Complete Bundle - 14 Letters + 4 Notes',
-      teacher_license_499: 'Teacher License + All Designs',
-      coloring_bundle_free: 'Free Coloring Sheets Bundle - 10 Designs',
-      multi_item_cart: 'Your Selected Christmas Designs',
+  single_letter_99: 'Single Santa Letter Design',
+  single_note_99: 'Single Christmas Note',
+  note_bundle_299: 'Christmas Notes Bundle – All 4 Designs',
+  all_18_bundle_999: 'Complete Christmas Bundle – All 18 Designs',
+  teacher_license_499: 'Teacher License',
+  coloring_bundle_free: 'Free Coloring Sheets Bundle',
     };
 
     const productName = productId
