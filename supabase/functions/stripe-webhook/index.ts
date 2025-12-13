@@ -5,15 +5,23 @@ async function sendOrderEmail(
   orderId: string,
 ) {
   try {
-    const supabaseUrl = Deno.env.get('SUPABASE_URL');
-    const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
+    const supabaseUrl = Deno.env.get('SUPABASE_URL')?.trim();
+    const serviceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')?.trim();
+    const anonKey = Deno.env.get('SUPABASE_ANON_KEY')?.trim();
 
-    if (!supabaseUrl || !supabaseServiceKey) {
-      console.error('Missing Supabase configuration for email');
+    // Use service role if present, otherwise fall back to anon key
+    const authKey = serviceKey || anonKey;
+
+    if (!supabaseUrl || !authKey) {
+      console.error('Missing Supabase configuration for email invoke', {
+        hasSupabaseUrl: Boolean(supabaseUrl),
+        hasServiceKey: Boolean(serviceKey),
+        hasAnonKey: Boolean(anonKey),
+      });
       return;
     }
 
-    // Force-retrieve the session so we can reliably get the buyer email
+    // Force-retrieve the session so we can reliably get buyer email
     const fullSession = await stripe.checkout.sessions.retrieve(session.id as string, {
       expand: ['customer_details'],
     });
@@ -45,28 +53,49 @@ async function sendOrderEmail(
       ? productNames[productId] || 'Christmas Design'
       : 'Christmas Design';
 
+    const payload = {
+      to: buyerEmail,
+      productName,
+      productType: productId,
+      downloadLinks,
+      orderNumber: orderId,
+    };
+
+    console.info('Sending download email via send-order-email', {
+      buyerEmail,
+      productId,
+      orderId,
+      linksCount: Array.isArray(downloadLinks) ? downloadLinks.length : 0,
+    });
+
     const emailResponse = await fetch(`${supabaseUrl}/functions/v1/send-order-email`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${supabaseServiceKey}`,
-        apikey: supabaseServiceKey,
+        Authorization: `Bearer ${authKey}`,
+        apikey: authKey,
       },
-      body: JSON.stringify({
-        to: buyerEmail,
-        productName,
-        productType: productId,
-        downloadLinks,
-        orderNumber: orderId,
-      }),
+      body: JSON.stringify(payload),
     });
 
+    const responseText = await emailResponse.text();
+
     if (!emailResponse.ok) {
-      const errorText = await emailResponse.text();
-      console.error('Failed to send order email:', errorText);
-    } else {
-      console.info('Order confirmation email sent successfully');
+      console.error('send-order-email failed', {
+        status: emailResponse.status,
+        body: responseText,
+        orderId,
+        productId,
+      });
+      return;
     }
+
+    console.info('send-order-email success', {
+      status: emailResponse.status,
+      body: responseText,
+      orderId,
+      productId,
+    });
   } catch (error) {
     console.error('Error sending order email:', error);
   }
