@@ -24,11 +24,8 @@ Deno.serve(async (req) => {
   let event: Stripe.Event;
 
   try {
-    event = stripe.webhooks.constructEvent(
-      body,
-      signature,
-      webhookSecret
-    );
+    // IMPORTANT: Supabase Edge + Deno requires the async verifier
+    event = await stripe.webhooks.constructEventAsync(body, signature, webhookSecret);
   } catch (err) {
     console.error('Webhook signature verification failed', err);
     return new Response('Invalid signature', { status: 400 });
@@ -41,6 +38,7 @@ Deno.serve(async (req) => {
   const session = event.data.object as Stripe.Checkout.Session;
 
   const productId =
+    session.metadata?.product_id ||
     session.metadata?.productId ||
     session.metadata?.product_type ||
     'unknown';
@@ -48,7 +46,7 @@ Deno.serve(async (req) => {
   const orderId = session.id;
 
   // --------------------------------------------------
-  // DOWNLOAD LINKS (YOUR REAL PRODUCTS ONLY)
+  // DOWNLOAD LINKS (YOUR PRODUCTS)
   // --------------------------------------------------
 
   const BASE_URL = 'https://christmasfun.store/downloads';
@@ -70,11 +68,7 @@ Deno.serve(async (req) => {
     ],
 
     all_18_bundle_999: [
-      // 14 Santa Letters
-      ...Array.from({ length: 14 }).map(
-        (_, i) => `${BASE_URL}/letters/santa-letter-${i + 1}.png`
-      ),
-      // 4 Notes
+      ...Array.from({ length: 14 }).map((_, i) => `${BASE_URL}/letters/santa-letter-${i + 1}.png`),
       `${BASE_URL}/notes/note-1.png`,
       `${BASE_URL}/notes/note-2.png`,
       `${BASE_URL}/notes/note-3.png`,
@@ -86,9 +80,7 @@ Deno.serve(async (req) => {
     ],
 
     coloring_bundle_free: [
-      ...Array.from({ length: 10 }).map(
-        (_, i) => `${BASE_URL}/coloring/coloring-${i + 1}.pdf`
-      ),
+      ...Array.from({ length: 10 }).map((_, i) => `${BASE_URL}/coloring/coloring-${i + 1}.pdf`),
     ],
   };
 
@@ -112,26 +104,25 @@ Deno.serve(async (req) => {
     return new Response(JSON.stringify({ received: true }), { status: 200 });
   }
 
-  const emailRes = await fetch(
-    `${supabaseUrl}/functions/v1/send-order-email`,
-    {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${serviceKey}`,
-        apikey: serviceKey,
-      },
-      body: JSON.stringify({
-        to:
-          session.customer_details?.email ||
-          session.customer_email ||
-          null,
-        productType: productId,
-        downloadLinks,
-        orderNumber: orderId,
-      }),
-    }
-  );
+  const to =
+    session.customer_details?.email ||
+    session.customer_email ||
+    null;
+
+  const emailRes = await fetch(`${supabaseUrl}/functions/v1/send-order-email`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${serviceKey}`,
+      apikey: serviceKey,
+    },
+    body: JSON.stringify({
+      to,
+      productType: productId,
+      downloadLinks,
+      orderNumber: orderId,
+    }),
+  });
 
   if (!emailRes.ok) {
     const errText = await emailRes.text();
