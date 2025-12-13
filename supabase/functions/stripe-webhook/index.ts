@@ -39,13 +39,43 @@ async function sendOrderEmail(
       return;
     }
 
-    const productNames: Record<string, string> = {
-  single_letter_99: 'Single Santa Letter Design',
-  single_note_99: 'Single Christmas Note',
-  note_bundle_299: 'Christmas Notes Bundle – All 4 Designs',
-  all_18_bundle_999: 'Complete Christmas Bundle – All 18 Designs',
-  teacher_license_499: 'Teacher License',
-  coloring_bundle_free: 'Free Coloring Sheets Bundle',
+  function generateDownloadLinks(
+  productId: string | undefined,
+  designNumber?: string,
+): string[] {
+  const links: string[] = [];
+
+  if (!productId) return links;
+
+  if (productId === 'single_letter_99' && designNumber) {
+    const url = SANTA_LETTER_URLS[designNumber];
+    if (url) links.push(url);
+  }
+
+  if (productId === 'single_note_99' && designNumber) {
+    const url = CHRISTMAS_NOTE_URLS[designNumber];
+    if (url) links.push(url);
+  }
+
+  if (productId === 'note_bundle_299') {
+    Object.values(CHRISTMAS_NOTE_URLS).forEach((url) => links.push(url));
+  }
+
+  if (productId === 'all_18_bundle_999') {
+    Object.values(SANTA_LETTER_URLS).forEach((url) => links.push(url));
+    Object.values(CHRISTMAS_NOTE_URLS).forEach((url) => links.push(url));
+  }
+
+  if (productId === 'teacher_license_499') {
+    // License = no files
+    return [];
+  }
+
+  if (productId === 'coloring_bundle_free') {
+    COLORING_SHEET_URLS.forEach((url) => links.push(url));
+  }
+
+  return links;
     };
 
     const productName = productId
