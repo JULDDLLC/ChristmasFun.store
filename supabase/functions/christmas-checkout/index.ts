@@ -165,12 +165,12 @@ Deno.serve(async (req: Request) => {
       cancel_url: `${origin}`,
       customer_email: customerEmail,
 
-      // ✅ IMPORTANT: These metadata keys MUST match what stripe-webhook reads.
+      // ✅ IMPORTANT: These metadata keys MUST match what stripe-webhook reads (snake_case).
       metadata: {
-        orderId: order.id.toString(),
-        productId: productId,
-        productType: productType,
-        designNumber: designNumber ? designNumber.toString() : '',
+        order_id: order.id.toString(),
+        product_id: productId,
+        product_type: productType,
+        design_number: designNumber ? designNumber.toString() : '',
       },
     });
 

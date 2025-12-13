@@ -1,7 +1,11 @@
-// supabase/functions/christmas-multi-checkout/index.ts
+import 'jsr:@supabase/functions-js/edge-runtime.d.ts';
+import Stripe from "npm:stripe@14.21.0";
+import { createClient } from 'npm:@supabase/supabase-js@2.49.1';
 
-import Stripe from "https://esm.sh/stripe@12.8.0?target=deno";
-import { serve } from "https://deno.land/std@0.224.0/http/server.ts";
+const supabase = createClient(
+  Deno.env.get('SUPABASE_URL') ?? '',
+  Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
+);
 
 const corsHeaders: Record<string, string> = {
   "Access-Control-Allow-Origin": "*",
@@ -45,8 +49,7 @@ const PRICE_IDS: Record<string, string> = {
   free_coloring: "price_1SctvEBsr66TjEhQ5XQ8NUxl",
 };
 
-serve(async (req) => {
-  // CORS preflight
+Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response("ok", {
       headers: corsHeaders,
@@ -136,6 +139,36 @@ serve(async (req) => {
       });
     }
 
+    const totalAmount = items.reduce((sum, item) => sum + item.price, 0);
+    const productIds = items.map(item => item.type).join(',');
+
+    const { data: order, error: orderError } = await supabase
+      .from('orders')
+      .insert({
+        customer_email: customerEmail,
+        product_type: 'multi_item_cart',
+        product_id: productIds,
+        amount: totalAmount,
+        status: 'pending',
+        download_links: [],
+      })
+      .select()
+      .single();
+
+    if (orderError || !order) {
+      console.error('Order creation error:', orderError);
+      return new Response(
+        JSON.stringify({ error: 'Failed to create order' }),
+        {
+          status: 500,
+          headers: {
+            ...corsHeaders,
+            "Content-Type": "application/json",
+          },
+        },
+      );
+    }
+
     const origin =
       req.headers.get("origin") ??
       "https://christmasfun.store";
@@ -148,12 +181,25 @@ serve(async (req) => {
       success_url: `${origin}/thank-you?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${origin}/#cart-cancelled`,
       metadata: {
+        order_id: order.id.toString(),
+        product_id: productIds,
+        product_type: 'multi_item_cart',
         source: "christmas-multi-checkout",
       },
-
-      // 👇 THIS is the important bit for showing a promo code box
       allow_promotion_codes: true,
     });
+
+    const { error: updateError } = await supabase
+      .from('orders')
+      .update({
+        stripe_session_id: session.id,
+        checkout_url: session.url,
+      })
+      .eq('id', order.id);
+
+    if (updateError) {
+      console.error('Failed to update order with session:', updateError);
+    }
 
     if (!session.url) {
       console.error("Stripe session created without URL", session);

@@ -7,6 +7,30 @@ const stripe = new Stripe(Deno.env.get('STRIPE_SECRET_KEY')!, {
 
 const endpointSecret = Deno.env.get('STRIPE_WEBHOOK_SECRET')!
 
+const PRODUCT_DOWNLOAD_MAP: Record<string, string[]> = {
+  'single_letter_99': ['https://christmasfun.store/download/santa-letter'],
+  'single_note_99': ['https://christmasfun.store/download/christmas-note'],
+  'notes_bundle_299': ['https://christmasfun.store/download/notes-bundle'],
+  'bundle_14_999': ['https://christmasfun.store/download/santa-letters-bundle'],
+  'complete_bundle_999': ['https://christmasfun.store/download/all-18-bundle'],
+  'all_18_bundle_999': ['https://christmasfun.store/download/all-18-bundle'],
+  'teacher_license_499': ['https://christmasfun.store/download/teacher-license'],
+  'coloring_bundle_free': ['https://christmasfun.store/download/free-coloring'],
+
+  'santa_letter': ['https://christmasfun.store/download/santa-letter'],
+  'christmas_note': ['https://christmasfun.store/download/christmas-note'],
+  'notes_bundle': ['https://christmasfun.store/download/notes-bundle'],
+  'all_18_bundle': ['https://christmasfun.store/download/all-18-bundle'],
+  'teacher_license': ['https://christmasfun.store/download/teacher-license'],
+  'free_coloring': ['https://christmasfun.store/download/free-coloring'],
+}
+
+function getDownloadLinksForProduct(productId: string): string[] {
+  const links = PRODUCT_DOWNLOAD_MAP[productId] || []
+  console.log(`📦 Product mapping for "${productId}":`, links)
+  return links
+}
+
 Deno.serve(async (req) => {
   if (req.method !== 'POST') {
     return new Response('Method not allowed', { status: 405 })
@@ -39,47 +63,82 @@ Deno.serve(async (req) => {
 
   const session = event.data.object as Stripe.Checkout.Session
 
-  const productId = session.metadata?.product_id
-  const orderId = session.metadata?.order_id
+  console.log('✅ WEBHOOK RECEIVED - Session metadata:', JSON.stringify(session.metadata, null, 2))
+  console.log('✅ Customer email:', session.customer_details?.email)
+  console.log('✅ Session ID:', session.id)
+
+  const productId = session.metadata?.product_id || session.metadata?.productId
+  const orderId = session.metadata?.order_id || session.metadata?.orderId
+
+  console.log('✅ EXTRACTED METADATA', {
+    productId,
+    orderId,
+    rawMetadata: session.metadata,
+  })
 
   if (!productId || !orderId) {
-    console.error('❌ Missing productId or orderId in metadata', session.metadata)
+    console.error('❌ Missing productId or orderId in metadata', {
+      metadata: session.metadata,
+      checkedKeys: ['product_id', 'productId', 'order_id', 'orderId'],
+      productId,
+      orderId,
+    })
     return new Response('Missing metadata', { status: 400 })
   }
 
-  // 🔗 BUILD DOWNLOAD LINKS (YOUR FILE LOGIC GOES HERE)
+  const productIds = productId.includes(',') ? productId.split(',') : [productId]
+
   const downloadLinks: string[] = []
-
-  // Example — replace paths if needed
-  if (productId === 'single_letter_99') {
-    downloadLinks.push(`https://christmasfun.store/download/santa-letter`)
+  for (const pid of productIds) {
+    const links = getDownloadLinksForProduct(pid.trim())
+    downloadLinks.push(...links)
   }
 
-  if (productId === 'single_note_99') {
-    downloadLinks.push(`https://christmasfun.store/download/christmas-note`)
-  }
+  const uniqueDownloadLinks = [...new Set(downloadLinks)]
 
-  if (productId === 'notes_bundle_299') {
-    downloadLinks.push(`https://christmasfun.store/download/notes-bundle`)
-  }
-
-  if (productId === 'all_18_bundle_999') {
-    downloadLinks.push(
-      `https://christmasfun.store/download/all-18-bundle`
-    )
-  }
-
-  if (productId === 'coloring_bundle_free') {
-    downloadLinks.push(
-      `https://christmasfun.store/download/free-coloring`
-    )
-  }
-
-  console.log('✅ DOWNLOAD LINK DEBUG', {
+  console.log('✅ DOWNLOAD LINKS GENERATED', {
     productId,
-    linkCount: downloadLinks.length,
-    links: downloadLinks,
+    productIds,
+    orderId,
+    linkCount: uniqueDownloadLinks.length,
+    links: uniqueDownloadLinks,
   })
+
+  if (uniqueDownloadLinks.length === 0) {
+    console.warn('⚠️ No download links found for products:', productIds)
+  }
+
+  try {
+    const supabaseUrl = Deno.env.get('SUPABASE_URL')
+    const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')
+
+    if (supabaseUrl && supabaseKey) {
+      const updateRes = await fetch(`${supabaseUrl}/rest/v1/orders?id=eq.${orderId}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${supabaseKey}`,
+          'apikey': supabaseKey,
+          'Prefer': 'return=minimal',
+        },
+        body: JSON.stringify({
+          status: 'completed',
+          stripe_payment_intent: session.payment_intent,
+          download_links: uniqueDownloadLinks,
+          updated_at: new Date().toISOString(),
+        }),
+      })
+
+      if (!updateRes.ok) {
+        const errorText = await updateRes.text()
+        console.error('❌ Failed to update order in database:', errorText)
+      } else {
+        console.log('✅ Order updated in database:', orderId)
+      }
+    }
+  } catch (dbError) {
+    console.error('❌ Database update error:', dbError)
+  }
 
   // 📧 SEND EMAIL
   const emailRes = await fetch(
@@ -95,7 +154,7 @@ Deno.serve(async (req) => {
         to: session.customer_details?.email,
         productName: productId,
         productType: productId,
-        downloadLinks,
+        downloadLinks: uniqueDownloadLinks,
         orderNumber: orderId,
       }),
     }
