@@ -1,290 +1,283 @@
-import 'jsr:@supabase/functions-js/edge-runtime.d.ts'
-import Stripe from 'npm:stripe@14.21.0'
+// supabase/functions/stripe-webhook/index.ts
+// Fixes:
+// - Uses constructEventAsync (required for Supabase Edge + Deno crypto)
+// - Accepts BOTH snake_case and camelCase metadata keys
+// - Logs metadata + link generation so you can see exactly what's happening
+// - Calls send-order-email with a consistent payload
 
-const STRIPE_SECRET_KEY = (Deno.env.get('STRIPE_SECRET_KEY') || '').trim()
-const STRIPE_WEBHOOK_SECRET = (Deno.env.get('STRIPE_WEBHOOK_SECRET') || '').trim()
-const SUPABASE_URL = (Deno.env.get('SUPABASE_URL') || '').trim()
-const SERVICE_KEY = (Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') || '').trim()
-const ANON_KEY = (Deno.env.get('SUPABASE_ANON_KEY') || '').trim()
+import Stripe from "https://esm.sh/stripe@14.21.0?target=deno";
 
-const authKey = SERVICE_KEY || ANON_KEY
+const stripeSecretKey = Deno.env.get("STRIPE_SECRET_KEY")?.trim();
+const webhookSecret = Deno.env.get("STRIPE_WEBHOOK_SECRET")?.trim();
 
-const stripe = new Stripe(STRIPE_SECRET_KEY, { apiVersion: '2023-10-16' })
+const supabaseUrl = Deno.env.get("SUPABASE_URL")?.trim();
+const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")?.trim();
+const anonKey = Deno.env.get("SUPABASE_ANON_KEY")?.trim();
 
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-Client-Info, Apikey, Stripe-Signature',
-  'Access-Control-Allow-Methods': 'POST, OPTIONS',
+const supabaseAuthKey = serviceKey || anonKey;
+
+if (!stripeSecretKey) console.error("Missing STRIPE_SECRET_KEY");
+if (!webhookSecret) console.error("Missing STRIPE_WEBHOOK_SECRET");
+if (!supabaseUrl) console.error("Missing SUPABASE_URL");
+if (!supabaseAuthKey) console.error("Missing SUPABASE_SERVICE_ROLE_KEY or SUPABASE_ANON_KEY");
+
+const stripe = new Stripe(stripeSecretKey || "", {
+  apiVersion: "2024-09-30.acacia",
+});
+
+function json(data: unknown, status = 200) {
+  return new Response(JSON.stringify(data), {
+    status,
+    headers: { "Content-Type": "application/json" },
+  });
 }
 
-// IMPORTANT: Your real Stripe price IDs (from your memory)
-const PRICE_TO_PRODUCT_ID: Record<string, string> = {
-  // Single Santa Letter (0.99)
-  price_1ScHCUBsr66TjEhQI5HBQqtU: 'single_letter_99',
-  // Christmas Note (0.99)
-  price_1ScGfNBsr66TjEhQxdfKXMcn: 'single_note_99',
-  // Christmas Notes Bundle (2.99)
-  price_1ScH30Bsr66TjEhQhwLwFAME: 'notes_bundle_299',
-  // All 18 Designs Bundle (9.99)
-  price_1ScGjvBsr66TjEhQ4cRtPYm1: 'all_18_bundle_999',
-  // Teacher License (4.99)
-  price_1ScH6KBsr66TjEhQAhED4Lsd: 'teacher_license_499',
-  // Free Coloring Sheets
-  price_1SctvEBsr66TjEhQ5XQ8NUxl: 'coloring_bundle_free',
+function getMeta(session: Stripe.Checkout.Session) {
+  // Stripe types metadata as possibly null
+  const md = (session.metadata || {}) as Record<string, string>;
+
+  // Accept BOTH formats
+  const productId =
+    md.product_id ||
+    md.productId ||
+    md.productID ||
+    md.product ||
+    "";
+
+  const orderId =
+    md.order_id ||
+    md.orderId ||
+    md.orderID ||
+    md.order ||
+    "";
+
+  // Optional multi-product support (comma separated)
+  const productIdsRaw =
+    md.product_ids ||
+    md.productIds ||
+    md.products ||
+    "";
+
+  // design info (optional)
+  const productType =
+    md.product_type ||
+    md.productType ||
+    "";
+
+  const designNumber =
+    md.design_number ||
+    md.designNumber ||
+    "";
+
+  return {
+    md,
+    productId,
+    orderId,
+    productIdsRaw,
+    productType,
+    designNumber,
+  };
 }
 
-const PRODUCT_NAME: Record<string, string> = {
-  single_letter_99: 'Single Santa Letter Design',
-  single_note_99: 'Single Christmas Note Design',
-  notes_bundle_299: 'Christmas Notes Bundle (All 4 Notes)',
-  all_18_bundle_999: 'All 18 Designs Bundle (14 Letters + 4 Notes)',
-  teacher_license_499: 'Teacher License',
-  coloring_bundle_free: 'Free Coloring Sheets Bundle',
+function normalizeProductIds(singleProductId: string, productIdsRaw: string) {
+  // If productIdsRaw exists, prefer it; else fall back to singleProductId
+  const list = (productIdsRaw || singleProductId || "")
+    .split(",")
+    .map(s => s.trim())
+    .filter(Boolean);
+
+  // Deduplicate
+  return Array.from(new Set(list));
 }
 
-function uniq(arr: string[]) {
-  return Array.from(new Set(arr.filter(Boolean)))
-}
-
-async function getSessionWithLineItems(sessionId: string) {
-  // expand line_items so we can read price ids if metadata is missing
-  return await stripe.checkout.sessions.retrieve(sessionId, {
-    expand: ['line_items.data.price', 'customer_details'],
-  })
-}
-
-async function sendOrderEmail(params: {
-  to: string
-  productIds: string[]
-  orderId: string
-  downloadLinks: string[]
-}) {
-  if (!SUPABASE_URL || !authKey) {
-    console.error('EMAIL INVOKE ERROR: missing SUPABASE_URL or authKey', {
-      hasSupabaseUrl: Boolean(SUPABASE_URL),
-      hasAuthKey: Boolean(authKey),
-    })
-    return
+async function invokeEdgeFunction(path: string, payload: unknown) {
+  if (!supabaseUrl || !supabaseAuthKey) {
+    throw new Error("Missing Supabase URL/auth key for function invoke");
   }
 
-  const primaryProductId = params.productIds[0] || 'unknown'
-  const productName = PRODUCT_NAME[primaryProductId] || 'Christmas Designs'
-
-  // Send BOTH key styles to avoid "Missing required fields" regardless of what send-order-email expects
-  const payload: any = {
-    // likely required
-    to: params.to,
-
-    // camelCase
-    productName,
-    productType: primaryProductId,
-    orderNumber: params.orderId,
-    downloadLinks: params.downloadLinks,
-    productIds: params.productIds,
-
-    // snake_case duplicates
-    product_name: productName,
-    product_type: primaryProductId,
-    order_number: params.orderId,
-    download_links: params.downloadLinks,
-    product_ids: params.productIds,
-  }
-
-  const res = await fetch(`${SUPABASE_URL}/functions/v1/send-order-email`, {
-    method: 'POST',
+  const res = await fetch(`${supabaseUrl}/functions/v1/${path}`, {
+    method: "POST",
     headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${authKey}`,
-      apikey: authKey,
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${supabaseAuthKey}`,
+      apikey: supabaseAuthKey,
     },
     body: JSON.stringify(payload),
-  })
+  });
 
-  const text = await res.text().catch(() => '')
-  if (!res.ok) {
-    console.error('Email send failed', { status: res.status, body: text })
-    return
+  const text = await res.text();
+  let data: any = null;
+  try { data = text ? JSON.parse(text) : null; } catch { /* ignore */ }
+
+  return { ok: res.ok, status: res.status, text, data };
+}
+
+async function generateDownloadLinks(productIds: string[], orderId: string) {
+  // If you already have a function to generate links (you DO: "download-file"),
+  // use it. We'll call it once per productId and accept multiple return shapes.
+
+  const allLinks: string[] = [];
+
+  for (const pid of productIds) {
+    try {
+      const resp = await invokeEdgeFunction("download-file", {
+        productId: pid,
+        orderId,
+      });
+
+      if (!resp.ok) {
+        console.error("download-file failed", { pid, orderId, status: resp.status, body: resp.text });
+        continue;
+      }
+
+      const d = resp.data;
+
+      // Accept common shapes:
+      // { url: "..." }
+      // { link: "..." }
+      // { links: ["..."] }
+      // { downloadLinks: ["..."] }
+      // { urls: ["..."] }
+      if (typeof d?.url === "string") allLinks.push(d.url);
+      if (typeof d?.link === "string") allLinks.push(d.link);
+
+      if (Array.isArray(d?.links)) allLinks.push(...d.links);
+      if (Array.isArray(d?.downloadLinks)) allLinks.push(...d.downloadLinks);
+      if (Array.isArray(d?.urls)) allLinks.push(...d.urls);
+
+    } catch (e) {
+      console.error("download-file exception", { pid, orderId, error: String(e) });
+    }
   }
 
-  console.log('Email send OK', { body: text })
+  // Deduplicate
+  return Array.from(new Set(allLinks)).filter(Boolean);
+}
+
+function productNameFromId(productId: string) {
+  const names: Record<string, string> = {
+    single_letter_99: "Single Santa Letter Design",
+    single_note_99: "Single Christmas Note Design",
+    notes_bundle_299: "Christmas Notes Bundle - All 4 Designs",
+    all_18_bundle_999: "All 18 Designs Bundle (14 Letters + 4 Notes)",
+    teacher_license_499: "Teacher License",
+    coloring_bundle_free: "Free Coloring Sheets Bundle - 10 Designs",
+    multi_item_cart: "Your Selected Christmas Designs",
+  };
+
+  return names[productId] || "Christmas Design";
+}
+
+async function sendOrderEmail(
+  session: Stripe.Checkout.Session,
+  productId: string,
+  downloadLinks: string[],
+  orderId: string,
+) {
+  // Force-retrieve session to reliably get customer_details.email if needed
+  const fullSession = await stripe.checkout.sessions.retrieve(session.id as string, {
+    expand: ["customer_details"],
+  });
+
+  const buyerEmail =
+    fullSession.customer_details?.email ||
+    (fullSession.customer_email as string | null) ||
+    (session.customer_details?.email as string | null) ||
+    (session.customer_email as string | null) ||
+    "";
+
+  console.log("EMAIL DEBUG", {
+    orderId,
+    productId,
+    buyerEmail,
+    linkCount: Array.isArray(downloadLinks) ? downloadLinks.length : 0,
+  });
+
+  if (!buyerEmail) {
+    console.error("No buyer email found on session. Cannot send download email.", {
+      sessionId: session.id,
+    });
+    return;
+  }
+
+  const payload = {
+    to: buyerEmail,
+    productName: productNameFromId(productId),
+    productType: productId || "unknown",
+    downloadLinks: Array.isArray(downloadLinks) ? downloadLinks : [],
+    orderNumber: orderId || (session.id as string),
+  };
+
+  const emailResp = await invokeEdgeFunction("send-order-email", payload);
+
+  if (!emailResp.ok) {
+    console.error("Email send failed", {
+      status: emailResp.status,
+      body: emailResp.text,
+      payloadSent: payload,
+    });
+    return;
+  }
+
+  console.log("send-order-email OK", emailResp.data);
 }
 
 Deno.serve(async (req) => {
-  if (req.method === 'OPTIONS') {
-    return new Response(null, { status: 200, headers: corsHeaders })
-  }
-
-  if (req.method !== 'POST') {
-    return new Response('Method not allowed', { status: 405, headers: corsHeaders })
-  }
-
-  const sig = req.headers.get('stripe-signature')
-  if (!sig) {
-    return new Response(JSON.stringify({ error: 'Missing signature' }), {
-      status: 400,
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-    })
-  }
-
-  let event: Stripe.Event
-  try {
-    const rawBody = await req.text()
-
-    // Required on Supabase Edge / Deno
-    event = await stripe.webhooks.constructEventAsync(rawBody, sig, STRIPE_WEBHOOK_SECRET)
-  } catch (err) {
-    console.error('Webhook signature verification failed', err)
-    return new Response(JSON.stringify({ error: 'Invalid signature' }), {
-      status: 400,
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-    })
-  }
-
-  if (event.type !== 'checkout.session.completed') {
-    return new Response(JSON.stringify({ received: true, type: event.type }), {
-      status: 200,
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-    })
-  }
-
-  const sessionLite = event.data.object as Stripe.Checkout.Session
-  const sessionId = String(sessionLite.id || '')
+  if (req.method !== "POST") return json({ error: "Method not allowed" }, 405);
 
   try {
-    const session = await getSessionWithLineItems(sessionId)
+    if (!webhookSecret) return json({ error: "Missing STRIPE_WEBHOOK_SECRET" }, 500);
 
-    const md = (session.metadata || {}) as Record<string, any>
+    const sig = req.headers.get("stripe-signature");
+    if (!sig) return json({ error: "Missing stripe-signature header" }, 400);
 
-    // Accept both formats
-    const orderId =
-      (md.order_id as string) ||
-      (md.orderId as string) ||
-      (md.order_number as string) ||
-      (md.orderNumber as string) ||
-      ''
+    // IMPORTANT: use raw bytes, not req.text()
+    const rawBody = new Uint8Array(await req.arrayBuffer());
 
-    // product_id can be single, product_ids can be comma list or json
-    const rawProduct =
-      (md.product_id as string) ||
-      (md.productId as string) ||
-      (md.product_ids as string) ||
-      (md.productIds as string) ||
-      ''
+    // ✅ FIX: constructEventAsync (required in this environment)
+    const event = await stripe.webhooks.constructEventAsync(rawBody, sig, webhookSecret);
 
-    console.log('WEBHOOK METADATA RECEIVED', {
-      sessionId,
-      metadataKeys: Object.keys(md),
+    if (event.type !== "checkout.session.completed") {
+      // Acknowledge other events
+      return json({ received: true, ignored: event.type });
+    }
+
+    const session = event.data.object as Stripe.Checkout.Session;
+
+    const { md, productId, orderId, productIdsRaw } = getMeta(session);
+
+    console.log("WEBHOOK METADATA DEBUG", {
+      eventType: event.type,
+      sessionId: session.id,
       metadata: md,
-    })
+      productId,
+      orderId,
+      productIdsRaw,
+    });
 
-    let productIds: string[] = []
+    const productIds = normalizeProductIds(productId, productIdsRaw);
 
-    // If metadata gave us something, try to parse it
-    if (rawProduct) {
-      const trimmed = String(rawProduct).trim()
+    // If orderId missing, we still proceed but use session.id as fallback
+    const effectiveOrderId = orderId || (session.id as string);
 
-      // Comma-separated
-      if (trimmed.includes(',')) {
-        productIds = trimmed.split(',').map((s) => s.trim())
-      } else {
-        // JSON array string?
-        if ((trimmed.startsWith('[') && trimmed.endsWith(']')) || (trimmed.startsWith('"') && trimmed.endsWith('"'))) {
-          try {
-            const parsed = JSON.parse(trimmed)
-            if (Array.isArray(parsed)) productIds = parsed.map(String)
-            else productIds = [String(parsed)]
-          } catch {
-            productIds = [trimmed]
-          }
-        } else {
-          productIds = [trimmed]
-        }
-      }
-    }
+    // Generate links
+    const downloadLinks = await generateDownloadLinks(productIds, effectiveOrderId);
 
-    // Fallback: derive from line_items price ids
-    if (!productIds.length) {
-      const lineItems = (session.line_items?.data || []) as any[]
-      const priceIds = lineItems
-        .map((li) => li?.price?.id)
-        .filter(Boolean)
-        .map(String)
-
-      productIds = priceIds.map((pid) => PRICE_TO_PRODUCT_ID[pid]).filter(Boolean)
-
-      console.log('FALLBACK FROM LINE ITEMS', {
-        sessionId,
-        priceIds,
-        mappedProductIds: productIds,
-      })
-    }
-
-    productIds = uniq(productIds)
-
-    const buyerEmail =
-      session.customer_details?.email ||
-      (session.customer_email as string | null) ||
-      ''
-
-    if (!buyerEmail) {
-      console.error('No buyer email on session', { sessionId })
-      return new Response(JSON.stringify({ received: true, warning: 'missing_buyer_email' }), {
-        status: 200,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      })
-    }
-
-    // If still no productIds, we cannot generate links, but we log HARD
-    if (!productIds.length) {
-      console.error('No product IDs found via metadata or line items', {
-        sessionId,
-        metadata: md,
-      })
-
-      // Send a fallback email so customer is not stranded
-      await sendOrderEmail({
-        to: buyerEmail,
-        productIds: ['unknown'],
-        orderId: orderId || sessionId,
-        downloadLinks: [],
-      })
-
-      return new Response(JSON.stringify({ received: true, warning: 'missing_product_ids' }), {
-        status: 200,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      })
-    }
-
-    // Build download links. Replace these URLs with your real endpoints if different.
-    // These can be direct downloads, a signed URL endpoint, or a page that lists downloads.
-    const downloadLinks = productIds.map((pid) => {
-      // Example consistent download route
-      return `https://christmasfun.store/download/${encodeURIComponent(pid)}`
-    })
-
-    console.log('DOWNLOAD LINK DEBUG', {
-      orderId: orderId || '(missing)',
+    console.log("DOWNLOAD LINK DEBUG", {
       productIds,
+      orderId: effectiveOrderId,
       linkCount: downloadLinks.length,
       links: downloadLinks,
-    })
+    });
 
-    await sendOrderEmail({
-      to: buyerEmail,
-      productIds,
-      orderId: orderId || sessionId,
-      downloadLinks,
-    })
+    // Pick a primary product for naming (first in list)
+    const primaryProductId = productIds[0] || productId || "unknown";
 
-    return new Response(JSON.stringify({ received: true }), {
-      status: 200,
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-    })
-  } catch (err: any) {
-    console.error('Webhook handler failed', err)
-    return new Response(JSON.stringify({ error: err?.message || 'Webhook failed' }), {
-      status: 500,
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-    })
+    await sendOrderEmail(session, primaryProductId, downloadLinks, effectiveOrderId);
+
+    return json({ received: true });
+  } catch (err) {
+    console.error("stripe-webhook error", String(err));
+    return json({ error: String(err) }, 400);
   }
-})
+});
