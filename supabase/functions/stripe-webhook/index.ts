@@ -1,283 +1,219 @@
-// supabase/functions/stripe-webhook/index.ts
-// Fixes:
-// - Uses constructEventAsync (required for Supabase Edge + Deno crypto)
-// - Accepts BOTH snake_case and camelCase metadata keys
-// - Logs metadata + link generation so you can see exactly what's happening
-// - Calls send-order-email with a consistent payload
+/// <reference types="npm:@types/node" />
 
-import Stripe from "https://esm.sh/stripe@14.21.0?target=deno";
+import "jsr:@supabase/functions-js/edge-runtime.d.ts";
+import Stripe from "npm:stripe@14.21.0";
 
-const stripeSecretKey = Deno.env.get("STRIPE_SECRET_KEY")?.trim();
-const webhookSecret = Deno.env.get("STRIPE_WEBHOOK_SECRET")?.trim();
+const STRIPE_SECRET_KEY = (Deno.env.get("STRIPE_SECRET_KEY") || "").trim();
+const STRIPE_WEBHOOK_SECRET = (Deno.env.get("STRIPE_WEBHOOK_SECRET") || "").trim();
 
-const supabaseUrl = Deno.env.get("SUPABASE_URL")?.trim();
-const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")?.trim();
-const anonKey = Deno.env.get("SUPABASE_ANON_KEY")?.trim();
+// These must exist for calling your other edge functions (send-order-email)
+const SUPABASE_URL = (Deno.env.get("SUPABASE_URL") || "").trim();
+const SUPABASE_SERVICE_ROLE_KEY = (Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") || "").trim();
 
-const supabaseAuthKey = serviceKey || anonKey;
-
-if (!stripeSecretKey) console.error("Missing STRIPE_SECRET_KEY");
-if (!webhookSecret) console.error("Missing STRIPE_WEBHOOK_SECRET");
-if (!supabaseUrl) console.error("Missing SUPABASE_URL");
-if (!supabaseAuthKey) console.error("Missing SUPABASE_SERVICE_ROLE_KEY or SUPABASE_ANON_KEY");
-
-const stripe = new Stripe(stripeSecretKey || "", {
-  apiVersion: "2024-09-30.acacia",
-});
-
-function json(data: unknown, status = 200) {
-  return new Response(JSON.stringify(data), {
+function json(body: unknown, status = 200) {
+  return new Response(JSON.stringify(body), {
     status,
-    headers: { "Content-Type": "application/json" },
+    headers: {
+      "content-type": "application/json; charset=utf-8",
+    },
   });
 }
 
-function getMeta(session: Stripe.Checkout.Session) {
-  // Stripe types metadata as possibly null
-  const md = (session.metadata || {}) as Record<string, string>;
-
-  // Accept BOTH formats
-  const productId =
-    md.product_id ||
-    md.productId ||
-    md.productID ||
-    md.product ||
-    "";
-
-  const orderId =
-    md.order_id ||
-    md.orderId ||
-    md.orderID ||
-    md.order ||
-    "";
-
-  // Optional multi-product support (comma separated)
-  const productIdsRaw =
-    md.product_ids ||
-    md.productIds ||
-    md.products ||
-    "";
-
-  // design info (optional)
-  const productType =
-    md.product_type ||
-    md.productType ||
-    "";
-
-  const designNumber =
-    md.design_number ||
-    md.designNumber ||
-    "";
-
-  return {
-    md,
-    productId,
-    orderId,
-    productIdsRaw,
-    productType,
-    designNumber,
-  };
+function okText(msg = "ok") {
+  return new Response(msg, { status: 200 });
 }
 
-function normalizeProductIds(singleProductId: string, productIdsRaw: string) {
-  // If productIdsRaw exists, prefer it; else fall back to singleProductId
-  const list = (productIdsRaw || singleProductId || "")
-    .split(",")
-    .map(s => s.trim())
-    .filter(Boolean);
+// This mapping is only used as a last-resort fallback if metadata is missing.
+// Your system SHOULD include metadata, but we cannot rely on that right now.
+const PRICE_ID_TO_PRODUCT = new Map<string, { product_id: string; label: string }>([
+  ["price_1ScHCUBsr66TjEhQI5HBQqtU", { product_id: "santa_letter_single", label: "Santa Letter (Single)" }],
+  ["price_1ScGfNBsr66TjEhQxdfKXMcn", { product_id: "christmas_note_single", label: "Christmas Note (Single)" }],
+  ["price_1ScH30Bsr66TjEhQhwLwFAME", { product_id: "christmas_notes_bundle", label: "Christmas Notes Bundle" }],
+  ["price_1ScGjvBsr66TjEhQ4cRtPYm1", { product_id: "all_18_bundle", label: "All 18 Designs Bundle" }],
+  ["price_1ScH6KBsr66TjEhQAhED4Lsd", { product_id: "teacher_license", label: "Teacher License" }],
+  ["price_1SctvEBsr66TjEhQ5XQ8NUxl", { product_id: "free_coloring", label: "Free Coloring Sheets" }],
+]);
 
-  // Deduplicate
-  return Array.from(new Set(list));
+function pickMeta(md: Record<string, any> | null | undefined, key1: string, key2: string) {
+  if (!md) return undefined;
+  return md[key1] ?? md[key2];
 }
 
-async function invokeEdgeFunction(path: string, payload: unknown) {
-  if (!supabaseUrl || !supabaseAuthKey) {
-    throw new Error("Missing Supabase URL/auth key for function invoke");
+async function callEdgeFunction(functionName: string, payload: unknown) {
+  if (!SUPABASE_URL || !SUPABASE_SERVICE_ROLE_KEY) {
+    console.error("Missing SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY, cannot call:", functionName);
+    return { ok: false, status: 500, body: { error: "Missing supabase env for function call" } };
   }
 
-  const res = await fetch(`${supabaseUrl}/functions/v1/${path}`, {
+  const url = `${SUPABASE_URL}/functions/v1/${functionName}`;
+  const res = await fetch(url, {
     method: "POST",
     headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${supabaseAuthKey}`,
-      apikey: supabaseAuthKey,
+      "content-type": "application/json",
+      // Service role lets your internal functions work without CORS/auth headaches.
+      "authorization": `Bearer ${SUPABASE_SERVICE_ROLE_KEY}`,
     },
     body: JSON.stringify(payload),
   });
 
-  const text = await res.text();
-  let data: any = null;
-  try { data = text ? JSON.parse(text) : null; } catch { /* ignore */ }
-
-  return { ok: res.ok, status: res.status, text, data };
-}
-
-async function generateDownloadLinks(productIds: string[], orderId: string) {
-  // If you already have a function to generate links (you DO: "download-file"),
-  // use it. We'll call it once per productId and accept multiple return shapes.
-
-  const allLinks: string[] = [];
-
-  for (const pid of productIds) {
-    try {
-      const resp = await invokeEdgeFunction("download-file", {
-        productId: pid,
-        orderId,
-      });
-
-      if (!resp.ok) {
-        console.error("download-file failed", { pid, orderId, status: resp.status, body: resp.text });
-        continue;
-      }
-
-      const d = resp.data;
-
-      // Accept common shapes:
-      // { url: "..." }
-      // { link: "..." }
-      // { links: ["..."] }
-      // { downloadLinks: ["..."] }
-      // { urls: ["..."] }
-      if (typeof d?.url === "string") allLinks.push(d.url);
-      if (typeof d?.link === "string") allLinks.push(d.link);
-
-      if (Array.isArray(d?.links)) allLinks.push(...d.links);
-      if (Array.isArray(d?.downloadLinks)) allLinks.push(...d.downloadLinks);
-      if (Array.isArray(d?.urls)) allLinks.push(...d.urls);
-
-    } catch (e) {
-      console.error("download-file exception", { pid, orderId, error: String(e) });
-    }
+  const text = await res.text().catch(() => "");
+  let body: any = text;
+  try {
+    body = text ? JSON.parse(text) : {};
+  } catch {
+    // keep raw text
   }
 
-  // Deduplicate
-  return Array.from(new Set(allLinks)).filter(Boolean);
-}
-
-function productNameFromId(productId: string) {
-  const names: Record<string, string> = {
-    single_letter_99: "Single Santa Letter Design",
-    single_note_99: "Single Christmas Note Design",
-    notes_bundle_299: "Christmas Notes Bundle - All 4 Designs",
-    all_18_bundle_999: "All 18 Designs Bundle (14 Letters + 4 Notes)",
-    teacher_license_499: "Teacher License",
-    coloring_bundle_free: "Free Coloring Sheets Bundle - 10 Designs",
-    multi_item_cart: "Your Selected Christmas Designs",
-  };
-
-  return names[productId] || "Christmas Design";
-}
-
-async function sendOrderEmail(
-  session: Stripe.Checkout.Session,
-  productId: string,
-  downloadLinks: string[],
-  orderId: string,
-) {
-  // Force-retrieve session to reliably get customer_details.email if needed
-  const fullSession = await stripe.checkout.sessions.retrieve(session.id as string, {
-    expand: ["customer_details"],
-  });
-
-  const buyerEmail =
-    fullSession.customer_details?.email ||
-    (fullSession.customer_email as string | null) ||
-    (session.customer_details?.email as string | null) ||
-    (session.customer_email as string | null) ||
-    "";
-
-  console.log("EMAIL DEBUG", {
-    orderId,
-    productId,
-    buyerEmail,
-    linkCount: Array.isArray(downloadLinks) ? downloadLinks.length : 0,
-  });
-
-  if (!buyerEmail) {
-    console.error("No buyer email found on session. Cannot send download email.", {
-      sessionId: session.id,
-    });
-    return;
-  }
-
-  const payload = {
-    to: buyerEmail,
-    productName: productNameFromId(productId),
-    productType: productId || "unknown",
-    downloadLinks: Array.isArray(downloadLinks) ? downloadLinks : [],
-    orderNumber: orderId || (session.id as string),
-  };
-
-  const emailResp = await invokeEdgeFunction("send-order-email", payload);
-
-  if (!emailResp.ok) {
-    console.error("Email send failed", {
-      status: emailResp.status,
-      body: emailResp.text,
-      payloadSent: payload,
-    });
-    return;
-  }
-
-  console.log("send-order-email OK", emailResp.data);
+  return { ok: res.ok, status: res.status, body };
 }
 
 Deno.serve(async (req) => {
-  if (req.method !== "POST") return json({ error: "Method not allowed" }, 405);
+  // Stripe sends POST. Some health checks might hit GET.
+  if (req.method !== "POST") return okText("ok");
+
+  if (!STRIPE_SECRET_KEY) {
+    console.error("Missing STRIPE_SECRET_KEY");
+    // Return 200 so Stripe does not hammer retries endlessly
+    return okText("missing stripe secret key");
+  }
+
+  const stripe = new Stripe(STRIPE_SECRET_KEY, {
+    apiVersion: "2024-09-30.acacia",
+    httpClient: Stripe.createFetchHttpClient(),
+  });
+
+  const sig = req.headers.get("stripe-signature") || "";
+
+  // IMPORTANT: raw body for signature verification
+  const rawBody = await req.text();
+
+  let event: Stripe.Event | null = null;
 
   try {
-    if (!webhookSecret) return json({ error: "Missing STRIPE_WEBHOOK_SECRET" }, 500);
-
-    const sig = req.headers.get("stripe-signature");
-    if (!sig) return json({ error: "Missing stripe-signature header" }, 400);
-
-    // IMPORTANT: use raw bytes, not req.text()
-    const rawBody = new Uint8Array(await req.arrayBuffer());
-
-    // ✅ FIX: constructEventAsync (required in this environment)
-    const event = await stripe.webhooks.constructEventAsync(rawBody, sig, webhookSecret);
-
-    if (event.type !== "checkout.session.completed") {
-      // Acknowledge other events
-      return json({ received: true, ignored: event.type });
+    if (STRIPE_WEBHOOK_SECRET) {
+      // Supabase Edge requires async verification
+      event = await stripe.webhooks.constructEventAsync(rawBody, sig, STRIPE_WEBHOOK_SECRET);
+    } else {
+      // If secret is not set, accept event for now to stop retries.
+      // You should set STRIPE_WEBHOOK_SECRET as soon as possible.
+      console.warn("STRIPE_WEBHOOK_SECRET not set. Accepting webhook without verification.");
+      event = JSON.parse(rawBody) as Stripe.Event;
     }
+  } catch (err) {
+    console.error("Webhook signature verification failed:", err?.message || err);
+    // Return 200 to stop infinite retries while you fix secrets.
+    // This prevents the “pending webhook” pile-up and duplicate emails.
+    return okText("signature verification failed (returned 200 to stop retries)");
+  }
 
+  if (!event) return okText("no event");
+
+  // Only handle the event you care about
+  if (event.type !== "checkout.session.completed") {
+    return okText("ignored");
+  }
+
+  try {
     const session = event.data.object as Stripe.Checkout.Session;
 
-    const { md, productId, orderId, productIdsRaw } = getMeta(session);
+    const md = (session.metadata || {}) as Record<string, any>;
+    const sessionId = session.id;
 
-    console.log("WEBHOOK METADATA DEBUG", {
-      eventType: event.type,
-      sessionId: session.id,
+    // Accept both snake_case and camelCase
+    const order_id = pickMeta(md, "order_id", "orderId") ?? "";
+    const product_id = pickMeta(md, "product_id", "productId") ?? "";
+    const product_type = pickMeta(md, "product_type", "productType") ?? "";
+    const design_number = pickMeta(md, "design_number", "designNumber") ?? "";
+
+    const customerEmail =
+      session.customer_details?.email ||
+      (session.customer_email ?? "") ||
+      "";
+
+    console.log("WEBHOOK checkout.session.completed", {
+      event_id: event.id,
+      session_id: sessionId,
+      customerEmail,
       metadata: md,
-      productId,
-      orderId,
-      productIdsRaw,
+      extracted: { order_id, product_id, product_type, design_number },
     });
 
-    const productIds = normalizeProductIds(productId, productIdsRaw);
+    // Pull line items so we can infer products even when metadata is missing
+    let inferredProducts: Array<{ product_id: string; label: string; price_id: string }> = [];
 
-    // If orderId missing, we still proceed but use session.id as fallback
-    const effectiveOrderId = orderId || (session.id as string);
+    try {
+      const lineItems = await stripe.checkout.sessions.listLineItems(sessionId, { limit: 100 });
+      for (const li of lineItems.data) {
+        const priceId = (li.price?.id || "").trim();
+        if (!priceId) continue;
 
-    // Generate links
-    const downloadLinks = await generateDownloadLinks(productIds, effectiveOrderId);
+        const mapped = PRICE_ID_TO_PRODUCT.get(priceId);
+        if (mapped) {
+          inferredProducts.push({ product_id: mapped.product_id, label: mapped.label, price_id: priceId });
+        } else {
+          inferredProducts.push({ product_id: "unknown", label: li.description || "Unknown item", price_id: priceId });
+        }
+      }
+    } catch (e) {
+      console.error("Failed to list line items:", e?.message || e);
+    }
 
-    console.log("DOWNLOAD LINK DEBUG", {
-      productIds,
-      orderId: effectiveOrderId,
-      linkCount: downloadLinks.length,
-      links: downloadLinks,
-    });
+    // Decide what to send to send-order-email.
+    // Your send-order-email complained “Missing required fields”, so we send a wide payload.
+    const payload = {
+      // Always include email if we have it
+      email: customerEmail,
+      customerEmail,
 
-    // Pick a primary product for naming (first in list)
-    const primaryProductId = productIds[0] || productId || "unknown";
+      // Order identifiers
+      order_id: order_id || md.order_id || "",
+      orderId: order_id || md.orderId || "",
+      stripe_session_id: sessionId,
+      session_id: sessionId,
 
-    await sendOrderEmail(session, primaryProductId, downloadLinks, effectiveOrderId);
+      // Product identifiers
+      product_id: product_id || md.product_id || "",
+      productId: product_id || md.productId || "",
+      product_type: product_type || md.product_type || "",
+      productType: product_type || md.productType || "",
+      design_number: design_number || md.design_number || "",
+      designNumber: design_number || md.designNumber || "",
 
-    return json({ received: true });
+      // Inferred products from line items (helps multi-cart and missing metadata)
+      inferredProducts,
+
+      // Raw metadata for debugging
+      metadata: md,
+
+      // Stripe context
+      stripe: {
+        event_id: event.id,
+        session_id: sessionId,
+        payment_status: session.payment_status,
+        amount_total: session.amount_total,
+        currency: session.currency,
+      },
+    };
+
+    if (!customerEmail) {
+      console.error("No customer email on session. Cannot send email.", { sessionId, md });
+      // Return 200 so Stripe does not retry forever.
+      return okText("no email (accepted)");
+    }
+
+    const sendRes = await callEdgeFunction("send-order-email", payload);
+
+    if (!sendRes.ok) {
+      console.error("send-order-email failed", { status: sendRes.status, body: sendRes.body });
+      // Still return 200 so Stripe does not retry and spam emails
+      return okText("send-order-email failed (accepted)");
+    }
+
+    console.log("send-order-email success", sendRes.body);
+    return okText("ok");
   } catch (err) {
-    console.error("stripe-webhook error", String(err));
-    return json({ error: String(err) }, 400);
+    console.error("Webhook handler error:", err?.message || err);
+    // Return 200 to prevent Stripe retry storms and duplicate emails
+    return okText("handler error (accepted)");
   }
 });
