@@ -76,6 +76,7 @@ export const ChristmasCartDrawer: React.FC<ChristmasCartDrawerProps> = ({
         setEmailError('Supabase URL is missing. Please republish in Bolt.');
         return;
       }
+      
 
       const headers: Record<string, string> = {
         'Content-Type': 'application/json',
