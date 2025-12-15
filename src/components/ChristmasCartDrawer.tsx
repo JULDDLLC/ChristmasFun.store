@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { X, Trash2, ShoppingBag, Loader2, Sparkles, Gift, Mail } from 'lucide-react';
 import { useChristmasCart } from '../contexts/ChristmasCartContext';
-import { SUPABASE_ANON_KEY } from '../lib/supabase';
+import { SUPABASE_ANON_KEY, SUPABASE_URL } from '../lib/supabase';
 
 interface ChristmasCartDrawerProps {
   isOpen: boolean;
@@ -65,18 +65,18 @@ export const ChristmasCartDrawer: React.FC<ChristmasCartDrawerProps> = ({
     setEmailError('');
 
     try {
-      // IMPORTANT:
-      // Vite env vars are baked at build time. If Bolt did not inject them into the deployed build,
-      // import.meta.env will be undefined even if Secrets exist.
-      const FALLBACK_SUPABASE_URL = 'https://kvnbgubooykiveogifwt.supabase.co';
-      const functionsBaseUrl = (import.meta.env.VITE_SUPABASE_URL || FALLBACK_SUPABASE_URL).trim();
+      const functionsBaseUrl = (SUPABASE_URL || '').trim();
       const supabaseAnonKey = (SUPABASE_ANON_KEY || '').trim();
 
       if (!functionsBaseUrl) {
-        setEmailError('Supabase URL is missing. Please republish in Bolt.');
+        setEmailError('Supabase URL is missing.');
         return;
       }
-      
+
+      if (!supabaseAnonKey) {
+        setEmailError('Supabase anon key is missing.');
+        return;
+      }
 
       const headers: Record<string, string> = {
         'Content-Type': 'application/json',
@@ -169,7 +169,10 @@ export const ChristmasCartDrawer: React.FC<ChristmasCartDrawerProps> = ({
                   </h3>
                   <div className="space-y-3">
                     {santaLetters.map((item) => (
-                      <div key={item.id} className="bg-white/10 backdrop-blur-md rounded-xl p-4 border border-white/20 group hover:bg-white/15 transition-all">
+                      <div
+                        key={item.id}
+                        className="bg-white/10 backdrop-blur-md rounded-xl p-4 border border-white/20 group hover:bg-white/15 transition-all"
+                      >
                         <div className="flex items-start gap-3">
                           <div className="w-16 h-20 rounded-lg overflow-hidden flex-shrink-0 bg-white/5">
                             <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
@@ -201,7 +204,10 @@ export const ChristmasCartDrawer: React.FC<ChristmasCartDrawerProps> = ({
                   </h3>
                   <div className="space-y-3">
                     {christmasNotes.map((item) => (
-                      <div key={item.id} className="bg-white/10 backdrop-blur-md rounded-xl p-4 border border-white/20 group hover:bg-white/15 transition-all">
+                      <div
+                        key={item.id}
+                        className="bg-white/10 backdrop-blur-md rounded-xl p-4 border border-white/20 group hover:bg-white/15 transition-all"
+                      >
                         <div className="flex items-start gap-3">
                           <div className="w-16 h-20 rounded-lg overflow-hidden flex-shrink-0 bg-white/5">
                             <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
@@ -285,7 +291,11 @@ export const ChristmasCartDrawer: React.FC<ChristmasCartDrawerProps> = ({
               )}
             </button>
 
-            <button onClick={clearCart} disabled={loading} className="w-full mt-2 text-white/60 hover:text-white text-sm py-2 transition-colors">
+            <button
+              onClick={clearCart}
+              disabled={loading}
+              className="w-full mt-2 text-white/60 hover:text-white text-sm py-2 transition-colors"
+            >
               Clear Cart
             </button>
           </div>
