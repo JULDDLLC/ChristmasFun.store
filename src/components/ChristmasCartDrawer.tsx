@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { X, Trash2, ShoppingBag, Loader2, Sparkles, Gift, Mail } from 'lucide-react';
 import { useChristmasCart } from '../contexts/ChristmasCartContext';
 
@@ -17,6 +17,9 @@ export const ChristmasCartDrawer: React.FC<ChristmasCartDrawerProps> = ({
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState('');
   const [emailError, setEmailError] = useState('');
+
+  const supabaseUrl = import.meta.env.VITE_SUPABASE_URL as string | undefined;
+  const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY as string | undefined;
 
   // Load email from localStorage or prop
   useEffect(() => {
@@ -37,30 +40,37 @@ export const ChristmasCartDrawer: React.FC<ChristmasCartDrawerProps> = ({
   }, [email]);
 
   const formatPrice = (price: number) => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
-    }).format(price);
+    return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(price);
   };
 
   const validateEmail = (emailToValidate: string) => {
-    if (!emailToValidate) {
-      return 'Email is required';
-    }
-    if (!emailToValidate.includes('@') || !emailToValidate.includes('.')) {
-      return 'Please enter a valid email address';
-    }
+    if (!emailToValidate) return 'Email is required';
+    if (!emailToValidate.includes('@') || !emailToValidate.includes('.')) return 'Please enter a valid email address';
     return '';
   };
 
+  const santaLetters = useMemo(() => items.filter((item) => item.type === 'santa_letter'), [items]);
+  const christmasNotes = useMemo(() => items.filter((item) => item.type === 'christmas_note'), [items]);
+
+  const totalSavings = useMemo(() => {
+    return items.length >= 14 ? items.length * 0.99 - 9.99 : 0;
+  }, [items.length]);
+
   const handleCheckout = async () => {
+    // HARD stop if drawer is closed or already loading
+    if (!isOpen || loading) return;
+
     const validationError = validateEmail(email);
     if (validationError) {
       setEmailError(validationError);
       return;
     }
 
-    if (items.length === 0) {
+    if (!items || items.length === 0) return;
+
+    if (!supabaseUrl || !supabaseAnonKey) {
+      console.error('Missing env vars', { supabaseUrl, hasAnonKey: Boolean(supabaseAnonKey) });
+      setEmailError('Configuration error. Missing Supabase environment variables.');
       return;
     }
 
@@ -68,108 +78,102 @@ export const ChristmasCartDrawer: React.FC<ChristmasCartDrawerProps> = ({
     setEmailError('');
 
     try {
-      // Use Supabase URL with safe fallback
-      const functionsBaseUrl =
-        import.meta.env.VITE_SUPABASE_URL ??
-        'https://kvnbgubooykiveogifwt.supabase.co';
+      const base = supabaseUrl.replace(/\/$/, '');
+      const endpoint = `${base}/functions/v1/christmas-multi-checkout`;
 
-      if (!functionsBaseUrl) {
-        console.error('Supabase URL missing');
-        setEmailError('Configuration error. Please try again later.');
-        return;
-      }
+      // Build an "accept anything" payload so the server has no excuse
+      const normalizedItems = items.map((item) => ({
+        id: item.id,
+        type: item.type,
+        design_number: item.designNumber ?? null,
+        designNumber: item.designNumber ?? null,
+        note_number: item.noteNumber ?? null,
+        noteNumber: item.noteNumber ?? null,
+        name: item.name,
+        description: item.description,
+        image: item.image,
+        price: item.price,
+        quantity: (item as any).quantity ?? 1,
+      }));
 
-      const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+      const payload = {
+        // email keys (both)
+        customer_email: email,
+        customerEmail: email,
+        email: email,
 
-      // Build headers and only include auth if we actually have a key
-      const headers: Record<string, string> = {
-        'Content-Type': 'application/json',
+        // item keys (both)
+        items: normalizedItems,
+        line_items: normalizedItems,
+        lineItems: normalizedItems,
+
+        // urls
+        success_url: `${window.location.origin}/success?session_id={CHECKOUT_SESSION_ID}`,
+        successUrl: `${window.location.origin}/success?session_id={CHECKOUT_SESSION_ID}`,
+        cancel_url: window.location.href,
+        cancelUrl: window.location.href,
+
+        // optional metadata
+        source: 'ChristmasCartDrawer',
       };
 
-      if (supabaseAnonKey) {
-        headers.Authorization = `Bearer ${supabaseAnonKey}`;
-        headers.apikey = supabaseAnonKey;
+      console.log('[christmas-multi-checkout] POST', endpoint, payload);
+
+      const response = await fetch(endpoint, {
+        method: 'POST',
+        headers: {
+          apikey: supabaseAnonKey,
+          Authorization: `Bearer ${supabaseAnonKey}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+      });
+
+      const raw = await response.text();
+      let data: any = null;
+
+      try {
+        data = JSON.parse(raw);
+      } catch {
+        // keep as raw text
       }
 
-      console.log('Starting checkout with items:', items, 'email:', email);
-
-      const response = await fetch(
-        `${functionsBaseUrl}/functions/v1/christmas-multi-checkout`,
-        {
-          method: 'POST',
-          headers,
-          body: JSON.stringify({
-            items: items.map((item) => ({
-              type: item.type,
-              designNumber: item.designNumber ?? null,
-              noteNumber: item.noteNumber ?? null,
-              name: item.name,
-              price: item.price,
-            })),
-            customerEmail: email,
-          }),
-        }
-      );
-
-      console.log('Checkout response status:', response.status);
+      console.log('[christmas-multi-checkout] status', response.status, 'body', data ?? raw);
 
       if (!response.ok) {
-        const errorText = await response.text();
-        console.error('Checkout failed:', errorText);
-        try {
-          const errorData = JSON.parse(errorText);
-          setEmailError(errorData.error || 'Checkout failed. Please try again.');
-        } catch {
-          setEmailError('Checkout failed. Please try again.');
-        }
+        const msg = data?.error || data?.message || raw || `Checkout failed (${response.status})`;
+        setEmailError(String(msg));
         return;
       }
 
-      const data = await response.json();
-      console.log('Checkout response data:', data);
-
-      if (data.error) {
-        setEmailError(data.error);
+      const checkoutUrl = data?.url || data?.checkoutUrl;
+      if (!checkoutUrl) {
+        setEmailError(data?.error || 'Checkout failed. No Stripe URL returned.');
         return;
       }
 
-      if (data.url) {
-        clearCart();
-        window.location.href = data.url;
-      } else {
-        setEmailError('Failed to create checkout session. Please try again.');
-      }
-    } catch (error) {
-      console.error('Checkout error:', error);
-      setEmailError('An error occurred. Please try again.');
+      clearCart();
+      window.location.href = checkoutUrl;
+    } catch (err) {
+      console.error('Checkout error:', err);
+      setEmailError('An error occurred while starting checkout. Please try again.');
     } finally {
       setLoading(false);
     }
   };
 
-  const santaLetters = items.filter((item) => item.type === 'santa_letter');
-  const christmasNotes = items.filter((item) => item.type === 'christmas_note');
-  const totalSavings = items.length >= 14 ? items.length * 0.99 - 9.99 : 0;
-
   if (!isOpen) return null;
 
   return (
     <>
-      <div
-        className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40 transition-opacity"
-        onClick={onClose}
-      />
+      <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40 transition-opacity" onClick={onClose} />
       <div className="fixed right-0 top-0 h-full w-full max-w-md bg-gradient-to-br from-slate-950 via-blue-950 to-slate-950 shadow-2xl z-50 transform transition-transform duration-300 ease-in-out flex flex-col border-l border-white/20">
         <div className="flex items-center justify-between p-6 border-b border-white/20 bg-white/5 backdrop-blur-xl">
           <h2 className="text-2xl font-serif text-white flex items-center space-x-2">
             <ShoppingBag className="w-6 h-6 text-amber-300" />
             <span>Your Cart</span>
           </h2>
-          <button
-            onClick={onClose}
-            className="p-2 rounded-lg hover:bg-white/10 transition-colors"
-            aria-label="Close cart"
-          >
+          <button onClick={onClose} className="p-2 rounded-lg hover:bg-white/10 transition-colors" aria-label="Close cart">
             <X className="w-6 h-6 text-white" />
           </button>
         </div>
@@ -197,22 +201,12 @@ export const ChristmasCartDrawer: React.FC<ChristmasCartDrawerProps> = ({
                       >
                         <div className="flex items-start gap-3">
                           <div className="w-16 h-20 rounded-lg overflow-hidden flex-shrink-0 bg-white/5">
-                            <img
-                              src={item.image}
-                              alt={item.name}
-                              className="w-full h-full object-cover"
-                            />
+                            <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
                           </div>
                           <div className="flex-1 min-w-0">
-                            <h4 className="text-white font-semibold text-sm mb-1 truncate">
-                              {item.name}
-                            </h4>
-                            <p className="text-white/60 text-xs mb-2 line-clamp-2">
-                              {item.description}
-                            </p>
-                            <p className="text-amber-300 font-bold text-sm">
-                              {formatPrice(item.price)}
-                            </p>
+                            <h4 className="text-white font-semibold text-sm mb-1 truncate">{item.name}</h4>
+                            <p className="text-white/60 text-xs mb-2 line-clamp-2">{item.description}</p>
+                            <p className="text-amber-300 font-bold text-sm">{formatPrice(item.price)}</p>
                           </div>
                           <button
                             onClick={() => removeFromCart(item.id)}
@@ -242,22 +236,12 @@ export const ChristmasCartDrawer: React.FC<ChristmasCartDrawerProps> = ({
                       >
                         <div className="flex items-start gap-3">
                           <div className="w-16 h-20 rounded-lg overflow-hidden flex-shrink-0 bg-white/5">
-                            <img
-                              src={item.image}
-                              alt={item.name}
-                              className="w-full h-full object-cover"
-                            />
+                            <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
                           </div>
                           <div className="flex-1 min-w-0">
-                            <h4 className="text-white font-semibold text-sm mb-1 truncate">
-                              {item.name}
-                            </h4>
-                            <p className="text-white/60 text-xs mb-2 line-clamp-2">
-                              {item.description}
-                            </p>
-                            <p className="text-amber-300 font-bold text-sm">
-                              {formatPrice(item.price)}
-                            </p>
+                            <h4 className="text-white font-semibold text-sm mb-1 truncate">{item.name}</h4>
+                            <p className="text-white/60 text-xs mb-2 line-clamp-2">{item.description}</p>
+                            <p className="text-amber-300 font-bold text-sm">{formatPrice(item.price)}</p>
                           </div>
                           <button
                             onClick={() => removeFromCart(item.id)}
@@ -277,13 +261,10 @@ export const ChristmasCartDrawer: React.FC<ChristmasCartDrawerProps> = ({
                 <div className="bg-gradient-to-r from-amber-500/20 to-amber-600/20 backdrop-blur-md rounded-xl p-4 border border-amber-400/30">
                   <div className="flex items-center gap-2 mb-2">
                     <Sparkles className="w-5 h-5 text-amber-300" />
-                    <p className="text-amber-200 font-semibold">
-                      Bundle Savings Available!
-                    </p>
+                    <p className="text-amber-200 font-semibold">Bundle Savings Available!</p>
                   </div>
                   <p className="text-white/80 text-sm">
-                    You could save {formatPrice(totalSavings)} with the Complete Bundle
-                    (18 designs) for just $9.99!
+                    You could save {formatPrice(totalSavings)} with the Complete Bundle (18 designs) for just $9.99!
                   </p>
                 </div>
               )}
@@ -295,16 +276,11 @@ export const ChristmasCartDrawer: React.FC<ChristmasCartDrawerProps> = ({
           <div className="border-t border-white/20 p-6 bg-black/20 backdrop-blur-xl">
             <div className="flex items-center justify-between mb-4">
               <span className="text-white text-lg font-semibold">Total:</span>
-              <span className="text-amber-300 text-2xl font-bold">
-                {formatPrice(getCartTotal())}
-              </span>
+              <span className="text-amber-300 text-2xl font-bold">{formatPrice(getCartTotal())}</span>
             </div>
 
             <div className="mb-4">
-              <label
-                htmlFor="cart-email"
-                className="block text-white text-sm font-medium mb-2 flex items-center gap-2"
-              >
+              <label htmlFor="cart-email" className="block text-white text-sm font-medium mb-2 flex items-center gap-2">
                 <Mail className="w-4 h-4" />
                 Email Address
               </label>
@@ -315,9 +291,7 @@ export const ChristmasCartDrawer: React.FC<ChristmasCartDrawerProps> = ({
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="your.email@example.com"
                 className={`w-full px-4 py-3 rounded-xl bg-white/10 backdrop-blur-md border ${
-                  emailError
-                    ? 'border-red-400 ring-2 ring-red-400/50'
-                    : 'border-white/20'
+                  emailError ? 'border-red-400 ring-2 ring-red-400/50' : 'border-white/20'
                 } text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-amber-400 transition-all`}
               />
               {emailError && (
@@ -342,6 +316,7 @@ export const ChristmasCartDrawer: React.FC<ChristmasCartDrawerProps> = ({
                 </>
               )}
             </button>
+
             <button
               onClick={clearCart}
               disabled={loading}
