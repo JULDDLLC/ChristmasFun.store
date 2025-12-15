@@ -8,19 +8,16 @@ interface CartDrawerProps {
   onClose: () => void;
 }
 
-function getClientEnv() {
-  const url = (import.meta as any)?.env?.VITE_SUPABASE_URL as string | undefined;
-  const anonKey = (import.meta as any)?.env?.VITE_SUPABASE_ANON_KEY as string | undefined;
-  return { url, anonKey };
-}
-
 export const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose }) => {
   const { items, removeFromCart, updateQuantity, getCartTotal, clearCart } = useCart();
   const { user } = useAuth();
   const [loading, setLoading] = useState(false);
 
   const formatPrice = (price: number) => {
-    return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(price);
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+    }).format(price);
   };
 
   const handleCheckout = async () => {
@@ -47,24 +44,26 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose }) => {
     setLoading(true);
 
     try {
-      const { url: supabaseUrl, anonKey } = getClientEnv();
+      const supabaseUrl =
+        (import.meta.env.VITE_SUPABASE_URL as string | undefined)?.trim() || '';
 
-      if (!supabaseUrl || !anonKey) {
-        console.error('Missing client env vars', { supabaseUrl: !!supabaseUrl, anonKey: !!anonKey });
+      const supabaseAnonKey =
+        (import.meta.env.VITE_SUPABASE_ANON_KEY as string | undefined)?.trim() || '';
+
+      if (!supabaseUrl || !supabaseAnonKey) {
+        console.error('Missing VITE_SUPABASE_URL or VITE_SUPABASE_ANON_KEY');
         alert('Configuration error. Missing Supabase environment variables.');
         return;
       }
 
       const mode = hasSubscription ? 'subscription' : 'payment';
 
-      // NOTE: This drawer uses stripe-checkout and sends only one price_id (first item).
-      // If you need multi-item support here too, it must call a multi-checkout function.
       const response = await fetch(`${supabaseUrl}/functions/v1/stripe-checkout`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          apikey: anonKey,
-          Authorization: `Bearer ${anonKey}`,
+          Authorization: `Bearer ${supabaseAnonKey}`,
+          apikey: supabaseAnonKey,
         },
         body: JSON.stringify({
           price_id: items[0].product.priceId,
@@ -74,18 +73,14 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose }) => {
         }),
       });
 
-      const text = await response.text();
-      let data: any = {};
-      try {
-        data = JSON.parse(text);
-      } catch {
-        // leave as {}
+      if (!response.ok) {
+        const errText = await response.text();
+        console.error('stripe-checkout failed:', response.status, errText);
+        alert('Failed to start checkout process. Please try again.');
+        return;
       }
 
-      if (!response.ok) {
-        console.error('Checkout failed', response.status, text);
-        throw new Error(data?.error || 'Failed to create checkout session');
-      }
+      const data = await response.json();
 
       if (data?.url) {
         clearCart();
@@ -93,7 +88,8 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose }) => {
         return;
       }
 
-      throw new Error('Failed to create checkout session');
+      console.error('stripe-checkout response missing url:', data);
+      alert('Failed to create checkout session. Please try again.');
     } catch (error) {
       console.error('Error creating checkout:', error);
       alert('Failed to start checkout process. Please try again.');
@@ -106,14 +102,21 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose }) => {
 
   return (
     <>
-      <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40 transition-opacity" onClick={onClose} />
+      <div
+        className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40 transition-opacity"
+        onClick={onClose}
+      />
       <div className="fixed right-0 top-0 h-full w-full max-w-md bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 shadow-2xl z-50 transform transition-transform duration-300 ease-in-out flex flex-col">
         <div className="flex items-center justify-between p-6 border-b border-white/20">
           <h2 className="text-2xl font-bold text-white flex items-center space-x-2">
             <ShoppingBag className="w-6 h-6" />
             <span>Shopping Cart</span>
           </h2>
-          <button onClick={onClose} className="p-2 rounded-lg hover:bg-white/10 transition-colors" aria-label="Close cart">
+          <button
+            onClick={onClose}
+            className="p-2 rounded-lg hover:bg-white/10 transition-colors"
+            aria-label="Close cart"
+          >
             <X className="w-6 h-6 text-white" />
           </button>
         </div>
@@ -128,14 +131,21 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose }) => {
           ) : (
             <div className="space-y-4">
               {items.map((item) => (
-                <div key={item.product.id} className="bg-white/10 backdrop-blur-md rounded-lg p-4 border border-white/20">
+                <div
+                  key={item.product.id}
+                  className="bg-white/10 backdrop-blur-md rounded-lg p-4 border border-white/20"
+                >
                   <div className="flex items-start justify-between mb-3">
                     <div className="flex-1">
                       <h3 className="text-white font-semibold mb-1">{item.product.name}</h3>
-                      <p className="text-white/60 text-sm mb-2 line-clamp-2">{item.product.description}</p>
+                      <p className="text-white/60 text-sm mb-2 line-clamp-2">
+                        {item.product.description}
+                      </p>
                       <p className="text-white font-bold">
                         {formatPrice(item.product.price)}
-                        {item.product.mode === 'subscription' && <span className="text-sm text-white/70">/month</span>}
+                        {item.product.mode === 'subscription' && (
+                          <span className="text-sm text-white/70">/month</span>
+                        )}
                       </p>
                     </div>
                     <button
@@ -156,7 +166,9 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose }) => {
                       >
                         <Minus className="w-4 h-4 text-white" />
                       </button>
-                      <span className="text-white font-medium w-8 text-center">{item.quantity}</span>
+                      <span className="text-white font-medium w-8 text-center">
+                        {item.quantity}
+                      </span>
                       <button
                         onClick={() => updateQuantity(item.product.id, item.quantity + 1)}
                         className="p-1 rounded bg-white/10 hover:bg-white/20 transition-colors"
@@ -179,22 +191,24 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose }) => {
           <div className="border-t border-white/20 p-6 bg-black/20">
             <div className="flex items-center justify-between mb-4">
               <span className="text-white text-lg font-semibold">Total:</span>
-              <span className="text-white text-2xl font-bold">{formatPrice(getCartTotal())}</span>
+              <span className="text-white text-2xl font-bold">
+                {formatPrice(getCartTotal())}
+              </span>
             </div>
-
             <button
               onClick={handleCheckout}
               disabled={loading}
               className="w-full bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed text-white py-3 rounded-lg font-bold transition-all duration-200 flex items-center justify-center space-x-2"
             >
-              {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : (
+              {loading ? (
+                <Loader2 className="w-5 h-5 animate-spin" />
+              ) : (
                 <>
                   <ShoppingBag className="w-5 h-5" />
                   <span>Proceed to Checkout</span>
                 </>
               )}
             </button>
-
             <button
               onClick={clearCart}
               disabled={loading}
