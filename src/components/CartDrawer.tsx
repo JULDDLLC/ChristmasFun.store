@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { X, Minus, Plus, Trash2, ShoppingBag, Loader2 } from 'lucide-react';
 import { useCart } from '../contexts/CartContext';
 import { useAuth } from '../hooks/useAuth';
@@ -13,68 +13,113 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose }) => {
   const { user } = useAuth();
   const [loading, setLoading] = useState(false);
 
+  const supabaseUrl = import.meta.env.VITE_SUPABASE_URL as string | undefined;
+  const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY as string | undefined;
+
   const formatPrice = (price: number) => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
-    }).format(price);
+    return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(price);
   };
 
+  const hasSubscription = useMemo(
+    () => items.some((item) => item.product.mode === 'subscription'),
+    [items]
+  );
+  const hasPayment = useMemo(
+    () => items.some((item) => item.product.mode === 'payment'),
+    [items]
+  );
+
   const handleCheckout = async () => {
-    if (!user) {
-      alert('Please sign in to checkout');
-      return;
-    }
+    if (items.length === 0) return;
 
-    if (items.length === 0) {
-      return;
-    }
-
-    const hasSubscription = items.some(item => item.product.mode === 'subscription');
-    const hasPayment = items.some(item => item.product.mode === 'payment');
-
+    // Keep your cart rules
     if (hasSubscription && hasPayment) {
       alert('Cannot mix subscriptions and one-time purchases in the same cart. Please checkout separately.');
       return;
     }
-
     if (hasSubscription && items.length > 1) {
       alert('You can only subscribe to one product at a time. Please remove other subscriptions from your cart.');
       return;
     }
 
+    // If this app truly requires auth, keep it.
+    // If your ChristmasFun.store flow should NOT require auth, remove this block.
+    if (!user?.email) {
+      alert('Please sign in to checkout');
+      return;
+    }
+
+    if (!supabaseUrl || !supabaseAnonKey) {
+      console.error('Missing env vars', { supabaseUrl, hasAnonKey: Boolean(supabaseAnonKey) });
+      alert('Checkout is not configured (missing Supabase env vars).');
+      return;
+    }
+
+    const mode = hasSubscription ? 'subscription' : 'payment';
+
+    // Send full cart as line_items (Stripe format)
+    const line_items = items.map((item) => ({
+      price: item.product.priceId,
+      quantity: item.quantity,
+    }));
+
+    // Backward compatible payload keys
+    const payload = {
+      mode,
+      customer_email: user.email,
+      email: user.email,
+
+      // For single-item handlers (some implementations only read one price)
+      price_id: items[0]?.product?.priceId,
+      priceId: items[0]?.product?.priceId,
+
+      // For cart handlers
+      line_items,
+      lineItems: line_items,
+
+      success_url: `${window.location.origin}/success?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: window.location.href,
+    };
+
     setLoading(true);
     try {
-      const lineItems = items.map(item => ({
-        price: item.product.priceId,
-        quantity: item.quantity,
-      }));
+      const url = `${supabaseUrl.replace(/\/$/, '')}/functions/v1/stripe-checkout`;
 
-      const mode = hasSubscription ? 'subscription' : 'payment';
+      console.log('[checkout] POST', url, payload);
 
-      const response = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/stripe-checkout`, {
-    
+      const response = await fetch(url, {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
+          apikey: supabaseAnonKey,
+          Authorization: `Bearer ${supabaseAnonKey}`,
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          price_id: items[0].product.priceId,
-          mode: mode,
-          success_url: `${window.location.origin}/success?session_id={CHECKOUT_SESSION_ID}`,
-          cancel_url: window.location.href,
-        }),
+        body: JSON.stringify(payload),
       });
 
-      const data = await response.json();
+      const text = await response.text();
+      let data: any = null;
 
-      if (data.url) {
-        clearCart();
-        window.location.href = data.url;
-      } else {
-        throw new Error('Failed to create checkout session');
+      try {
+        data = JSON.parse(text);
+      } catch {
+        // keep raw text if not JSON
       }
+
+      if (!response.ok) {
+        console.error('Checkout function failed', { status: response.status, text, data });
+        throw new Error(data?.error || `Checkout failed (${response.status})`);
+      }
+
+      const checkoutUrl = data?.url || data?.checkoutUrl;
+      if (!checkoutUrl) {
+        console.error('No checkout URL returned', { data, text });
+        throw new Error('No checkout URL returned from server');
+      }
+
+      // Only clear cart when we are actually redirecting
+      clearCart();
+      window.location.href = checkoutUrl;
     } catch (error) {
       console.error('Error creating checkout:', error);
       alert('Failed to start checkout process. Please try again.');
@@ -87,21 +132,14 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose }) => {
 
   return (
     <>
-      <div
-        className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40 transition-opacity"
-        onClick={onClose}
-      />
+      <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40 transition-opacity" onClick={onClose} />
       <div className="fixed right-0 top-0 h-full w-full max-w-md bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 shadow-2xl z-50 transform transition-transform duration-300 ease-in-out flex flex-col">
         <div className="flex items-center justify-between p-6 border-b border-white/20">
           <h2 className="text-2xl font-bold text-white flex items-center space-x-2">
             <ShoppingBag className="w-6 h-6" />
             <span>Shopping Cart</span>
           </h2>
-          <button
-            onClick={onClose}
-            className="p-2 rounded-lg hover:bg-white/10 transition-colors"
-            aria-label="Close cart"
-          >
+          <button onClick={onClose} className="p-2 rounded-lg hover:bg-white/10 transition-colors" aria-label="Close cart">
             <X className="w-6 h-6 text-white" />
           </button>
         </div>
@@ -116,21 +154,14 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose }) => {
           ) : (
             <div className="space-y-4">
               {items.map((item) => (
-                <div
-                  key={item.product.id}
-                  className="bg-white/10 backdrop-blur-md rounded-lg p-4 border border-white/20"
-                >
+                <div key={item.product.id} className="bg-white/10 backdrop-blur-md rounded-lg p-4 border border-white/20">
                   <div className="flex items-start justify-between mb-3">
                     <div className="flex-1">
                       <h3 className="text-white font-semibold mb-1">{item.product.name}</h3>
-                      <p className="text-white/60 text-sm mb-2 line-clamp-2">
-                        {item.product.description}
-                      </p>
+                      <p className="text-white/60 text-sm mb-2 line-clamp-2">{item.product.description}</p>
                       <p className="text-white font-bold">
                         {formatPrice(item.product.price)}
-                        {item.product.mode === 'subscription' && (
-                          <span className="text-sm text-white/70">/month</span>
-                        )}
+                        {item.product.mode === 'subscription' && <span className="text-sm text-white/70">/month</span>}
                       </p>
                     </div>
                     <button
@@ -151,9 +182,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose }) => {
                       >
                         <Minus className="w-4 h-4 text-white" />
                       </button>
-                      <span className="text-white font-medium w-8 text-center">
-                        {item.quantity}
-                      </span>
+                      <span className="text-white font-medium w-8 text-center">{item.quantity}</span>
                       <button
                         onClick={() => updateQuantity(item.product.id, item.quantity + 1)}
                         className="p-1 rounded bg-white/10 hover:bg-white/20 transition-colors"
@@ -176,10 +205,9 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose }) => {
           <div className="border-t border-white/20 p-6 bg-black/20">
             <div className="flex items-center justify-between mb-4">
               <span className="text-white text-lg font-semibold">Total:</span>
-              <span className="text-white text-2xl font-bold">
-                {formatPrice(getCartTotal())}
-              </span>
+              <span className="text-white text-2xl font-bold">{formatPrice(getCartTotal())}</span>
             </div>
+
             <button
               onClick={handleCheckout}
               disabled={loading}
@@ -194,6 +222,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose }) => {
                 </>
               )}
             </button>
+
             <button
               onClick={clearCart}
               disabled={loading}
