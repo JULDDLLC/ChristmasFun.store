@@ -79,12 +79,12 @@ export const ChristmasCartDrawer: React.FC<ChristmasCartDrawerProps> = ({
 
       // Supabase functions usually require the anon key as apikey.
       // If it is missing in the deployed build, tell the truth clearly.
-      if (!supabaseAnonKey) {
-        setEmailError(
-          'Missing VITE_SUPABASE_ANON_KEY in the deployed build. In Bolt, ensure VITE_SUPABASE_ANON_KEY is set for the frontend build, then republish.'
-        );
-        return;
-      }
+     if (!supabaseAnonKey) {
+  setEmailError(
+    'Missing VITE_SUPABASE_ANON_KEY in the deployed build...'
+  );
+  return;
+}
 
       const headers: Record<string, string> = {
         'Content-Type': 'application/json',
