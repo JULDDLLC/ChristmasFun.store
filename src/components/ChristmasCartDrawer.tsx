@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { X, Trash2, ShoppingBag, Loader2, Sparkles, Gift, Mail } from 'lucide-react';
 import { useChristmasCart } from '../contexts/ChristmasCartContext';
+import { SUPABASE_ANON_KEY } from '../lib/supabase';
 
 interface ChristmasCartDrawerProps {
   isOpen: boolean;
@@ -69,22 +70,12 @@ export const ChristmasCartDrawer: React.FC<ChristmasCartDrawerProps> = ({
       // import.meta.env will be undefined even if Secrets exist.
       const FALLBACK_SUPABASE_URL = 'https://kvnbgubooykiveogifwt.supabase.co';
       const functionsBaseUrl = (import.meta.env.VITE_SUPABASE_URL || FALLBACK_SUPABASE_URL).trim();
-
-      const supabaseAnonKey = (import.meta.env.VITE_SUPABASE_ANON_KEY || '').trim();
+      const supabaseAnonKey = (SUPABASE_ANON_KEY || '').trim();
 
       if (!functionsBaseUrl) {
         setEmailError('Supabase URL is missing. Please republish in Bolt.');
         return;
       }
-
-      // Supabase functions usually require the anon key as apikey.
-      // If it is missing in the deployed build, tell the truth clearly.
-     if (!supabaseAnonKey) {
-  setEmailError(
-    'Missing VITE_SUPABASE_ANON_KEY in the deployed build...'
-  );
-  return;
-}
 
       const headers: Record<string, string> = {
         'Content-Type': 'application/json',
