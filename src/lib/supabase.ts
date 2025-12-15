@@ -1,8 +1,24 @@
 import { createClient } from '@supabase/supabase-js';
 
-export const SUPABASE_URL = 'https://kvnbgubooykiveogifwt.supabase.co';
+// Fallback is ok for URL. Key should come from env/secrets.
+const FALLBACK_SUPABASE_URL = 'https://kvnbgubooykiveogifwt.supabase.co';
 
-// Paste your anon key between the quotes (no extra spaces, no newlines)
-export const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imt2bmJndWJvb3lraXZlb2dpZnd0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjUwMzg4OTUsImV4cCI6MjA4MDYxNDg5NX0.mJLw-MZSPVJEXc23EM8hrueTOXDhjsu9VRrifqKVBBo';
+// Vite only exposes variables prefixed with VITE_*.
+// Bolt "Secrets" may be saved without VITE_ though, so we try both.
+const env = (import.meta as any).env ?? {};
 
-export const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+export const SUPABASE_URL: string =
+  (env.VITE_SUPABASE_URL as string | undefined)?.trim() ||
+  (env.SUPABASE_URL as string | undefined)?.trim() ||
+  FALLBACK_SUPABASE_URL;
+
+export const SUPABASE_ANON_KEY: string =
+  (env.VITE_SUPABASE_ANON_KEY as string | undefined)?.trim() ||
+  (env.SUPABASE_ANON_KEY as string | undefined)?.trim() ||
+  '';
+
+export const supabase = createClient(
+  SUPABASE_URL,
+  // do NOT crash the app if the key is missing
+  SUPABASE_ANON_KEY || 'missing-anon-key'
+);
