@@ -46,7 +46,6 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
     }),
   }
 );
- 
       const data = await response.json();
 
       if (data.url) {
