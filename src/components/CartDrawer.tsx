@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { X, Minus, Plus, Trash2, ShoppingBag, Loader2 } from 'lucide-react';
 import { useCart } from '../contexts/CartContext';
-import { useAuth } from '../hooks/useAuth';
 
 interface CartDrawerProps {
   isOpen: boolean;
@@ -10,7 +9,6 @@ interface CartDrawerProps {
 
 export const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose }) => {
   const { items, removeFromCart, updateQuantity, getCartTotal, clearCart } = useCart();
-  const { user } = useAuth();
   const [loading, setLoading] = useState(false);
 
   const formatPrice = (price: number) => {
@@ -21,12 +19,21 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose }) => {
   };
 
   const handleCheckout = async () => {
-    if (!user) {
-      alert('Please sign in to checkout');
+    if (items.length === 0 || loading) return;
+
+    // Vite env vars (frontend)
+    const supabaseUrl =
+      import.meta.env.VITE_SUPABASE_URL ||
+      'https://kvnbgubooykiveogifwt.supabase.co';
+
+    const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+
+    // If these are missing in the deployed build, checkout will never fire
+    if (!supabaseUrl || !supabaseAnonKey) {
+      console.error('Missing VITE_SUPABASE_URL or VITE_SUPABASE_ANON_KEY in frontend build env.');
+      alert('Configuration error. Missing Supabase environment variables.');
       return;
     }
-
-    if (items.length === 0) return;
 
     const hasSubscription = items.some((item) => item.product.mode === 'subscription');
     const hasPayment = items.some((item) => item.product.mode === 'payment');
@@ -44,20 +51,10 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose }) => {
     setLoading(true);
 
     try {
-      const supabaseUrl =
-        (import.meta.env.VITE_SUPABASE_URL as string | undefined)?.trim() || '';
-
-      const supabaseAnonKey =
-        (import.meta.env.VITE_SUPABASE_ANON_KEY as string | undefined)?.trim() || '';
-
-      if (!supabaseUrl || !supabaseAnonKey) {
-        console.error('Missing VITE_SUPABASE_URL or VITE_SUPABASE_ANON_KEY');
-        alert('Configuration error. Missing Supabase environment variables.');
-        return;
-      }
-
       const mode = hasSubscription ? 'subscription' : 'payment';
 
+      // NOTE: This function payload matches your current stripe-checkout style.
+      // If your function expects a different shape, we’ll align it next.
       const response = await fetch(`${supabaseUrl}/functions/v1/stripe-checkout`, {
         method: 'POST',
         headers: {
@@ -73,14 +70,20 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose }) => {
         }),
       });
 
-      if (!response.ok) {
-        const errText = await response.text();
-        console.error('stripe-checkout failed:', response.status, errText);
-        alert('Failed to start checkout process. Please try again.');
-        return;
+      const text = await response.text();
+      let data: any = null;
+
+      try {
+        data = JSON.parse(text);
+      } catch {
+        // leave as null
       }
 
-      const data = await response.json();
+      if (!response.ok) {
+        console.error('Checkout failed:', response.status, text);
+        alert((data && data.error) ? data.error : 'Checkout failed. Please try again.');
+        return;
+      }
 
       if (data?.url) {
         clearCart();
@@ -88,7 +91,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose }) => {
         return;
       }
 
-      console.error('stripe-checkout response missing url:', data);
+      console.error('No checkout URL returned:', data);
       alert('Failed to create checkout session. Please try again.');
     } catch (error) {
       console.error('Error creating checkout:', error);
