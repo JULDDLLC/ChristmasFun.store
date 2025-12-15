@@ -29,20 +29,24 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
 
     setLoading(true);
     try {
-      const response = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/stripe-checkout`, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          price_id: product.priceId,
-          mode: product.mode,
-          success_url: `${window.location.origin}/success?session_id={CHECKOUT_SESSION_ID}`,
-          cancel_url: window.location.href,
-        }),
-      });
-
+  const response = await fetch(
+  `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/stripe-checkout`,
+  {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
+      apikey: import.meta.env.VITE_SUPABASE_ANON_KEY,
+    },
+    body: JSON.stringify({
+      price_id: product.priceId,
+      mode: product.mode,
+      success_url: `${window.location.origin}/success?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: window.location.href,
+    }),
+  }
+);
+ 
       const data = await response.json();
 
       if (data.url) {
