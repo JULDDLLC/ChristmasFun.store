@@ -6,7 +6,7 @@ const FALLBACK_SUPABASE_URL = 'https://kvnbgubooykiveogifwt.supabase.co';
 // IMPORTANT:
 // The anon key is public. It is safe to include as a fallback.
 // Do NOT ever put the service role key in frontend code.
-const FALLBACK_SUPABASE_ANON_KEY = ''; // <-- paste your VITE_SUPABASE_ANON_KEY value here
+const FALLBACK_SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imt2bmJndWJvb3lraXZlb2dpZnd0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjUwMzg4OTUsImV4cCI6MjA4MDYxNDg5NX0.mJLw-MZSPVJEXc23EM8hrueTOXDhjsu9VRrifqKVBBo'; // <-- paste your VITE_SUPABASE_ANON_KEY value here
 
 const supabaseUrl =
   (import.meta.env.VITE_SUPABASE_URL as string | undefined)?.trim() ||
