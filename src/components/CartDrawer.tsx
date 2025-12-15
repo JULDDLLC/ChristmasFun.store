@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useState } from 'react';
 import { X, Minus, Plus, Trash2, ShoppingBag, Loader2 } from 'lucide-react';
 import { useCart } from '../contexts/CartContext';
 import { useAuth } from '../hooks/useAuth';
@@ -8,118 +8,92 @@ interface CartDrawerProps {
   onClose: () => void;
 }
 
+function getClientEnv() {
+  const url = (import.meta as any)?.env?.VITE_SUPABASE_URL as string | undefined;
+  const anonKey = (import.meta as any)?.env?.VITE_SUPABASE_ANON_KEY as string | undefined;
+  return { url, anonKey };
+}
+
 export const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose }) => {
   const { items, removeFromCart, updateQuantity, getCartTotal, clearCart } = useCart();
   const { user } = useAuth();
   const [loading, setLoading] = useState(false);
 
-  const supabaseUrl = import.meta.env.VITE_SUPABASE_URL as string | undefined;
-  const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY as string | undefined;
-
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(price);
   };
 
-  const hasSubscription = useMemo(
-    () => items.some((item) => item.product.mode === 'subscription'),
-    [items]
-  );
-  const hasPayment = useMemo(
-    () => items.some((item) => item.product.mode === 'payment'),
-    [items]
-  );
-
   const handleCheckout = async () => {
+    if (!user) {
+      alert('Please sign in to checkout');
+      return;
+    }
+
     if (items.length === 0) return;
 
-    // Keep your cart rules
+    const hasSubscription = items.some((item) => item.product.mode === 'subscription');
+    const hasPayment = items.some((item) => item.product.mode === 'payment');
+
     if (hasSubscription && hasPayment) {
       alert('Cannot mix subscriptions and one-time purchases in the same cart. Please checkout separately.');
       return;
     }
+
     if (hasSubscription && items.length > 1) {
       alert('You can only subscribe to one product at a time. Please remove other subscriptions from your cart.');
       return;
     }
 
-    // If this app truly requires auth, keep it.
-    // If your ChristmasFun.store flow should NOT require auth, remove this block.
-    if (!user?.email) {
-      alert('Please sign in to checkout');
-      return;
-    }
-
-    if (!supabaseUrl || !supabaseAnonKey) {
-      console.error('Missing env vars', { supabaseUrl, hasAnonKey: Boolean(supabaseAnonKey) });
-      alert('Checkout is not configured (missing Supabase env vars).');
-      return;
-    }
-
-    const mode = hasSubscription ? 'subscription' : 'payment';
-
-    // Send full cart as line_items (Stripe format)
-    const line_items = items.map((item) => ({
-      price: item.product.priceId,
-      quantity: item.quantity,
-    }));
-
-    // Backward compatible payload keys
-    const payload = {
-      mode,
-      customer_email: user.email,
-      email: user.email,
-
-      // For single-item handlers (some implementations only read one price)
-      price_id: items[0]?.product?.priceId,
-      priceId: items[0]?.product?.priceId,
-
-      // For cart handlers
-      line_items,
-      lineItems: line_items,
-
-      success_url: `${window.location.origin}/success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: window.location.href,
-    };
-
     setLoading(true);
+
     try {
-      const url = `${supabaseUrl.replace(/\/$/, '')}/functions/v1/stripe-checkout`;
+      const { url: supabaseUrl, anonKey } = getClientEnv();
 
-      console.log('[checkout] POST', url, payload);
+      if (!supabaseUrl || !anonKey) {
+        console.error('Missing client env vars', { supabaseUrl: !!supabaseUrl, anonKey: !!anonKey });
+        alert('Configuration error. Missing Supabase environment variables.');
+        return;
+      }
 
-      const response = await fetch(url, {
+      const mode = hasSubscription ? 'subscription' : 'payment';
+
+      // NOTE: This drawer uses stripe-checkout and sends only one price_id (first item).
+      // If you need multi-item support here too, it must call a multi-checkout function.
+      const response = await fetch(`${supabaseUrl}/functions/v1/stripe-checkout`, {
         method: 'POST',
         headers: {
-          apikey: supabaseAnonKey,
-          Authorization: `Bearer ${supabaseAnonKey}`,
           'Content-Type': 'application/json',
+          apikey: anonKey,
+          Authorization: `Bearer ${anonKey}`,
         },
-        body: JSON.stringify(payload),
+        body: JSON.stringify({
+          price_id: items[0].product.priceId,
+          mode,
+          success_url: `${window.location.origin}/success?session_id={CHECKOUT_SESSION_ID}`,
+          cancel_url: window.location.href,
+        }),
       });
 
       const text = await response.text();
-      let data: any = null;
-
+      let data: any = {};
       try {
         data = JSON.parse(text);
       } catch {
-        // keep raw text if not JSON
+        // leave as {}
       }
 
       if (!response.ok) {
-        console.error('Checkout function failed', { status: response.status, text, data });
-        throw new Error(data?.error || `Checkout failed (${response.status})`);
+        console.error('Checkout failed', response.status, text);
+        throw new Error(data?.error || 'Failed to create checkout session');
       }
 
-      const checkoutUrl = data?.url || data?.checkoutUrl;
-      if (!checkoutUrl) {
-        console.error('No checkout URL returned', { data, text });
-        throw new Error('No checkout URL returned from server');
+      if (data?.url) {
+        clearCart();
+        window.location.href = data.url;
+        return;
       }
 
-      // Only clear cart when we are actually redirecting
-      clearCart();
-      window.location.href = checkoutUrl;
+      throw new Error('Failed to create checkout session');
     } catch (error) {
       console.error('Error creating checkout:', error);
       alert('Failed to start checkout process. Please try again.');
@@ -213,9 +187,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose }) => {
               disabled={loading}
               className="w-full bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed text-white py-3 rounded-lg font-bold transition-all duration-200 flex items-center justify-center space-x-2"
             >
-              {loading ? (
-                <Loader2 className="w-5 h-5 animate-spin" />
-              ) : (
+              {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : (
                 <>
                   <ShoppingBag className="w-5 h-5" />
                   <span>Proceed to Checkout</span>
