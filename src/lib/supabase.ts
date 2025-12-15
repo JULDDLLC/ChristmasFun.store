@@ -1,6 +1,6 @@
 import { createClient } from '@supabase/supabase-js';
 
-const SUPABASE_URL = 'https://kvnbgubooykiveogifwt.supabase.co';
+const VIT3EzSUPABASE_URL = 'https://kvnbgubooykiveogifwt.supabase.co';
 
 // Paste your Bolt VITE_SUPABASE_ANON_KEY value here.
 // This is a public anon key (safe to ship). Do NOT use the service role key here.
