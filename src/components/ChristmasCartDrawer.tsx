@@ -93,7 +93,17 @@ export const ChristmasCartDrawer: React.FC<ChristmasCartDrawerProps> = ({
             designNumber: item.designNumber ?? null,
             noteNumber: item.noteNumber ?? null,
             name: item.name,
-            price: item.price,
+       const priceCents = Math.round(Number(item.price) * 100);
+
+const { error } = await supabase
+  .from('orders')
+  .insert({
+    email,
+    product_type: item.type,
+    design_number: item.designNumber ?? null,
+    note_number: item.noteNumber ?? null,
+    price: priceCents, // ✅ INTEGER
+  });
           })),
           customerEmail: email,
         }),
