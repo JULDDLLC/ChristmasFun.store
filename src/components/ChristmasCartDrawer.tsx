@@ -19,7 +19,6 @@ export const ChristmasCartDrawer: React.FC<ChristmasCartDrawerProps> = ({
   const [email, setEmail] = useState('');
   const [emailError, setEmailError] = useState('');
 
-  // Load email from localStorage or prop
   useEffect(() => {
     const savedEmail = localStorage.getItem('christmas_customer_email');
     if (savedEmail) {
@@ -29,7 +28,6 @@ export const ChristmasCartDrawer: React.FC<ChristmasCartDrawerProps> = ({
     }
   }, [initialEmail]);
 
-  // Persist email when valid
   useEffect(() => {
     if (email && email.includes('@')) {
       localStorage.setItem('christmas_customer_email', email);
@@ -88,23 +86,21 @@ export const ChristmasCartDrawer: React.FC<ChristmasCartDrawerProps> = ({
         method: 'POST',
         headers,
         body: JSON.stringify({
-          items: items.map((item) => ({
-            type: item.type,
-            designNumber: item.designNumber ?? null,
-            noteNumber: item.noteNumber ?? null,
-            name: item.name,
-       const priceCents = Math.round(Number(item.price) * 100);
+          items: items.map((item) => {
+            const priceNumber = Number(item.price);
+            const priceCents = Number.isFinite(priceNumber) ? Math.round(priceNumber * 100) : 0;
 
-const { error } = await supabase
-  .from('orders')
-  .insert({
-    email,
-    product_type: item.type,
-    design_number: item.designNumber ?? null,
-    note_number: item.noteNumber ?? null,
-    price: priceCents, // ✅ INTEGER
-  });
-          })),
+            return {
+              type: item.type,
+              designNumber: item.designNumber ?? null,
+              noteNumber: item.noteNumber ?? null,
+              name: item.name,
+              // keep the original for display/debug
+              price: priceNumber,
+              // IMPORTANT: integer cents for DB inserts
+              priceCents,
+            };
+          }),
           customerEmail: email,
         }),
       });
@@ -144,6 +140,9 @@ const { error } = await supabase
 
   const santaLetters = items.filter((item) => item.type === 'santa_letter');
   const christmasNotes = items.filter((item) => item.type === 'christmas_note');
+
+  // Your line is mathematically fine. It just uses items.length (all items).
+  // If you meant "14 letters", change items.length to santaLetters.length.
   const totalSavings = items.length >= 14 ? items.length * 0.99 - 9.99 : 0;
 
   if (!isOpen) return null;
