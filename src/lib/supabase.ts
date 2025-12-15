@@ -1,16 +1,22 @@
+// src/lib/supabase.ts
 import { createClient } from '@supabase/supabase-js';
 
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || '';
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || '';
+// Bolt-managed Supabase URL fallback is OK.
+// The ANON key has no safe fallback. If it's missing in the deployed build,
+// checkout and any Supabase calls should not proceed.
+const FALLBACK_SUPABASE_URL = 'https://kvnbgubooykiveogifwt.supabase.co';
 
-if (!supabaseUrl || !supabaseAnonKey) {
-  console.error('Missing Supabase environment variables:', {
-    VITE_SUPABASE_URL: supabaseUrl ? 'present' : 'missing',
-    VITE_SUPABASE_ANON_KEY: supabaseAnonKey ? 'present' : 'missing',
-  });
+const supabaseUrl =
+  (import.meta.env.VITE_SUPABASE_URL as string | undefined)?.trim() ||
+  FALLBACK_SUPABASE_URL;
+
+const supabaseAnonKey =
+  (import.meta.env.VITE_SUPABASE_ANON_KEY as string | undefined)?.trim() || '';
+
+if (!supabaseAnonKey) {
+  // This is the error you are seeing in the UI
+  console.error('Missing VITE_SUPABASE_ANON_KEY in the deployed build. Republish with env vars set.');
+  throw new Error('Missing VITE_SUPABASE_ANON_KEY in the deployed build.');
 }
 
-export const supabase = createClient(
-  supabaseUrl || 'https://placeholder.supabase.co',
-  supabaseAnonKey || 'placeholder-key'
-);
+export const supabase = createClient(supabaseUrl, supabaseAnonKey);
