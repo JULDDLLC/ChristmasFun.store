@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
 import { X, Trash2, ShoppingBag, Loader2, Sparkles, Gift, Mail } from 'lucide-react';
 import { useChristmasCart } from '../contexts/ChristmasCartContext';
 
@@ -6,6 +6,12 @@ interface ChristmasCartDrawerProps {
   isOpen: boolean;
   onClose: () => void;
   customerEmail?: string;
+}
+
+function getClientEnv() {
+  const url = (import.meta as any)?.env?.VITE_SUPABASE_URL as string | undefined;
+  const anonKey = (import.meta as any)?.env?.VITE_SUPABASE_ANON_KEY as string | undefined;
+  return { url, anonKey };
 }
 
 export const ChristmasCartDrawer: React.FC<ChristmasCartDrawerProps> = ({
@@ -18,20 +24,12 @@ export const ChristmasCartDrawer: React.FC<ChristmasCartDrawerProps> = ({
   const [email, setEmail] = useState('');
   const [emailError, setEmailError] = useState('');
 
-  const supabaseUrl = import.meta.env.VITE_SUPABASE_URL as string | undefined;
-  const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY as string | undefined;
-
-  // Load email from localStorage or prop
   useEffect(() => {
     const savedEmail = localStorage.getItem('christmas_customer_email');
-    if (savedEmail) {
-      setEmail(savedEmail);
-    } else if (initialEmail) {
-      setEmail(initialEmail);
-    }
+    if (savedEmail) setEmail(savedEmail);
+    else if (initialEmail) setEmail(initialEmail);
   }, [initialEmail]);
 
-  // Persist email when valid
   useEffect(() => {
     if (email && email.includes('@')) {
       localStorage.setItem('christmas_customer_email', email);
@@ -49,118 +47,90 @@ export const ChristmasCartDrawer: React.FC<ChristmasCartDrawerProps> = ({
     return '';
   };
 
-  const santaLetters = useMemo(() => items.filter((item) => item.type === 'santa_letter'), [items]);
-  const christmasNotes = useMemo(() => items.filter((item) => item.type === 'christmas_note'), [items]);
-
-  const totalSavings = useMemo(() => {
-    return items.length >= 14 ? items.length * 0.99 - 9.99 : 0;
-  }, [items.length]);
-
   const handleCheckout = async () => {
-    // HARD stop if drawer is closed or already loading
-    if (!isOpen || loading) return;
-
     const validationError = validateEmail(email);
     if (validationError) {
       setEmailError(validationError);
       return;
     }
 
-    if (!items || items.length === 0) return;
-
-    if (!supabaseUrl || !supabaseAnonKey) {
-      console.error('Missing env vars', { supabaseUrl, hasAnonKey: Boolean(supabaseAnonKey) });
-      setEmailError('Configuration error. Missing Supabase environment variables.');
-      return;
-    }
+    if (items.length === 0) return;
 
     setLoading(true);
     setEmailError('');
 
     try {
-      const base = supabaseUrl.replace(/\/$/, '');
-      const endpoint = `${base}/functions/v1/christmas-multi-checkout`;
+      const { url: supabaseUrl, anonKey } = getClientEnv();
 
-      // Build an "accept anything" payload so the server has no excuse
-      const normalizedItems = items.map((item) => ({
-        id: item.id,
-        type: item.type,
-        design_number: item.designNumber ?? null,
-        designNumber: item.designNumber ?? null,
-        note_number: item.noteNumber ?? null,
-        noteNumber: item.noteNumber ?? null,
-        name: item.name,
-        description: item.description,
-        image: item.image,
-        price: item.price,
-        quantity: (item as any).quantity ?? 1,
-      }));
+      if (!supabaseUrl || !anonKey) {
+        console.error('Missing client env vars', { supabaseUrl: !!supabaseUrl, anonKey: !!anonKey });
+        setEmailError('Configuration error. Missing Supabase environment variables.');
+        return;
+      }
 
       const payload = {
-        // email keys (both)
-        customer_email: email,
+        items: items.map((item) => ({
+          type: item.type,
+          designNumber: item.designNumber ?? null,
+          noteNumber: item.noteNumber ?? null,
+          name: item.name,
+          price: item.price,
+        })),
         customerEmail: email,
-        email: email,
-
-        // item keys (both)
-        items: normalizedItems,
-        line_items: normalizedItems,
-        lineItems: normalizedItems,
-
-        // urls
-        success_url: `${window.location.origin}/success?session_id={CHECKOUT_SESSION_ID}`,
-        successUrl: `${window.location.origin}/success?session_id={CHECKOUT_SESSION_ID}`,
-        cancel_url: window.location.href,
-        cancelUrl: window.location.href,
-
-        // optional metadata
-        source: 'ChristmasCartDrawer',
       };
 
-      console.log('[christmas-multi-checkout] POST', endpoint, payload);
+      console.log('Calling christmas-multi-checkout', {
+        endpoint: `${supabaseUrl}/functions/v1/christmas-multi-checkout`,
+        payload,
+      });
 
-      const response = await fetch(endpoint, {
+      const response = await fetch(`${supabaseUrl}/functions/v1/christmas-multi-checkout`, {
         method: 'POST',
         headers: {
-          apikey: supabaseAnonKey,
-          Authorization: `Bearer ${supabaseAnonKey}`,
           'Content-Type': 'application/json',
+          apikey: anonKey,
+          Authorization: `Bearer ${anonKey}`,
         },
         body: JSON.stringify(payload),
       });
 
-      const raw = await response.text();
-      let data: any = null;
-
+      const text = await response.text();
+      let data: any = {};
       try {
-        data = JSON.parse(raw);
+        data = JSON.parse(text);
       } catch {
-        // keep as raw text
+        // not json
       }
-
-      console.log('[christmas-multi-checkout] status', response.status, 'body', data ?? raw);
 
       if (!response.ok) {
-        const msg = data?.error || data?.message || raw || `Checkout failed (${response.status})`;
-        setEmailError(String(msg));
+        console.error('Checkout failed', response.status, text);
+        setEmailError(data?.error || 'Checkout failed. Please try again.');
         return;
       }
 
-      const checkoutUrl = data?.url || data?.checkoutUrl;
-      if (!checkoutUrl) {
-        setEmailError(data?.error || 'Checkout failed. No Stripe URL returned.');
+      if (data?.error) {
+        setEmailError(data.error);
         return;
       }
 
-      clearCart();
-      window.location.href = checkoutUrl;
+      if (data?.url) {
+        clearCart();
+        window.location.href = data.url;
+        return;
+      }
+
+      setEmailError('Failed to create checkout session. Please try again.');
     } catch (err) {
       console.error('Checkout error:', err);
-      setEmailError('An error occurred while starting checkout. Please try again.');
+      setEmailError('An error occurred. Please try again.');
     } finally {
       setLoading(false);
     }
   };
+
+  const santaLetters = items.filter((item) => item.type === 'santa_letter');
+  const christmasNotes = items.filter((item) => item.type === 'christmas_note');
+  const totalSavings = items.length >= 14 ? items.length * 0.99 - 9.99 : 0;
 
   if (!isOpen) return null;
 
@@ -195,10 +165,7 @@ export const ChristmasCartDrawer: React.FC<ChristmasCartDrawerProps> = ({
                   </h3>
                   <div className="space-y-3">
                     {santaLetters.map((item) => (
-                      <div
-                        key={item.id}
-                        className="bg-white/10 backdrop-blur-md rounded-xl p-4 border border-white/20 group hover:bg-white/15 transition-all"
-                      >
+                      <div key={item.id} className="bg-white/10 backdrop-blur-md rounded-xl p-4 border border-white/20 group hover:bg-white/15 transition-all">
                         <div className="flex items-start gap-3">
                           <div className="w-16 h-20 rounded-lg overflow-hidden flex-shrink-0 bg-white/5">
                             <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
@@ -230,10 +197,7 @@ export const ChristmasCartDrawer: React.FC<ChristmasCartDrawerProps> = ({
                   </h3>
                   <div className="space-y-3">
                     {christmasNotes.map((item) => (
-                      <div
-                        key={item.id}
-                        className="bg-white/10 backdrop-blur-md rounded-xl p-4 border border-white/20 group hover:bg-white/15 transition-all"
-                      >
+                      <div key={item.id} className="bg-white/10 backdrop-blur-md rounded-xl p-4 border border-white/20 group hover:bg-white/15 transition-all">
                         <div className="flex items-start gap-3">
                           <div className="w-16 h-20 rounded-lg overflow-hidden flex-shrink-0 bg-white/5">
                             <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
@@ -307,9 +271,7 @@ export const ChristmasCartDrawer: React.FC<ChristmasCartDrawerProps> = ({
               disabled={loading || items.length === 0}
               className="w-full bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 disabled:opacity-50 disabled:cursor-not-allowed text-amber-100 py-3 rounded-xl font-bold transition-all duration-200 flex items-center justify-center space-x-2 border border-amber-400/30 shadow-lg hover:shadow-red-500/50"
             >
-              {loading ? (
-                <Loader2 className="w-5 h-5 animate-spin" />
-              ) : (
+              {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : (
                 <>
                   <ShoppingBag className="w-5 h-5" />
                   <span>Proceed to Checkout</span>
