@@ -8,12 +8,6 @@ interface ChristmasCartDrawerProps {
   customerEmail?: string;
 }
 
-function getClientEnv() {
-  const url = (import.meta as any)?.env?.VITE_SUPABASE_URL as string | undefined;
-  const anonKey = (import.meta as any)?.env?.VITE_SUPABASE_ANON_KEY as string | undefined;
-  return { url, anonKey };
-}
-
 export const ChristmasCartDrawer: React.FC<ChristmasCartDrawerProps> = ({
   isOpen,
   onClose,
@@ -24,12 +18,17 @@ export const ChristmasCartDrawer: React.FC<ChristmasCartDrawerProps> = ({
   const [email, setEmail] = useState('');
   const [emailError, setEmailError] = useState('');
 
+  // Load email from localStorage or prop
   useEffect(() => {
     const savedEmail = localStorage.getItem('christmas_customer_email');
-    if (savedEmail) setEmail(savedEmail);
-    else if (initialEmail) setEmail(initialEmail);
+    if (savedEmail) {
+      setEmail(savedEmail);
+    } else if (initialEmail) {
+      setEmail(initialEmail);
+    }
   }, [initialEmail]);
 
+  // Persist email when valid
   useEffect(() => {
     if (email && email.includes('@')) {
       localStorage.setItem('christmas_customer_email', email);
@@ -38,12 +37,17 @@ export const ChristmasCartDrawer: React.FC<ChristmasCartDrawerProps> = ({
   }, [email]);
 
   const formatPrice = (price: number) => {
-    return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(price);
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+    }).format(price);
   };
 
   const validateEmail = (emailToValidate: string) => {
     if (!emailToValidate) return 'Email is required';
-    if (!emailToValidate.includes('@') || !emailToValidate.includes('.')) return 'Please enter a valid email address';
+    if (!emailToValidate.includes('@') || !emailToValidate.includes('.')) {
+      return 'Please enter a valid email address';
+    }
     return '';
   };
 
@@ -60,68 +64,76 @@ export const ChristmasCartDrawer: React.FC<ChristmasCartDrawerProps> = ({
     setEmailError('');
 
     try {
-      const { url: supabaseUrl, anonKey } = getClientEnv();
+      // IMPORTANT:
+      // Vite env vars are baked at build time. If Bolt did not inject them into the deployed build,
+      // import.meta.env will be undefined even if Secrets exist.
+      const FALLBACK_SUPABASE_URL = 'https://kvnbgubooykiveogifwt.supabase.co';
+      const functionsBaseUrl = (import.meta.env.VITE_SUPABASE_URL || FALLBACK_SUPABASE_URL).trim();
 
-      if (!supabaseUrl || !anonKey) {
-        console.error('Missing client env vars', { supabaseUrl: !!supabaseUrl, anonKey: !!anonKey });
-        setEmailError('Configuration error. Missing Supabase environment variables.');
+      const supabaseAnonKey = (import.meta.env.VITE_SUPABASE_ANON_KEY || '').trim();
+
+      if (!functionsBaseUrl) {
+        setEmailError('Supabase URL is missing. Please republish in Bolt.');
         return;
       }
 
-      const payload = {
-        items: items.map((item) => ({
-          type: item.type,
-          designNumber: item.designNumber ?? null,
-          noteNumber: item.noteNumber ?? null,
-          name: item.name,
-          price: item.price,
-        })),
-        customerEmail: email,
+      // Supabase functions usually require the anon key as apikey.
+      // If it is missing in the deployed build, tell the truth clearly.
+      if (!supabaseAnonKey) {
+        setEmailError(
+          'Missing VITE_SUPABASE_ANON_KEY in the deployed build. In Bolt, ensure VITE_SUPABASE_ANON_KEY is set for the frontend build, then republish.'
+        );
+        return;
+      }
+
+      const headers: Record<string, string> = {
+        'Content-Type': 'application/json',
+        apikey: supabaseAnonKey,
+        Authorization: `Bearer ${supabaseAnonKey}`,
       };
 
-      console.log('Calling christmas-multi-checkout', {
-        endpoint: `${supabaseUrl}/functions/v1/christmas-multi-checkout`,
-        payload,
-      });
-
-      const response = await fetch(`${supabaseUrl}/functions/v1/christmas-multi-checkout`, {
+      const response = await fetch(`${functionsBaseUrl}/functions/v1/christmas-multi-checkout`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          apikey: anonKey,
-          Authorization: `Bearer ${anonKey}`,
-        },
-        body: JSON.stringify(payload),
+        headers,
+        body: JSON.stringify({
+          items: items.map((item) => ({
+            type: item.type,
+            designNumber: item.designNumber ?? null,
+            noteNumber: item.noteNumber ?? null,
+            name: item.name,
+            price: item.price,
+          })),
+          customerEmail: email,
+        }),
       });
-
-      const text = await response.text();
-      let data: any = {};
-      try {
-        data = JSON.parse(text);
-      } catch {
-        // not json
-      }
 
       if (!response.ok) {
-        console.error('Checkout failed', response.status, text);
-        setEmailError(data?.error || 'Checkout failed. Please try again.');
+        const errorText = await response.text();
+        try {
+          const errorData = JSON.parse(errorText);
+          setEmailError(errorData.error || 'Checkout failed. Please try again.');
+        } catch {
+          setEmailError('Checkout failed. Please try again.');
+        }
         return;
       }
 
-      if (data?.error) {
+      const data = await response.json();
+
+      if (data.error) {
         setEmailError(data.error);
         return;
       }
 
-      if (data?.url) {
+      if (data.url) {
         clearCart();
         window.location.href = data.url;
         return;
       }
 
-      setEmailError('Failed to create checkout session. Please try again.');
-    } catch (err) {
-      console.error('Checkout error:', err);
+      setEmailError('No checkout URL returned. Please try again.');
+    } catch (error) {
+      console.error('Checkout error:', error);
       setEmailError('An error occurred. Please try again.');
     } finally {
       setLoading(false);
@@ -271,7 +283,9 @@ export const ChristmasCartDrawer: React.FC<ChristmasCartDrawerProps> = ({
               disabled={loading || items.length === 0}
               className="w-full bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 disabled:opacity-50 disabled:cursor-not-allowed text-amber-100 py-3 rounded-xl font-bold transition-all duration-200 flex items-center justify-center space-x-2 border border-amber-400/30 shadow-lg hover:shadow-red-500/50"
             >
-              {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : (
+              {loading ? (
+                <Loader2 className="w-5 h-5 animate-spin" />
+              ) : (
                 <>
                   <ShoppingBag className="w-5 h-5" />
                   <span>Proceed to Checkout</span>
@@ -279,11 +293,7 @@ export const ChristmasCartDrawer: React.FC<ChristmasCartDrawerProps> = ({
               )}
             </button>
 
-            <button
-              onClick={clearCart}
-              disabled={loading}
-              className="w-full mt-2 text-white/60 hover:text-white text-sm py-2 transition-colors"
-            >
+            <button onClick={clearCart} disabled={loading} className="w-full mt-2 text-white/60 hover:text-white text-sm py-2 transition-colors">
               Clear Cart
             </button>
           </div>
