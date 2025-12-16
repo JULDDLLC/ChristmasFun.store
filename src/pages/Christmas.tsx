@@ -644,7 +644,7 @@ function ChristmasContent() {
                           name: note.title,
                           description: note.description,
                           image: note.image,
-                          price: 99,
+                          price: 0.99,
                         });
                       }}
                       disabled={inCart}
