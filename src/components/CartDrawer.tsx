@@ -11,77 +11,58 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose }) => {
   const { items, removeFromCart, updateQuantity, getCartTotal, clearCart } = useCart();
   const [loading, setLoading] = useState(false);
 
-  const formatPrice = (priceCents: number) => {
-  return new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: 'USD',
-  }).format((priceCents || 0) / 100);
-};
+  const formatPrice = (priceCents: number) =>
+    new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+    }).format((priceCents || 0) / 100);
 
   const handleCheckout = async () => {
-    if (items.length === 0 || loading) return;
+    if (!items.length || loading) return;
 
-    // Vite env vars (frontend)
     const supabaseUrl =
       import.meta.env.VITE_SUPABASE_URL ||
       'https://kvnbgubooykiveogifwt.supabase.co';
 
     const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
-    // If these are missing in the deployed build, checkout will never fire
     if (!supabaseUrl || !supabaseAnonKey) {
-      console.error('Missing VITE_SUPABASE_URL or VITE_SUPABASE_ANON_KEY in frontend build env.');
       alert('Configuration error. Missing Supabase environment variables.');
-      return;
-    }
-
-    const hasSubscription = items.some((item) => item.product.mode === 'subscription');
-    const hasPayment = items.some((item) => item.product.mode === 'payment');
-
-    if (hasSubscription && hasPayment) {
-      alert('Cannot mix subscriptions and one-time purchases in the same cart. Please checkout separately.');
-      return;
-    }
-
-    if (hasSubscription && items.length > 1) {
-      alert('You can only subscribe to one product at a time. Please remove other subscriptions from your cart.');
       return;
     }
 
     setLoading(true);
 
     try {
-      const mode = hasSubscription ? 'subscription' : 'payment';
+      // Build payload EXACTLY how christmas-multi-checkout expects it
+      const payload = {
+        email: items[0].email || null,
+        items: items.map((item) => ({
+          price_id: item.product.priceId, // Stripe PRICE ID
+          quantity: item.quantity || 1,
+        })),
+        success_url: `${window.location.origin}/thank-you?session_id={CHECKOUT_SESSION_ID}`,
+        cancel_url: window.location.href,
+      };
 
-      // NOTE: This function payload matches your current stripe-checkout style.
-      // If your function expects a different shape, we’ll align it next.
-      const response = await fetch(`${supabaseUrl}/functions/v1/stripe-checkout`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${supabaseAnonKey}`,
-          apikey: supabaseAnonKey,
-        },
-        body: JSON.stringify({
-          price_id: items[0].product.priceId,
-          mode,
-          success_url: `${window.location.origin}/success?session_id={CHECKOUT_SESSION_ID}`,
-          cancel_url: window.location.href,
-        }),
-      });
+      const response = await fetch(
+        `${supabaseUrl}/functions/v1/christmas-multi-checkout`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${supabaseAnonKey}`,
+            apikey: supabaseAnonKey,
+          },
+          body: JSON.stringify(payload),
+        }
+      );
 
-      const text = await response.text();
-      let data: any = null;
-
-      try {
-        data = JSON.parse(text);
-      } catch {
-        // leave as null
-      }
+      const data = await response.json();
 
       if (!response.ok) {
-        console.error('Checkout failed:', response.status, text);
-        alert((data && data.error) ? data.error : 'Checkout failed. Please try again.');
+        console.error('Checkout failed:', data);
+        alert(data?.error || 'Checkout failed.');
         return;
       }
 
@@ -91,11 +72,10 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose }) => {
         return;
       }
 
-      console.error('No checkout URL returned:', data);
-      alert('Failed to create checkout session. Please try again.');
-    } catch (error) {
-      console.error('Error creating checkout:', error);
-      alert('Failed to start checkout process. Please try again.');
+      alert('Failed to start checkout.');
+    } catch (err) {
+      console.error(err);
+      alert('Checkout error.');
     } finally {
       setLoading(false);
     }
@@ -105,122 +85,66 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose }) => {
 
   return (
     <>
-      <div
-        className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40 transition-opacity"
-        onClick={onClose}
-      />
-      <div className="fixed right-0 top-0 h-full w-full max-w-md bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 shadow-2xl z-50 transform transition-transform duration-300 ease-in-out flex flex-col">
-        <div className="flex items-center justify-between p-6 border-b border-white/20">
-          <h2 className="text-2xl font-bold text-white flex items-center space-x-2">
-            <ShoppingBag className="w-6 h-6" />
-            <span>Shopping Cart</span>
+      <div className="fixed inset-0 bg-black/50 z-40" onClick={onClose} />
+      <div className="fixed right-0 top-0 h-full w-full max-w-md bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 z-50 flex flex-col">
+        <div className="flex justify-between p-6 border-b border-white/20">
+          <h2 className="text-xl text-white flex items-center gap-2">
+            <ShoppingBag /> Cart
           </h2>
-          <button
-            onClick={onClose}
-            className="p-2 rounded-lg hover:bg-white/10 transition-colors"
-            aria-label="Close cart"
-          >
-            <X className="w-6 h-6 text-white" />
+          <button onClick={onClose}>
+            <X className="text-white" />
           </button>
         </div>
 
-        <div className="flex-1 overflow-y-auto p-6">
-          {items.length === 0 ? (
-            <div className="flex flex-col items-center justify-center h-full text-center">
-              <ShoppingBag className="w-16 h-16 text-white/30 mb-4" />
-              <p className="text-white/60 text-lg mb-2">Your cart is empty</p>
-              <p className="text-white/40 text-sm">Add some products to get started</p>
-            </div>
-          ) : (
-            <div className="space-y-4">
-              {items.map((item) => (
-                <div
-                  key={item.product.id}
-                  className="bg-white/10 backdrop-blur-md rounded-lg p-4 border border-white/20"
-                >
-                  <div className="flex items-start justify-between mb-3">
-                    <div className="flex-1">
-                      <h3 className="text-white font-semibold mb-1">{item.product.name}</h3>
-                      <p className="text-white/60 text-sm mb-2 line-clamp-2">
-                        {item.product.description}
-                      </p>
-                      <p className="text-white font-bold">
-                        {formatPrice(item.product.price)}
-                        {item.product.mode === 'subscription' && (
-                          <span className="text-sm text-white/70">/month</span>
-                        )}
-                      </p>
-                    </div>
-                    <button
-                      onClick={() => removeFromCart(item.product.id)}
-                      className="p-2 rounded-lg hover:bg-red-500/20 transition-colors"
-                      aria-label="Remove item"
-                    >
-                      <Trash2 className="w-5 h-5 text-red-400" />
-                    </button>
-                  </div>
-
-                  {item.product.mode === 'payment' && (
-                    <div className="flex items-center space-x-3">
-                      <button
-                        onClick={() => updateQuantity(item.product.id, item.quantity - 1)}
-                        className="p-1 rounded bg-white/10 hover:bg-white/20 transition-colors"
-                        disabled={item.quantity <= 1}
-                      >
-                        <Minus className="w-4 h-4 text-white" />
-                      </button>
-                      <span className="text-white font-medium w-8 text-center">
-                        {item.quantity}
-                      </span>
-                      <button
-                        onClick={() => updateQuantity(item.product.id, item.quantity + 1)}
-                        className="p-1 rounded bg-white/10 hover:bg-white/20 transition-colors"
-                        disabled={item.quantity >= 10}
-                      >
-                        <Plus className="w-4 h-4 text-white" />
-                      </button>
-                      <span className="text-white/60 text-sm ml-auto">
-                        Subtotal: {formatPrice(item.product.price * item.quantity)}
-                      </span>
-                    </div>
-                  )}
+        <div className="flex-1 p-6 overflow-y-auto space-y-4">
+          {items.map((item) => (
+            <div key={item.product.id} className="bg-white/10 p-4 rounded">
+              <div className="flex justify-between">
+                <div>
+                  <h3 className="text-white">{item.product.name}</h3>
+                  <p className="text-white/60 text-sm">{item.product.description}</p>
+                  <p className="text-white font-bold">
+                    {formatPrice(item.product.price)}
+                  </p>
                 </div>
-              ))}
+                <button onClick={() => removeFromCart(item.product.id)}>
+                  <Trash2 className="text-red-400" />
+                </button>
+              </div>
+
+              <div className="flex items-center gap-3 mt-3">
+                <button
+                  onClick={() => updateQuantity(item.product.id, item.quantity - 1)}
+                  disabled={item.quantity <= 1}
+                >
+                  <Minus className="text-white" />
+                </button>
+                <span className="text-white">{item.quantity}</span>
+                <button
+                  onClick={() => updateQuantity(item.product.id, item.quantity + 1)}
+                >
+                  <Plus className="text-white" />
+                </button>
+              </div>
             </div>
-          )}
+          ))}
         </div>
 
-        {items.length > 0 && (
-          <div className="border-t border-white/20 p-6 bg-black/20">
-            <div className="flex items-center justify-between mb-4">
-              <span className="text-white text-lg font-semibold">Total:</span>
-              <span className="text-white text-2xl font-bold">
-                {formatPrice(getCartTotal())}
-              </span>
-            </div>
-            <button
-              onClick={handleCheckout}
-              disabled={loading}
-              className="w-full bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed text-white py-3 rounded-lg font-bold transition-all duration-200 flex items-center justify-center space-x-2"
-            >
-              {loading ? (
-                <Loader2 className="w-5 h-5 animate-spin" />
-              ) : (
-                <>
-                  <ShoppingBag className="w-5 h-5" />
-                  <span>Proceed to Checkout</span>
-                </>
-              )}
-            </button>
-            <button
-              onClick={clearCart}
-              disabled={loading}
-              className="w-full mt-2 text-white/60 hover:text-white text-sm py-2 transition-colors"
-            >
-              Clear Cart
-            </button>
+        <div className="p-6 border-t border-white/20">
+          <div className="flex justify-between text-white mb-4">
+            <span>Total</span>
+            <span className="font-bold">{formatPrice(getCartTotal())}</span>
           </div>
-        )}
+
+          <button
+            onClick={handleCheckout}
+            disabled={loading}
+            className="w-full bg-green-600 py-3 rounded text-white flex justify-center gap-2"
+          >
+            {loading ? <Loader2 className="animate-spin" /> : <ShoppingBag />}
+            Proceed to Checkout
+          </button>
+        </div>
       </div>
     </>
   );
