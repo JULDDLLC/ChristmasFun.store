@@ -1,90 +1,161 @@
-/// <reference types="npm:@types/node" />
+// supabase/functions/christmas-multi-checkout/index.ts
 
-import "jsr:@supabase/functions-js/edge-runtime.d.ts";
+/// <reference deno-types="https://deno.land/x/types@v0.1.0/index.d.ts" />
+
 import Stripe from "npm:stripe@14.21.0";
-import { createClient } from "npm:@supabase/supabase-js@2.49.1";
+import { createClient } from "npm:@supabase/supabase-js@2.45.4";
 
-const corsHeaders: Record<string, string> = {
+const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
     "authorization, x-client-info, apikey, content-type",
   "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
 };
 
-function getEnv(keys: string[]) {
-  for (const k of keys) {
-    const v = (Deno.env.get(k) || "").trim();
-    if (v) return v;
-  }
-  return "";
+type CartItem = {
+  type?: string;
+  name?: string;
+  quantity?: number;
+
+  // Common variants we might receive
+  priceId?: string;
+  price_id?: string;
+  price?: number; // dollars (sometimes)
+  priceCents?: number; // cents (best)
+  unitAmount?: number; // cents
+  unitAmountCents?: number; // cents
+
+  designNumber?: number;
+  noteNumber?: number;
+
+  // Anything else
+  [key: string]: unknown;
+};
+
+type RequestBody = {
+  email?: string;
+  customerEmail?: string;
+  items?: CartItem[];
+  cartItems?: CartItem[];
+};
+
+function jsonResponse(body: unknown, status = 200) {
+  return new Response(JSON.stringify(body), {
+    status,
+    headers: { ...corsHeaders, "Content-Type": "application/json" },
+  });
 }
 
-// Always return integer cents
-function toCents(value: unknown): number {
-  if (typeof value === "number" && Number.isFinite(value)) {
-    if (value > 0 && value < 10) return Math.round(value * 100);
-    return Math.round(value);
+// Your Stripe Price IDs (source of truth)
+const STRIPE_PRICE_IDS = {
+  santa_letter_single: "price_1ScHCUBsr66TjEhQI5HBQqtU",
+  christmas_note_single: "price_1ScGfNBsr66TjEhQxdfKXMcn",
+  christmas_notes_bundle: "price_1ScH30Bsr66TjEhQhwLwFAME",
+  all_18_designs_bundle: "price_1ScGjvBsr66TjEhQ4cRtPYm1",
+  teacher_license: "price_1ScH6KBsr66TjEhQAhED4Lsd",
+  free_coloring_sheets: "price_1SctvEBsr66TjEhQ5XQ8NUxl",
+} as const;
+
+function normalizeType(t?: string): string {
+  return (t || "").trim().toLowerCase();
+}
+
+function deriveStripePriceId(item: CartItem): string | null {
+  // If the item already includes a Stripe price id, use it
+  const direct =
+    (typeof item.priceId === "string" && item.priceId.trim()) ||
+    (typeof item.price_id === "string" && item.price_id.trim());
+  if (direct) return direct;
+
+  // Otherwise derive from type
+  const t = normalizeType(item.type);
+
+  // Common mappings based on how these apps usually name types
+  if (t === "santa_letter" || t === "santa-letter" || t === "letter") {
+    return STRIPE_PRICE_IDS.santa_letter_single;
   }
-  if (typeof value === "string") {
-    const s = value.trim();
-    if (!s) return 0;
-    const n = Number(s);
-    if (Number.isFinite(n)) {
-      if (n > 0 && n < 10) return Math.round(n * 100);
-      return Math.round(n);
+  if (
+    t === "christmas_note" ||
+    t === "christmas-note" ||
+    t === "note" ||
+    t === "notes_single"
+  ) {
+    return STRIPE_PRICE_IDS.christmas_note_single;
+  }
+  if (t === "notes_bundle" || t === "christmas_notes_bundle" || t === "bundle_299") {
+    return STRIPE_PRICE_IDS.christmas_notes_bundle;
+  }
+  if (
+    t === "all_18_designs_bundle" ||
+    t === "complete_bundle" ||
+    t === "bundle_999" ||
+    t === "all_designs_bundle"
+  ) {
+    return STRIPE_PRICE_IDS.all_18_designs_bundle;
+  }
+  if (t === "teacher_license" || t === "teacher-license" || t === "teacher") {
+    return STRIPE_PRICE_IDS.teacher_license;
+  }
+  if (
+    t === "free_coloring" ||
+    t === "free_coloring_sheets" ||
+    t === "coloring" ||
+    t === "freebie"
+  ) {
+    return STRIPE_PRICE_IDS.free_coloring_sheets;
+  }
+
+  return null;
+}
+
+function getUnitAmountCents(item: CartItem): number | null {
+  // Prefer explicit cents
+  const candidates = [
+    item.priceCents,
+    item.unitAmountCents,
+    item.unitAmount,
+  ];
+
+  for (const c of candidates) {
+    if (typeof c === "number" && Number.isFinite(c) && c > 0) {
+      return Math.round(c);
     }
   }
-  return 0;
-}
 
-type AnyObj = Record<string, any>;
-
-function pickPriceId(item: AnyObj): string {
-  const candidates = [
-    item.priceId,
-    item.price_id,
-    item.price,
-    item.stripePriceId,
-    item.stripe_price_id,
-  ];
-  const found = candidates.find((v) => typeof v === "string" && v.trim());
-  return (found || "").trim();
-}
-
-function pickQuantity(item: AnyObj): number {
-  const q = Number(item.quantity ?? item.qty ?? 1);
-  return Number.isFinite(q) && q > 0 ? Math.floor(q) : 1;
-}
-
-function pickUnitCents(item: AnyObj): number {
-  // Try cents-style keys first
-  const centsCandidates = [
-    item.unitAmountCents,
-    item.unit_amount_cents,
-    item.amountCents,
-    item.amount_cents,
-    item.totalAmountCents,
-    item.total_amount_cents,
-  ];
-  for (const v of centsCandidates) {
-    const c = toCents(v);
-    if (c) return c;
+  // If only dollars provided
+  if (typeof item.price === "number" && Number.isFinite(item.price) && item.price > 0) {
+    return Math.round(item.price * 100);
   }
 
-  // Then dollar-style keys
-  const dollarCandidates = [
-    item.unitAmount,
-    item.unit_amount,
-    item.amount,
-    item.priceAmount,
-    item.price_amount,
-  ];
-  for (const v of dollarCandidates) {
-    const c = toCents(v);
-    if (c) return c;
+  return null;
+}
+
+function buildLineItem(item: CartItem) {
+  const quantity = typeof item.quantity === "number" && item.quantity > 0
+    ? Math.floor(item.quantity)
+    : 1;
+
+  const priceId = deriveStripePriceId(item);
+  if (priceId) {
+    return { price: priceId, quantity };
   }
 
-  return 0;
+  // Fallback: construct custom price_data from cents
+  const cents = getUnitAmountCents(item);
+  if (!cents) return null;
+
+  const name = typeof item.name === "string" && item.name.trim()
+    ? item.name.trim()
+    : "ChristmasFun Item";
+
+  return {
+    price_data: {
+      currency: "usd",
+      product_data: { name },
+      unit_amount: cents,
+    },
+    quantity,
+  };
 }
 
 Deno.serve(async (req) => {
@@ -92,34 +163,22 @@ Deno.serve(async (req) => {
     return new Response(null, { status: 204, headers: corsHeaders });
   }
 
-  try {
-    const supabaseUrl = getEnv(["SUPABASE_URL"]);
-    const supabaseServiceRoleKey = getEnv([
-      "SUPABASE_SERVICE_ROLE_KEY",
-      "SUPABASE_SERVICE_ROLE",
-    ]);
-    const stripeSecretKey = getEnv(["STRIPE_SECRET_KEY"]);
+  if (req.method !== "POST") {
+    return jsonResponse({ error: "Method not allowed" }, 405);
+  }
 
-    if (!supabaseUrl || !supabaseServiceRoleKey) {
-      return new Response(
-        JSON.stringify({
-          error: "Missing Supabase env vars",
-          details: {
-            SUPABASE_URL: !!supabaseUrl,
-            SUPABASE_SERVICE_ROLE_KEY: !!supabaseServiceRoleKey,
-          },
-        }),
-        {
-          status: 500,
-          headers: { ...corsHeaders, "Content-Type": "application/json" },
-        }
-      );
-    }
+  try {
+    const stripeSecretKey = Deno.env.get("STRIPE_SECRET_KEY") || "";
+    const supabaseUrl = Deno.env.get("SUPABASE_URL") || "";
+    const supabaseServiceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") || "";
 
     if (!stripeSecretKey) {
-      return new Response(
-        JSON.stringify({ error: "Missing STRIPE_SECRET_KEY" }),
-        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      return jsonResponse({ error: "Missing STRIPE_SECRET_KEY" }, 500);
+    }
+    if (!supabaseUrl || !supabaseServiceRoleKey) {
+      return jsonResponse(
+        { error: "Missing Supabase env vars (SUPABASE_URL / SUPABASE_SERVICE_ROLE_KEY)" },
+        500,
       );
     }
 
@@ -129,124 +188,102 @@ Deno.serve(async (req) => {
       auth: { persistSession: false },
     });
 
-    const body = (await req.json().catch(() => ({}))) as AnyObj;
+    const body = (await req.json()) as RequestBody;
 
-    const customerEmail = String(body.email || body.customerEmail || "").trim();
-    const items = Array.isArray(body.items) ? body.items : [];
+    const customerEmail =
+      (typeof body.customerEmail === "string" && body.customerEmail.trim()) ||
+      (typeof body.email === "string" && body.email.trim()) ||
+      "";
+
+    const items = Array.isArray(body.items)
+      ? body.items
+      : Array.isArray(body.cartItems)
+        ? body.cartItems
+        : [];
 
     if (!customerEmail) {
-      return new Response(
-        JSON.stringify({ error: "Missing customer email" }),
-        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
+      return jsonResponse({ error: "Missing email" }, 400);
     }
-
     if (!items.length) {
-      return new Response(
-        JSON.stringify({ error: "Cart is empty" }),
-        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
+      return jsonResponse({ error: "Cart is empty" }, 400);
     }
 
-    const lineItems: Stripe.Checkout.SessionCreateParams.LineItem[] = [];
-    const productIds: string[] = [];
+    // Validate and build Stripe line_items
+    const line_items = [];
+    const normalizedItemsForDb = [];
+    const stripePriceIds: string[] = [];
 
-    // We need an integer cents total for the DB
-    let totalAmountCents = 0;
-
-    // Cache Stripe price lookups so we can compute cents even when only priceId is sent
-    const priceCache = new Map<string, number>();
-
-    for (const raw of items) {
-      const item = raw as AnyObj;
-      const quantity = pickQuantity(item);
-      const priceId = pickPriceId(item);
-
-      if (priceId) {
-        lineItems.push({ price: priceId, quantity });
-        productIds.push(priceId);
-
-        // Try to compute total cents by fetching the Stripe Price
-        if (!priceCache.has(priceId)) {
-          try {
-            const p = await stripe.prices.retrieve(priceId);
-            const unit = typeof p.unit_amount === "number" ? p.unit_amount : 0;
-            priceCache.set(priceId, unit);
-          } catch {
-            priceCache.set(priceId, 0);
-          }
-        }
-
-        const unit = priceCache.get(priceId) || 0;
-        totalAmountCents += unit * quantity;
-
-        continue;
-      }
-
-      // No priceId, so we require some amount field
-      const unitCents = pickUnitCents(item);
-
-      if (!unitCents) {
-        return new Response(
-          JSON.stringify({
+    for (const item of items) {
+      const li = buildLineItem(item);
+      if (!li) {
+        return jsonResponse(
+          {
             error: "Invalid item",
             details:
-              "Item missing priceId and unit amount. Your cart items must include a Stripe price id (priceId/price_id) OR an amount field (unitAmount/unitAmountCents).",
+              "Item missing priceId and unit amount. Your cart items must include a Stripe price id (priceId/price_id) OR an amount (priceCents/unitAmount/unitAmountCents/price).",
             receivedKeys: Object.keys(item || {}),
-            exampleExpected: {
-              priceId: "price_123",
-              quantity: 1,
-            },
-          }),
-          { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+            exampleExpected: { priceId: "price_123", quantity: 1 },
+          },
+          400,
         );
       }
 
-      lineItems.push({
-        price_data: {
-          currency: "usd",
-          product_data: { name: item.name || "ChristmasFun item" },
-          unit_amount: unitCents,
-        },
-        quantity,
-      });
+      line_items.push(li);
 
-      totalAmountCents += unitCents * quantity;
-      productIds.push(item.productId || item.product_id || "custom_amount_item");
+      const derivedPriceId = deriveStripePriceId(item);
+      if (derivedPriceId) stripePriceIds.push(derivedPriceId);
+
+      normalizedItemsForDb.push({
+        type: item.type ?? null,
+        name: item.name ?? null,
+        quantity: typeof item.quantity === "number" ? item.quantity : 1,
+        designNumber: typeof item.designNumber === "number" ? item.designNumber : null,
+        noteNumber: typeof item.noteNumber === "number" ? item.noteNumber : null,
+        priceCents: getUnitAmountCents(item),
+        priceId: derivedPriceId,
+      });
     }
+
+    // Create an order row first (status pending)
+    // IMPORTANT: use your column name customer_email (not email)
+    const totalAmountCents = normalizedItemsForDb.reduce((sum, it) => {
+      const cents = typeof it.priceCents === "number" ? it.priceCents : 0;
+      const qty = typeof it.quantity === "number" ? it.quantity : 1;
+      return sum + cents * qty;
+    }, 0);
 
     const { data: order, error: orderError } = await supabase
       .from("orders")
       .insert({
         customer_email: customerEmail,
         status: "pending",
-        amount: totalAmountCents,
+        amount_cents: totalAmountCents,
         currency: "usd",
-        product_ids: productIds,
+        items: normalizedItemsForDb,
+        product_ids: stripePriceIds.length ? stripePriceIds : null,
         download_links: [],
       })
       .select()
       .single();
 
     if (orderError || !order) {
-      return new Response(
-        JSON.stringify({
-          error: "Failed to create order",
-          details: orderError?.message || orderError || "Unknown order error",
-        }),
-        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      console.error("Order insert failed:", orderError);
+      return jsonResponse(
+        { error: "Failed to create order", details: orderError?.message ?? "Unknown error" },
+        500,
       );
     }
 
+    // Build success/cancel URLs
     const url = new URL(req.url);
     const origin = req.headers.get("origin") ?? `${url.protocol}//${url.host}`;
 
     const session = await stripe.checkout.sessions.create({
       mode: "payment",
       payment_method_types: ["card"],
-      allow_promotion_codes: true,
       customer_email: customerEmail,
-      line_items: lineItems,
+      allow_promotion_codes: true,
+      line_items,
       success_url: `${origin}/thank-you?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${origin}/cart-cancelled`,
       metadata: {
@@ -255,15 +292,17 @@ Deno.serve(async (req) => {
       },
     });
 
-    return new Response(JSON.stringify({ url: session.url, orderId: order.id }), {
-      status: 200,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+    // Store session id on the order
+    await supabase
+      .from("orders")
+      .update({
+        stripe_session_id: session.id,
+      })
+      .eq("id", order.id);
+
+    return jsonResponse({ url: session.url, order_id: order.id });
   } catch (err) {
-    console.error("Error in christmas-multi-checkout:", err);
-    return new Response(
-      JSON.stringify({ error: "Checkout failed", details: String((err as any)?.message || err) }),
-      { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-    );
+    console.error("christmas-multi-checkout error:", err);
+    return jsonResponse({ error: "Server error", details: String(err?.message ?? err) }, 500);
   }
 });
