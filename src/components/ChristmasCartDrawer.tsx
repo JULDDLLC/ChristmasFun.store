@@ -71,10 +71,9 @@ export const ChristmasCartDrawer: React.FC<ChristmasCartDrawerProps> = ({
         return;
       }
 
-      if (!supabaseAnonKey) {
-        setEmailError('Supabase anon key is missing.');
-        return;
-      }
+    if (!supabaseAnonKey) {
+  console.warn('Supabase anon key missing at runtime – continuing');
+}
 
       const headers: Record<string, string> = {
         'Content-Type': 'application/json',
