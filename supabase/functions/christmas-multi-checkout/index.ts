@@ -36,6 +36,7 @@ interface CartItem {
   designNumber?: number | null;
   noteNumber?: number | null;
   name: string;
+  // price is in DOLLARS in your frontend (e.g., 0.99, 9.99)
   price: number;
 }
 
@@ -52,6 +53,13 @@ const PRICE_IDS: Record<string, string> = {
   teacher_license: "price_1ScH6KBsr66TjEhQAhED4Lsd",
   free_coloring: "price_1SctvEBsr66TjEhQ5XQ8NUxl",
 };
+
+// Convert dollars -> integer cents safely
+function dollarsToCents(value: unknown): number {
+  const n = Number(value);
+  if (!Number.isFinite(n)) return 0;
+  return Math.round(n * 100);
+}
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
@@ -120,7 +128,12 @@ Deno.serve(async (req) => {
       lineItems.push({ price: priceId, quantity: 1 });
     }
 
-    const totalAmount = items.reduce((sum, item) => sum + (Number(item.price) || 0), 0);
+    // Frontend prices are dollars; DB `amount` is likely integer cents (your error shows integer).
+    const totalAmountCents = items.reduce((sum, item) => sum + dollarsToCents(item.price), 0);
+
+    // Keep a human-friendly string too (not used for DB insert)
+    const totalAmountDollars = (totalAmountCents / 100).toFixed(2);
+
     const productIds = items.map((item) => item.type).join(",");
 
     // Create order
@@ -130,7 +143,8 @@ Deno.serve(async (req) => {
         customer_email: customerEmail,
         product_type: "multi_item_cart",
         product_id: productIds,
-        amount: totalAmount,
+        // IMPORTANT: integer cents to match an integer column
+        amount: totalAmountCents,
         status: "pending",
         download_links: [],
       })
@@ -165,6 +179,9 @@ Deno.serve(async (req) => {
         product_id: productIds,
         product_type: "multi_item_cart",
         source: "christmas-multi-checkout",
+        // helpful for debugging/receipt sanity checks
+        amount_cents: String(totalAmountCents),
+        amount_dollars: totalAmountDollars,
       },
       allow_promotion_codes: true,
     });
@@ -198,7 +215,7 @@ Deno.serve(async (req) => {
   } catch (err) {
     console.error("Error in christmas-multi-checkout:", err);
     return new Response(
-      JSON.stringify({ error: "Checkout failed", details: String(err?.message || err) }),
+      JSON.stringify({ error: "Checkout failed", details: String((err as any)?.message || err) }),
       {
         status: 500,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
