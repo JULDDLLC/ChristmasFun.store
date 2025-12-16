@@ -675,7 +675,7 @@ function ChristmasContent() {
           <div className="text-center">
             <div className="mb-8">
               <p className="text-2xl text-white font-semibold mb-4">
-                Individual Notes: $0.99 each
+                Individual Notes: $99 each
               </p>
               <p className="text-xl text-amber-200">Or get all 4 Christmas Notes for just $2.99</p>
             </div>
