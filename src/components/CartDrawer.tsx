@@ -11,12 +11,12 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose }) => {
   const { items, removeFromCart, updateQuantity, getCartTotal, clearCart } = useCart();
   const [loading, setLoading] = useState(false);
 
-  const formatPrice = (price: number) => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
-    }).format(price);
-  };
+  const formatPrice = (priceCents: number) => {
+  return new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
+  }).format((priceCents || 0) / 100);
+};
 
   const handleCheckout = async () => {
     if (items.length === 0 || loading) return;
