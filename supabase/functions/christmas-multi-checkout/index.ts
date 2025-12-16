@@ -22,23 +22,23 @@ serve(async (req) => {
   }
 
   try {
-    const { priceId, email } = await req.json();
+    const { items, email } = await req.json();
 
-    if (!priceId || !email) {
-      return new Response("Missing priceId or email", { status: 400 });
+    if (!Array.isArray(items) || !email) {
+      return new Response("Invalid cart or email", { status: 400 });
     }
+
+    const lineItems = items.map((item) => ({
+      price: item.priceId,
+      quantity: item.quantity ?? 1,
+    }));
 
     const session = await stripe.checkout.sessions.create({
       mode: "payment",
       payment_method_types: ["card"],
       customer_email: email,
       allow_promotion_codes: true,
-      line_items: [
-        {
-          price: priceId,
-          quantity: 1,
-        },
-      ],
+      line_items: lineItems,
       success_url: `${req.headers.get("origin")}/success`,
       cancel_url: `${req.headers.get("origin")}/cancel`,
     });
