@@ -1,61 +1,143 @@
-import { serve } from "https://deno.land/std@0.177.0/http/server.ts";
-import Stripe from "https://esm.sh/stripe@14.21.0";
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+/// <reference types="npm:@types/node" />
 
-const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY")!, {
-  apiVersion: "2023-10-16",
-});
+import Stripe from "npm:stripe@14.21.0";
 
-const supabase = createClient(
-  Deno.env.get("SUPABASE_URL")!,
-  Deno.env.get("SUPABASE_ANON_KEY")!
-);
+const corsHeaders: Record<string, string> = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+  "Access-Control-Allow-Methods": "POST, OPTIONS",
+};
 
-serve(async (req) => {
+type CartItem = {
+  // what your UI is sending right now (per your screenshot)
+  type?: string;                 // 'santa_letter' | 'christmas_note' | etc
+  designNumber?: number;
+  noteNumber?: number;
+  name?: string;
+  price?: number;                // dollars
+  priceCents?: number;           // cents
+  quantity?: number;
+
+  // also accept these if they ever exist
+  priceId?: string;              // Stripe Price ID (preferred if present)
+  unit_amount?: number;          // cents
+};
+
+type RequestBody = {
+  email?: string;
+  cartItems?: CartItem[];
+  successUrl?: string;
+  cancelUrl?: string;
+  promoCode?: string;            // optional, we just enable promo codes in Stripe
+};
+
+const PRICE_ID_BY_TYPE: Record<string, string> = {
+  santa_letter: "price_1ScHCUBsr66TjEhQI5HBQqtU",
+  christmas_note: "price_1ScGfNBsr66TjEhQxdfKXMcn",
+  christmas_notes_bundle: "price_1ScH30Bsr66TjEhQhwLwFAME",
+  all_18_bundle: "price_1ScGjvBsr66TjEhQ4cRtPYm1",
+  teacher_license: "price_1ScH6KBsr66TjEhQAhED4Lsd",
+  free_coloring: "price_1SctvEBsr66TjEhQ5XQ8NUxl",
+};
+
+function json(body: unknown, status = 200) {
+  return new Response(JSON.stringify(body), {
+    status,
+    headers: { ...corsHeaders, "Content-Type": "application/json; charset=utf-8" },
+  });
+}
+
+function normalizeEmail(v?: string) {
+  return (v || "").trim().toLowerCase();
+}
+
+function buildLineItems(cartItems: CartItem[]) {
+  // 1) If item has priceId, use it.
+  // 2) Else map by item.type.
+  // 3) Group by price id -> quantity.
+  const counts = new Map<string, number>();
+
+  for (const item of cartItems) {
+    const qty = Math.max(1, Number(item.quantity || 1));
+
+    const priceId =
+      (item.priceId && String(item.priceId).trim()) ||
+      (item.type && PRICE_ID_BY_TYPE[String(item.type).trim()]);
+
+    if (!priceId) {
+      // refuse cleanly: your UI is currently sending type/designNumber/priceCents only,
+      // so this should NOT happen if type is set correctly
+      throw new Error(
+        `Cart item missing price mapping. Need item.priceId OR a supported item.type. Received keys: ${Object.keys(item || {}).join(", ")}`
+      );
+    }
+
+    counts.set(priceId, (counts.get(priceId) || 0) + qty);
+  }
+
+  return Array.from(counts.entries()).map(([price, quantity]) => ({
+    price,
+    quantity,
+  }));
+}
+
+Deno.serve(async (req: Request) => {
   if (req.method === "OPTIONS") {
-    return new Response(null, {
-      headers: {
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Headers": "authorization, content-type",
-      },
-    });
+    return new Response(null, { status: 200, headers: corsHeaders });
   }
 
   try {
-    const { items, email } = await req.json();
-
-    if (!Array.isArray(items) || !email) {
-      return new Response("Invalid cart or email", { status: 400 });
+    const STRIPE_SECRET_KEY = (Deno.env.get("STRIPE_SECRET_KEY") || "").trim();
+    if (!STRIPE_SECRET_KEY) {
+      return json({ error: "Missing STRIPE_SECRET_KEY" }, 500);
     }
 
-    const lineItems = items.map((item) => ({
-      price: item.priceId,
-      quantity: item.quantity ?? 1,
-    }));
+    const stripe = new Stripe(STRIPE_SECRET_KEY, {
+      apiVersion: "2023-10-16",
+    });
+
+    const body = (await req.json()) as RequestBody;
+
+    const email = normalizeEmail(body.email);
+    if (!email || !email.includes("@")) {
+      return json({ error: "Invalid email" }, 400);
+    }
+
+    const cartItems = Array.isArray(body.cartItems) ? body.cartItems : [];
+    if (cartItems.length === 0) {
+      return json({ error: "Cart is empty" }, 400);
+    }
+
+    const successUrl =
+      (body.successUrl && String(body.successUrl).trim()) ||
+      "https://christmasfun.store/success";
+
+    const cancelUrl =
+      (body.cancelUrl && String(body.cancelUrl).trim()) ||
+      "https://christmasfun.store/";
+
+    const line_items = buildLineItems(cartItems);
 
     const session = await stripe.checkout.sessions.create({
       mode: "payment",
-      payment_method_types: ["card"],
       customer_email: email,
+      line_items,
       allow_promotion_codes: true,
-      line_items: lineItems,
-      success_url: `${req.headers.get("origin")}/success`,
-      cancel_url: `${req.headers.get("origin")}/cancel`,
-    });
-
-    await supabase.from("orders").insert({
-      email,
-      stripe_session_id: session.id,
-      status: "pending",
-    });
-
-    return new Response(JSON.stringify({ url: session.url }), {
-      headers: {
-        "Access-Control-Allow-Origin": "*",
-        "Content-Type": "application/json",
+      success_url: `${successUrl}?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: cancelUrl,
+      metadata: {
+        source: "christmasfun.store",
+        cart_json: JSON.stringify(cartItems).slice(0, 490),
       },
     });
+
+    if (!session.url) {
+      return json({ error: "Stripe session created but no url returned" }, 500);
+    }
+
+    return json({ url: session.url }, 200);
   } catch (err) {
-    return new Response(String(err), { status: 500 });
+    const message = err instanceof Error ? err.message : String(err);
+    return json({ error: "Failed to create checkout session", details: message }, 400);
   }
 });
