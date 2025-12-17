@@ -21,7 +21,6 @@ type Props = {
 };
 
 const SUPABASE_FUNCTIONS_BASE =
-  // hard fallback so checkout still works even if VITE_* env is missing in the deployed build
   (import.meta as any)?.env?.VITE_SUPABASE_FUNCTIONS_BASE ||
   "https://kvnbgubookyikveogifwt.supabase.co/functions/v1";
 
@@ -31,7 +30,6 @@ const SUPABASE_ANON_KEY =
   "";
 
 function isValidEmail(email: string) {
-  // simple + reliable (your current one is rejecting real emails)
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
 }
 
@@ -75,7 +73,7 @@ export function CartDrawer({
       const headers: Record<string, string> = {
         "content-type": "application/json",
       };
-      // If you DO have the anon key set, include it. If not, still try.
+
       if (SUPABASE_ANON_KEY) {
         headers["apikey"] = SUPABASE_ANON_KEY;
         headers["authorization"] = `Bearer ${SUPABASE_ANON_KEY}`;
@@ -114,7 +112,6 @@ export function CartDrawer({
         return;
       }
 
-      // support common response shapes
       const checkoutUrl =
         data?.url || data?.checkoutUrl || data?.checkout_url || data?.sessionUrl || data?.session_url;
 
@@ -176,6 +173,7 @@ export function CartDrawer({
                 ) : (
                   <div className="h-12 w-12 rounded-lg bg-white/10 border border-white/10" />
                 )}
+
                 <div className="flex-1 min-w-0">
                   <div className="text-white text-sm font-medium truncate">{it.name}</div>
                   {it.description ? (
@@ -185,6 +183,7 @@ export function CartDrawer({
                     ${(it.price ?? 0).toFixed(2)}
                   </div>
                 </div>
+
                 {onRemoveItem ? (
                   <button
                     type="button"
