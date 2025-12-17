@@ -1,9 +1,13 @@
-import CartDrawer from "./CartDrawer";
+import React from "react";
+import CardDrawer, { CardDrawer as NamedCardDrawer } from "./CardDrawer";
 
-// IMPORTANT: some files import as a named export { ChristmasCartDrawer }
-export const ChristmasCartDrawer = CartDrawer;
-
-export default CartDrawer;
-
+/**
+ * Your app imports this component in multiple ways across different files.
+ * So we export BOTH:
+ *  - named:  ChristmasCartDrawer
+ *  - default: ChristmasCartDrawer
+ */
+export const ChristmasCartDrawer = NamedCardDrawer;
+export default CardDrawer;
 
 
