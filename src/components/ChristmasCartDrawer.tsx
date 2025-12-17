@@ -1,31 +1,10 @@
-import React from "react";
+import CartDrawer from "./CartDrawer";
 
-export type CartItem = {
-  id: string;
-  name: string;
-  description?: string;
-  price: number;
-  quantity?: number;
-  image?: string;
-};
+// Named export (fixes: import { ChristmasCartDrawer } from ".../ChristmasCartDrawer")
+export const ChristmasCartDrawer = CartDrawer;
 
-type Props = {
-  isOpen: boolean;
-  onClose: () => void;
-  items: CartItem[];
-  total: number;
-  onClearCart: () => void;
-  onRemoveItem: (id: string) => void;
-};
-
-export function CartDrawer(props: Props) {
-  return (
-    <div>
-      {/* REAL UI is already implemented elsewhere in your repo */}
-    </div>
-  );
-}
-
+// Default export (fixes: import ChristmasCartDrawer from ".../ChristmasCartDrawer")
 export default CartDrawer;
 
-
+// Re-export any types/named exports from CartDrawer (optional but helpful)
+export * from "./CartDrawer";
