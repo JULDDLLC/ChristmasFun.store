@@ -1,13 +1,16 @@
-import CartDrawer from "./CartDrawer";
+// src/components/ChristmasCartDrawer.tsx
+
+import CartDrawer, { CartDrawer as NamedCartDrawer } from "./CartDrawer";
 
 /**
- * IMPORTANT:
- * This component is imported BOTH ways across the app:
- * 1) import ChristmasCartDrawer from ...
- * 2) import { ChristmasCartDrawer } from ...
- *
- * So we export BOTH.
+ * Some parts of the app import:
+ *   import { ChristmasCartDrawer } from "../components/ChristmasCartDrawer"
+ * So we must provide that named export.
  */
+export const ChristmasCartDrawer = NamedCartDrawer;
 
-export const ChristmasCartDrawer = CartDrawer;
+// Also re-export CartDrawer in case any file imports it from here later.
+export const CartDrawer = NamedCartDrawer;
+
+// Keep a default export as well (safe + common in older code)
 export default CartDrawer;
