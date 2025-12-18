@@ -1,3 +1,5 @@
+// src/components/CartDrawer.tsx
+
 import React, { useMemo, useState } from "react";
 
 type CartItem = {
@@ -32,7 +34,8 @@ function isValidEmail(email: string) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
 }
 
-export default function CartDrawer({
+// Named export (fixes: import { CartDrawer } from "./CartDrawer";)
+export function CartDrawer({
   isOpen,
   onClose,
   items,
@@ -64,29 +67,25 @@ export default function CartDrawer({
     }
 
     if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
-      setError("Checkout temporarily unavailable");
+      setError("Missing Supabase env (VITE_SUPABASE_URL / VITE_SUPABASE_ANON_KEY)");
       return;
     }
 
     setBusy(true);
 
     try {
-      const res = await fetch(
-        `${SUPABASE_URL}/functions/v1/christmas-checkout`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            // DO NOT SEND apikey — Supabase adds it internally
-          },
-          body: JSON.stringify({
-            email,
-            items,
-          }),
-        }
-      );
+      const res = await fetch(`${SUPABASE_URL}/functions/v1/christmas-checkout`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email,
+          items,
+        }),
+      });
 
-      const data = await res.json();
+      const data = await res.json().catch(() => null);
 
       if (!res.ok || !data?.url) {
         throw new Error("Checkout failed");
@@ -123,3 +122,6 @@ export default function CartDrawer({
     </div>
   );
 }
+
+// Default export (keeps any: import CartDrawer from "./CartDrawer"; working)
+export default CartDrawer;
