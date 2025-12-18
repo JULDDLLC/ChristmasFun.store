@@ -32,7 +32,10 @@ function isValidEmail(email: string) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
 }
 
-export default function CartDrawer({
+// IMPORTANT: Export BOTH ways because your codebase imports it BOTH ways:
+// - named:  import { CartDrawer } from "./CartDrawer";
+// - default: import CartDrawer from "./CartDrawer";
+export function CartDrawer({
   isOpen,
   onClose,
   items,
@@ -71,20 +74,17 @@ export default function CartDrawer({
     setBusy(true);
 
     try {
-      const res = await fetch(
-        `${SUPABASE_URL}/functions/v1/christmas-checkout`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            // DO NOT SEND apikey — Supabase adds it internally
-          },
-          body: JSON.stringify({
-            email,
-            items,
-          }),
-        }
-      );
+      const res = await fetch(`${SUPABASE_URL}/functions/v1/christmas-checkout`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          // Do NOT send apikey from the browser
+        },
+        body: JSON.stringify({
+          email,
+          items,
+        }),
+      });
 
       const data = await res.json();
 
@@ -93,7 +93,7 @@ export default function CartDrawer({
       }
 
       window.location.href = data.url;
-    } catch (err) {
+    } catch {
       setError("Configuration error. Please try again later.");
     } finally {
       setBusy(false);
@@ -123,3 +123,5 @@ export default function CartDrawer({
     </div>
   );
 }
+
+export default CartDrawer;
