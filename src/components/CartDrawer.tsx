@@ -1,5 +1,3 @@
-// src/components/CartDrawer.tsx
-
 import React, { useMemo, useState } from "react";
 
 type CartItem = {
@@ -20,22 +18,14 @@ type Props = {
   onRemoveItem: (id: string) => void;
 };
 
-const SUPABASE_URL =
-  import.meta.env.VITE_SUPABASE_URL ||
-  import.meta.env.VITE_PUBLIC_SUPABASE_URL ||
-  "";
-
-const SUPABASE_ANON_KEY =
-  import.meta.env.VITE_SUPABASE_ANON_KEY ||
-  import.meta.env.VITE_PUBLIC_SUPABASE_ANON_KEY ||
-  "";
+const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL || "";
+const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY || "";
 
 function isValidEmail(email: string) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
 }
 
-// Named export (fixes: import { CartDrawer } from "./CartDrawer";)
-export function CartDrawer({
+export default function CartDrawer({
   isOpen,
   onClose,
   items,
@@ -62,37 +52,37 @@ export function CartDrawer({
     }
 
     if (!isValidEmail(email)) {
-      setError("Invalid cart or email");
+      setError("Invalid email address");
       return;
     }
 
     if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
-      setError("Missing Supabase env (VITE_SUPABASE_URL / VITE_SUPABASE_ANON_KEY)");
+      setError("Checkout temporarily unavailable");
       return;
     }
 
     setBusy(true);
 
     try {
-      const res = await fetch(`${SUPABASE_URL}/functions/v1/christmas-checkout`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email,
-          items,
-        }),
-      });
+      const res = await fetch(
+        `${SUPABASE_URL}/functions/v1/christmas-checkout`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ email, items }),
+        }
+      );
 
-      const data = await res.json().catch(() => null);
+      const data = await res.json();
 
       if (!res.ok || !data?.url) {
         throw new Error("Checkout failed");
       }
 
       window.location.href = data.url;
-    } catch (err) {
+    } catch {
       setError("Configuration error. Please try again later.");
     } finally {
       setBusy(false);
@@ -122,6 +112,3 @@ export function CartDrawer({
     </div>
   );
 }
-
-// Default export (keeps any: import CartDrawer from "./CartDrawer"; working)
-export default CartDrawer;
