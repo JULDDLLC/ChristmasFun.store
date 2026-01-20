@@ -394,7 +394,10 @@ function ChristmasContent() {
       }
 
       if (data.url) {
-        window.location.href = data.url;
+        const newWindow = window.open(data.url, '_blank');
+        if (!newWindow || newWindow.closed) {
+          window.location.href = data.url;
+        }
       } else {
         setFreebieMessage('Failed to create checkout session. Please try again.');
       }
