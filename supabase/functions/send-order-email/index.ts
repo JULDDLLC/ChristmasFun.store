@@ -119,7 +119,7 @@ Deno.serve(async (req: Request) => {
               <div style="font-size:14px;color:#e5e7eb;margin-bottom:8px;">
                 ${safeHtml(label)}
               </div>
-              <a href="${link}" style="${secondaryButtonStyle}" target="_blank" rel="noopener">
+              <a href="${safeHtml(link)}" style="${secondaryButtonStyle}" target="_blank" rel="noopener noreferrer">
                 Download File ${idx + 1}
               </a>
               <div style="font-size:12px;color:#9ca3af;margin-top:6px;line-height:1.4;">
