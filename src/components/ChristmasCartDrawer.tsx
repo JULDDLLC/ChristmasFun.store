@@ -48,17 +48,27 @@ export function ChristmasCartDrawer({ isOpen, onClose, customerEmail }: Props) {
     setBusy(true);
 
     try {
-      const res = await fetch(`${SUPABASE_URL}/functions/v1/christmas-checkout`, {
+      const cartItems = items.map((item: any) => ({
+        type: item.type || 'santa_letter',
+        designNumber: item.designNumber,
+        noteNumber: item.noteNumber,
+        name: item.name,
+        price: item.price,
+        priceCents: Math.round((item.price || 0) * 100),
+        quantity: item.quantity || 1,
+        priceId: item.priceId,
+      }));
+
+      const res = await fetch(`${SUPABASE_URL}/functions/v1/christmas-multi-checkout`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
-          // IMPORTANT: do NOT send "apikey" header from the browser
-          // Your screenshot shows CORS blocks it as a disallowed request header.
         },
         body: JSON.stringify({
           email,
-          items,
+          cartItems,
+          successUrl: `${window.location.origin}/thank-you`,
+          cancelUrl: window.location.href,
         }),
       });
 
