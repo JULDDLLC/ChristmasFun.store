@@ -12,6 +12,7 @@ import Christmas from './pages/Christmas';
 import ThankYou from './pages/ThankYou';
 import Terms from './pages/Terms';
 import Privacy from './pages/Privacy';
+import Download from './pages/Download';
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
         <Route path="/thank-you" element={<ThankYou />} />
         <Route path="/terms" element={<Terms />} />
         <Route path="/privacy" element={<Privacy />} />
+        <Route path="/download/:productId" element={<Download />} />
         <Route
           path="/home"
           element={
