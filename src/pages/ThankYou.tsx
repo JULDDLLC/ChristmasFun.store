@@ -49,7 +49,7 @@ const ThankYouPage: React.FC = () => {
         <p className="text-white/60 text-xs">
           If the email doesn’t appear, check spam/promotions or reach out to{' '}
           <span className="font-semibold text-amber-200">
-            support@juldd.com
+            ChristmasMagicDesigns@juldd.com
           </span>.
         </p>
 
