@@ -536,6 +536,11 @@ function ChristmasContent() {
         'Free coloring sheets are provided as high-resolution PDF files. Santa Letters and Christmas Notes are PNG files. All designs are optimized for printing on standard 8.5" x 11" paper.',
     },
     {
+      question: 'How do I personalize an editable design?',
+      answer:
+        'Right inside the PDF — no Canva account and no special software needed. Open the editable PDF in any free PDF reader (like Adobe Acrobat Reader, or the PDF viewer built into your web browser), click the name field, type your names or message, and print. Every editable listing also includes a filled sample so you can see the finished look, print-ready files, and a short instruction sheet.',
+    },
+    {
       question: 'Can I use these in my classroom?',
       answer:
         'Yes! With the Teacher License, you can print unlimited copies for your students and use them in classroom activities.',
