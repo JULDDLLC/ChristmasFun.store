@@ -25,6 +25,12 @@ const PRODUCT_DOWNLOAD_MAP: Record<string, string> = {
   'gothmas_tags_wrap': 'https://christmasfun.store/download/gothmas-tags-wrap',
   'gothmas_countdown': 'https://christmasfun.store/download/gothmas-countdown',
   'gothmas_collection': 'https://christmasfun.store/download/gothmas-collection',
+  'nutcracker_wall_art': 'https://christmasfun.store/download/nutcracker-wall-art',
+  'nutcracker_coloring_wrap': 'https://christmasfun.store/download/nutcracker-coloring',
+  'nutcracker_party_kit': 'https://christmasfun.store/download/nutcracker-party',
+  'nutcracker_ornament': 'https://christmasfun.store/download/nutcracker-ornament',
+  'nutcracker_cocoa_set': 'https://christmasfun.store/download/nutcracker-cocoa',
+  'nutcracker_collection': 'https://christmasfun.store/download/nutcracker-collection',
 };
 
 function getDownloadLinksFromProducts(products: Array<{ product_id: string }>): string[] {
