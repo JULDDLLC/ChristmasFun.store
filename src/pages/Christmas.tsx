@@ -6,6 +6,7 @@ import {
   ChevronRight,
   ChevronLeft,
   Maximize2,
+  Minimize2,
   X,
   Sparkles,
   Moon,
@@ -23,14 +24,16 @@ import { ChristmasCartDrawer } from '../components/ChristmasCartDrawer';
 const GothmasGallery = ({ images, name }: { images: string[]; name: string }) => {
   const [index, setIndex] = useState(0);
   const [zoom, setZoom] = useState(false);
+  const [detail, setDetail] = useState(false);
   const total = images.length;
-  const goPrev = () => setIndex((i) => (i - 1 + total) % total);
-  const goNext = () => setIndex((i) => (i + 1) % total);
+  const goPrev = () => { setDetail(false); setIndex((i) => (i - 1 + total) % total); };
+  const goNext = () => { setDetail(false); setIndex((i) => (i + 1) % total); };
+  const closeZoom = () => { setZoom(false); setDetail(false); };
 
   useEffect(() => {
     if (!zoom) return;
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') setZoom(false);
+      if (e.key === 'Escape') closeZoom();
       if (e.key === 'ArrowLeft') goPrev();
       if (e.key === 'ArrowRight') goNext();
     };
@@ -39,6 +42,7 @@ const GothmasGallery = ({ images, name }: { images: string[]; name: string }) =>
   }, [zoom, total]);
 
   const navBtn = "w-8 h-8 rounded-full bg-black/50 text-white flex items-center justify-center hover:bg-black/75 transition-colors";
+  const chip = "flex items-center gap-2 rounded-full bg-zinc-900/95 border border-white/50 text-white shadow-lg transition-colors hover:bg-zinc-700";
 
   return (
     <div className="relative w-full h-full bg-black/30">
@@ -84,33 +88,48 @@ const GothmasGallery = ({ images, name }: { images: string[]; name: string }) =>
         <Maximize2 className="w-4 h-4" />
       </button>
       {zoom && (
-        <div
-          className="fixed inset-0 z-[120] bg-black/95 flex flex-col items-center justify-center p-4"
-          onClick={() => setZoom(false)}
-        >
-          <button
-            type="button"
-            aria-label="Close"
-            onClick={() => setZoom(false)}
-            className="absolute top-4 right-4 z-10 w-10 h-10 rounded-full bg-white/10 text-white flex items-center justify-center hover:bg-white/25 transition-colors"
+        <div className="fixed inset-0 z-[120] bg-black/95 flex flex-col">
+          <div className="flex items-center justify-between gap-3 px-4 py-3">
+            <span className="rounded-full bg-zinc-900/95 border border-white/30 text-white/90 text-sm font-medium px-3 py-1.5 truncate">
+              {name} — {index + 1} / {total}
+            </span>
+            <button
+              type="button"
+              aria-label="Close"
+              onClick={closeZoom}
+              className={`${chip} px-4 py-2 text-sm font-bold shrink-0`}
+            >
+              <X className="w-5 h-5" />
+              Close
+            </button>
+          </div>
+          <div
+            className="flex-1 min-h-0 overflow-auto flex"
+            onClick={(e) => { if (e.target === e.currentTarget) closeZoom(); }}
           >
-            <X className="w-6 h-6" />
-          </button>
-          <img
-            src={images[index]}
-            alt={name}
-            onClick={(e) => e.stopPropagation()}
-            className="max-h-[84vh] max-w-[94vw] object-contain rounded-lg"
-          />
-          <div className="mt-4 flex items-center gap-4" onClick={(e) => e.stopPropagation()}>
+            <div className="m-auto p-2">
+              <img
+                src={images[index]}
+                alt={name}
+                onClick={() => setDetail((d) => !d)}
+                className={detail
+                  ? "max-w-none max-h-none rounded-lg cursor-zoom-out"
+                  : "max-h-[calc(100vh-190px)] max-w-[94vw] object-contain rounded-lg cursor-zoom-in"}
+              />
+            </div>
+          </div>
+          <div className="flex items-center justify-center gap-3 px-4 py-3">
             {total > 1 && (
-              <button type="button" onClick={goPrev} aria-label="Previous image" className={navBtn}>
+              <button type="button" onClick={goPrev} aria-label="Previous image" className={`${chip} w-10 h-10 justify-center`}>
                 <ChevronLeft className="w-5 h-5" />
               </button>
             )}
-            <span className="text-white/85 text-sm font-medium">{name} — {index + 1} / {total}</span>
+            <button type="button" onClick={() => setDetail((d) => !d)} className={`${chip} px-4 py-2 text-sm font-semibold`}>
+              {detail ? <Minimize2 className="w-4 h-4" /> : <Maximize2 className="w-4 h-4" />}
+              {detail ? "Fit whole image" : "Zoom in to see details"}
+            </button>
             {total > 1 && (
-              <button type="button" onClick={goNext} aria-label="Next image" className={navBtn}>
+              <button type="button" onClick={goNext} aria-label="Next image" className={`${chip} w-10 h-10 justify-center`}>
                 <ChevronRight className="w-5 h-5" />
               </button>
             )}
