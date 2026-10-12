@@ -5,6 +5,8 @@ import {
   GraduationCap,
   ChevronRight,
   ChevronLeft,
+  Maximize2,
+  X,
   Sparkles,
   Moon,
   Gift,
@@ -20,9 +22,23 @@ import { ChristmasCartDrawer } from '../components/ChristmasCartDrawer';
 
 const GothmasGallery = ({ images, name }: { images: string[]; name: string }) => {
   const [index, setIndex] = useState(0);
+  const [zoom, setZoom] = useState(false);
   const total = images.length;
   const goPrev = () => setIndex((i) => (i - 1 + total) % total);
   const goNext = () => setIndex((i) => (i + 1) % total);
+
+  useEffect(() => {
+    if (!zoom) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setZoom(false);
+      if (e.key === 'ArrowLeft') goPrev();
+      if (e.key === 'ArrowRight') goNext();
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [zoom, total]);
+
+  const navBtn = "w-8 h-8 rounded-full bg-black/50 text-white flex items-center justify-center hover:bg-black/75 transition-colors";
 
   return (
     <div className="relative w-full h-full bg-black/30">
@@ -30,24 +46,15 @@ const GothmasGallery = ({ images, name }: { images: string[]; name: string }) =>
         src={images[index]}
         alt={name}
         loading="lazy"
-        className="w-full h-full object-contain transition-transform duration-500 group-hover:scale-105"
+        onClick={() => setZoom(true)}
+        className="w-full h-full object-contain cursor-zoom-in"
       />
       {total > 1 && (
         <>
-          <button
-            type="button"
-            onClick={goPrev}
-            aria-label="Previous image"
-            className="absolute left-2 top-1/2 -translate-y-1/2 z-10 w-8 h-8 rounded-full bg-black/50 text-white flex items-center justify-center hover:bg-black/75 transition-colors"
-          >
+          <button type="button" onClick={goPrev} aria-label="Previous image" className={`absolute left-2 top-1/2 -translate-y-1/2 z-10 ${navBtn}`}>
             <ChevronLeft className="w-5 h-5" />
           </button>
-          <button
-            type="button"
-            onClick={goNext}
-            aria-label="Next image"
-            className="absolute right-2 top-1/2 -translate-y-1/2 z-10 w-8 h-8 rounded-full bg-black/50 text-white flex items-center justify-center hover:bg-black/75 transition-colors"
-          >
+          <button type="button" onClick={goNext} aria-label="Next image" className={`absolute right-2 top-1/2 -translate-y-1/2 z-10 ${navBtn}`}>
             <ChevronRight className="w-5 h-5" />
           </button>
           <span className="absolute top-2 right-2 z-10 px-2 py-0.5 rounded-full bg-black/55 text-white text-xs font-medium">
@@ -67,6 +74,48 @@ const GothmasGallery = ({ images, name }: { images: string[]; name: string }) =>
             ))}
           </div>
         </>
+      )}
+      <button
+        type="button"
+        onClick={() => setZoom(true)}
+        aria-label="Enlarge image"
+        className="absolute bottom-2 right-2 z-10 w-8 h-8 rounded-full bg-black/50 text-white flex items-center justify-center hover:bg-black/75 transition-colors"
+      >
+        <Maximize2 className="w-4 h-4" />
+      </button>
+      {zoom && (
+        <div
+          className="fixed inset-0 z-[120] bg-black/95 flex flex-col items-center justify-center p-4"
+          onClick={() => setZoom(false)}
+        >
+          <button
+            type="button"
+            aria-label="Close"
+            onClick={() => setZoom(false)}
+            className="absolute top-4 right-4 z-10 w-10 h-10 rounded-full bg-white/10 text-white flex items-center justify-center hover:bg-white/25 transition-colors"
+          >
+            <X className="w-6 h-6" />
+          </button>
+          <img
+            src={images[index]}
+            alt={name}
+            onClick={(e) => e.stopPropagation()}
+            className="max-h-[84vh] max-w-[94vw] object-contain rounded-lg"
+          />
+          <div className="mt-4 flex items-center gap-4" onClick={(e) => e.stopPropagation()}>
+            {total > 1 && (
+              <button type="button" onClick={goPrev} aria-label="Previous image" className={navBtn}>
+                <ChevronLeft className="w-5 h-5" />
+              </button>
+            )}
+            <span className="text-white/85 text-sm font-medium">{name} — {index + 1} / {total}</span>
+            {total > 1 && (
+              <button type="button" onClick={goNext} aria-label="Next image" className={navBtn}>
+                <ChevronRight className="w-5 h-5" />
+              </button>
+            )}
+          </div>
+        </div>
       )}
     </div>
   );
@@ -1202,7 +1251,7 @@ function ChristmasContent() {
                 >
                   <div className="absolute inset-0 bg-gradient-to-br from-purple-500/20 via-transparent to-indigo-600/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                   <div className="relative p-6">
-                    <div className="aspect-square bg-gradient-to-br from-white/5 to-white/10 rounded-2xl mb-4 flex items-center justify-center overflow-hidden">
+                    <div className="aspect-[4/3] bg-gradient-to-br from-white/5 to-white/10 rounded-2xl mb-4 flex items-center justify-center overflow-hidden">
                       <GothmasGallery images={product.images} name={product.name} />
                     </div>
                     <h3 className="text-xl font-serif text-white mb-2">{product.name}</h3>
