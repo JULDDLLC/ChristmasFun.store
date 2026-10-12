@@ -25,7 +25,7 @@ const PRODUCT_FILES: Record<string, { name: string; files: { label: string; url:
     ],
   },
   'all-18-bundle': {
-    name: 'Complete Collection (All 18 Designs)',
+    name: 'Christmas Classics Bundle (All 18 Designs)',
     files: [
       { label: 'Design 1 - Vintage Storybook Santa', url: 'https://cdn1.site-media.eu/images/0/21587768/design1-Z3wu6c1nLAh3ACrbe46Gmg.png' },
       { label: 'Design 2 - Christmas Eve Heartside', url: 'https://cdn1.site-media.eu/images/0/21587759/design2-Xs-oos-r7fL_Gn4-yusolg.png' },
@@ -306,8 +306,8 @@ export default function Download() {
           <div className="mt-8 pt-6 border-t border-white/10 text-center">
             <p className="text-white/60 text-sm mb-4">
               Need help? Contact us at{' '}
-              <a href="mailto:support@juldd.com" className="text-amber-400 hover:underline">
-                support@juldd.com
+              <a href="mailto:ChristmasMagicDesigns@juldd.com" className="text-amber-400 hover:underline">
+                ChristmasMagicDesigns@juldd.com
               </a>
             </p>
             <Link
