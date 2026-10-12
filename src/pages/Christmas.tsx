@@ -4,6 +4,7 @@ import {
   Download,
   GraduationCap,
   ChevronRight,
+  ChevronLeft,
   Sparkles,
   Moon,
   Gift,
@@ -16,6 +17,60 @@ import { PremiumSnowfall } from '../components/PremiumSnowfall';
 import { ChristmasCartProvider, useChristmasCart } from '../contexts/ChristmasCartContext';
 import { ChristmasCartButton } from '../components/ChristmasCartButton';
 import { ChristmasCartDrawer } from '../components/ChristmasCartDrawer';
+
+const GothmasGallery = ({ images, name }: { images: string[]; name: string }) => {
+  const [index, setIndex] = useState(0);
+  const total = images.length;
+  const goPrev = () => setIndex((i) => (i - 1 + total) % total);
+  const goNext = () => setIndex((i) => (i + 1) % total);
+
+  return (
+    <div className="relative w-full h-full bg-black/30">
+      <img
+        src={images[index]}
+        alt={name}
+        loading="lazy"
+        className="w-full h-full object-contain transition-transform duration-500 group-hover:scale-105"
+      />
+      {total > 1 && (
+        <>
+          <button
+            type="button"
+            onClick={goPrev}
+            aria-label="Previous image"
+            className="absolute left-2 top-1/2 -translate-y-1/2 z-10 w-8 h-8 rounded-full bg-black/50 text-white flex items-center justify-center hover:bg-black/75 transition-colors"
+          >
+            <ChevronLeft className="w-5 h-5" />
+          </button>
+          <button
+            type="button"
+            onClick={goNext}
+            aria-label="Next image"
+            className="absolute right-2 top-1/2 -translate-y-1/2 z-10 w-8 h-8 rounded-full bg-black/50 text-white flex items-center justify-center hover:bg-black/75 transition-colors"
+          >
+            <ChevronRight className="w-5 h-5" />
+          </button>
+          <span className="absolute top-2 right-2 z-10 px-2 py-0.5 rounded-full bg-black/55 text-white text-xs font-medium">
+            {index + 1} / {total}
+          </span>
+          <div className="absolute bottom-2 left-1/2 -translate-x-1/2 z-10 flex gap-1.5">
+            {images.map((_, i) => (
+              <button
+                key={i}
+                type="button"
+                onClick={() => setIndex(i)}
+                aria-label={`View image ${i + 1}`}
+                className={`w-2 h-2 rounded-full transition-colors ${
+                  i === index ? 'bg-white' : 'bg-white/40 hover:bg-white/70'
+                }`}
+              />
+            ))}
+          </div>
+        </>
+      )}
+    </div>
+  );
+};
 
 interface DesignCardProps {
   number: number;
@@ -314,7 +369,7 @@ function ChristmasContent() {
     type: 'gothmas_ornaments' | 'gothmas_wall_art' | 'gothmas_cards' | 'gothmas_tags_wrap' | 'gothmas_countdown' | 'gothmas_collection';
     name: string;
     description: string;
-    image: string;
+    images: string[];
     price: number;
     priceId: string;
   }> = [
@@ -322,8 +377,22 @@ function ChristmasContent() {
       id: 'gothmas_ornaments',
       type: 'gothmas_ornaments',
       name: 'Ornament Design Bundle - Set of 12',
-      description: 'Twelve dark celestial ornament designs to print: crescent moons, a raven, black roses, and a black cat with a gold bow.',
-      image: 'https://drive.google.com/thumbnail?id=1iNNBrxzqcYMu6EplWg0EBxpvS41tOvjg&sz=w1200',
+      description: 'Print at home, cut to a circle, and add to a blank ornament — flat wood or ceramic blanks, or inside clear fillable ornaments. Twelve dark celestial designs: crescent moons, a raven, black roses, and a black cat with a gold bow.',
+      images: [
+        'https://drive.google.com/thumbnail?id=1QG1V39MOXJFIo7hPzS7fpREjd-2W8Pvv&sz=w1200',
+        'https://drive.google.com/thumbnail?id=1iNNBrxzqcYMu6EplWg0EBxpvS41tOvjg&sz=w1200',
+        'https://drive.google.com/thumbnail?id=1QOMNHdRga8aAeZP_1d2J21VcRK1P5A2t&sz=w1200',
+        'https://drive.google.com/thumbnail?id=18pmM_cyC7hp66AN-HyVErYGcMyqPiNwH&sz=w1200',
+        'https://drive.google.com/thumbnail?id=1NeU3G7G4sbKRwiywQVXJWCAWRPKeLX_K&sz=w1200',
+        'https://drive.google.com/thumbnail?id=1sZ6qJ-tfIPsLH_SFdnUekA7p5lxQxu3G&sz=w1200',
+        'https://drive.google.com/thumbnail?id=1OL-urFmrVgE7F-xB5_frcL6JPGtTlqp3&sz=w1200',
+        'https://drive.google.com/thumbnail?id=1j-jUUzwDNFhlfur4J9ju3cT69hI-GHc8&sz=w1200',
+        'https://drive.google.com/thumbnail?id=1cJLWxprBtFoh4geXdPwj9PPIcZrPc4xS&sz=w1200',
+        'https://drive.google.com/thumbnail?id=1Hj5PaQiI2t1X3Yj50SGEeYrR1ttk4MKR&sz=w1200',
+        'https://drive.google.com/thumbnail?id=16x4sTyOzRpSv1eh_1gqaH4WxhsuaahzJ&sz=w1200',
+        'https://drive.google.com/thumbnail?id=1ULK026bRHvJMzwMPVJkGyNzdixAo_wgW&sz=w1200',
+        'https://drive.google.com/thumbnail?id=16g5d1aKPOsooWZu6qmnotQ04UpNil7X7&sz=w1200',
+      ],
       price: 4.99,
       priceId: 'price_1UPbfPBsr66TjEhQAgZ52nsc',
     },
@@ -332,7 +401,12 @@ function ChristmasContent() {
       type: 'gothmas_wall_art',
       name: 'Gothic Winter Wall Art - Set of 3',
       description: 'A snow-covered gothic cathedral, a candlelit tree, and a winter raven. Print-ready in 5x7, 8x10, and 11x14.',
-      image: 'https://drive.google.com/thumbnail?id=1C79FxdiHiAP-coV48_5jdFjB0uHkRbV4&sz=w1200',
+      images: [
+        'https://drive.google.com/thumbnail?id=1o4I_DNtXyMsODmOMXLjfswLTXATrvLmV&sz=w1200',
+        'https://drive.google.com/thumbnail?id=1C79FxdiHiAP-coV48_5jdFjB0uHkRbV4&sz=w1200',
+        'https://drive.google.com/thumbnail?id=1QbTrwlSd4E3hQnFcK6YI9itpei9hhcyv&sz=w1200',
+        'https://drive.google.com/thumbnail?id=1i_sBlRANAmN5GqSc6nrjlAp7_9CPh0q1&sz=w1200',
+      ],
       price: 2.99,
       priceId: 'price_1UPbfkBsr66TjEhQKvjSkHYW',
     },
@@ -341,7 +415,15 @@ function ChristmasContent() {
       type: 'gothmas_cards',
       name: 'Greeting Cards - Set of 6',
       description: 'Six folded cards with ravens, black roses, and celestial details. Blank inside, print-ready with trim guides.',
-      image: 'https://drive.google.com/thumbnail?id=1ljhFf__QvyCrQ3VqB3isPMDZWQq-1leV&sz=w1200',
+      images: [
+        'https://drive.google.com/thumbnail?id=1R6q1JFviWLQSfGd8qnT77giuKaZ9aSAk&sz=w1200',
+        'https://drive.google.com/thumbnail?id=1ljhFf__QvyCrQ3VqB3isPMDZWQq-1leV&sz=w1200',
+        'https://drive.google.com/thumbnail?id=1zAEfuqIKSN0e3RuqkmeP2nMUgDSO0t-i&sz=w1200',
+        'https://drive.google.com/thumbnail?id=1znnY9iq0OnjAIsFXoaiut4GDNdF5kSyF&sz=w1200',
+        'https://drive.google.com/thumbnail?id=1dP8E09X4lxrlE1Hv8NaZO88COF7UyrZK&sz=w1200',
+        'https://drive.google.com/thumbnail?id=1bAJuUAq3TyXDZ6_Hk9efCp-cBpYEvuQH&sz=w1200',
+        'https://drive.google.com/thumbnail?id=1i0xe5i7LLLFhY6uO2P7h-1O_cflqCN8-&sz=w1200',
+      ],
       price: 2.99,
       priceId: 'price_1UPbfnBsr66TjEhQbVsExDOc',
     },
@@ -350,7 +432,12 @@ function ChristmasContent() {
       type: 'gothmas_tags_wrap',
       name: 'Gift Tags and Wrap Sheets',
       description: 'Raven and rose gift tags, eight to a page with an editable-names version, plus two coordinating wrap designs.',
-      image: 'https://drive.google.com/thumbnail?id=1qEEt4JKl5Ru4NbDQfUsFOBpxdR3TlxbR&sz=w1200',
+      images: [
+        'https://drive.google.com/thumbnail?id=1JeUgCUJ62sg7xg3qfFpSh5BOEo5GRzRJ&sz=w1200',
+        'https://drive.google.com/thumbnail?id=1Y82dLilJPBEUDlovngJ1lT3Ow_jhw3dS&sz=w1200',
+        'https://drive.google.com/thumbnail?id=1qEEt4JKl5Ru4NbDQfUsFOBpxdR3TlxbR&sz=w1200',
+        'https://drive.google.com/thumbnail?id=1HiYeoDjPBxiY_WGCGqI2R1XVJui7mbUe&sz=w1200',
+      ],
       price: 2.99,
       priceId: 'price_1UPbfsBsr66TjEhQrn4uFnwN',
     },
@@ -359,7 +446,14 @@ function ChristmasContent() {
       type: 'gothmas_countdown',
       name: 'Countdown Advent Cards - Set of 25',
       description: 'One card for each day from December 1 to Christmas, each with a short, cozy prompt on the back. Two sizes included.',
-      image: 'https://drive.google.com/thumbnail?id=1TG7cRYJGSpl9NzWLJDEAa4R9Ct59PgU7&sz=w1200',
+      images: [
+        'https://drive.google.com/thumbnail?id=1sFDs-I-Sl76sVlD53GqldAit_ZW-CYIh&sz=w1200',
+        'https://drive.google.com/thumbnail?id=1NRpdcl2VF9vsz_B0lKt4X8BoFXC4eIBx&sz=w1200',
+        'https://drive.google.com/thumbnail?id=1YB0tQYVN-r5QNWwBrkOODnddqbV_wR0y&sz=w1200',
+        'https://drive.google.com/thumbnail?id=1zp9A5rpWaf0-2sb3xXmesuimOSFC9LRV&sz=w1200',
+        'https://drive.google.com/thumbnail?id=1troDpVgZplkgw8MHqymCzQJWaYRZHmc5&sz=w1200',
+        'https://drive.google.com/thumbnail?id=1dC7m9rDI_B_t0XTV3x1KjsyDZHKz4Un8&sz=w1200',
+      ],
       price: 4.99,
       priceId: 'price_1UPbfvBsr66TjEhQ4fda2F6C',
     },
@@ -368,7 +462,14 @@ function ChristmasContent() {
       type: 'gothmas_collection',
       name: 'The Gothmas Collection - All 5 Sets',
       description: 'Every Gothmas set in one download: ornaments, wall art, greeting cards, tags and wrap, and the 25-card countdown.',
-      image: 'https://drive.google.com/thumbnail?id=1QOMNHdRga8aAeZP_1d2J21VcRK1P5A2t&sz=w1200',
+      images: [
+        'https://drive.google.com/thumbnail?id=1lP0DgUDj2nAeM8FRD6X5ZiTQ5bDeJa_P&sz=w1200',
+        'https://drive.google.com/thumbnail?id=1QG1V39MOXJFIo7hPzS7fpREjd-2W8Pvv&sz=w1200',
+        'https://drive.google.com/thumbnail?id=1o4I_DNtXyMsODmOMXLjfswLTXATrvLmV&sz=w1200',
+        'https://drive.google.com/thumbnail?id=1R6q1JFviWLQSfGd8qnT77giuKaZ9aSAk&sz=w1200',
+        'https://drive.google.com/thumbnail?id=1JeUgCUJ62sg7xg3qfFpSh5BOEo5GRzRJ&sz=w1200',
+        'https://drive.google.com/thumbnail?id=1sFDs-I-Sl76sVlD53GqldAit_ZW-CYIh&sz=w1200',
+      ],
       price: 9.99,
       priceId: 'price_1UPbfyBsr66TjEhQaZIpki1T',
     },
@@ -519,6 +620,12 @@ function ChristmasContent() {
                 Bundle
               </a>
               <a
+                href="#gothmas"
+                className="text-purple-200 hover:text-white transition-colors font-semibold border border-purple-400/50 rounded-full px-4 py-1.5 bg-purple-500/20 hover:bg-purple-500/40"
+              >
+                Gothmas
+              </a>
+              <a
                 href="#teachers"
                 className="text-white/90 hover:text-amber-300 transition-colors font-medium"
               >
@@ -533,6 +640,12 @@ function ChristmasContent() {
             </div>
 
             <div className="flex items-center gap-4">
+              <a
+                href="#gothmas"
+                className="md:hidden text-purple-200 font-semibold border border-purple-400/50 rounded-full px-3 py-1.5 bg-purple-500/20"
+              >
+                Gothmas
+              </a>
               <ChristmasCartButton onClick={() => setIsCartOpen(true)} />
             </div>
           </div>
@@ -624,6 +737,36 @@ function ChristmasContent() {
               </div>
             </div>
           </div>
+        </section>
+
+        {/* GOTHMAS BANNER */}
+        <section className="container mx-auto px-6 pt-16 relative z-10">
+          <a
+            href="#gothmas"
+            className="block rounded-3xl border border-purple-400/30 bg-gradient-to-r from-purple-950/80 via-purple-900/60 to-slate-900/80 backdrop-blur-xl px-8 py-8 md:px-12 shadow-2xl shadow-purple-950/50 hover:border-purple-300/50 transition-colors"
+          >
+            <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+              <div className="flex items-center gap-5 text-center md:text-left">
+                <Moon className="w-10 h-10 text-purple-300 shrink-0 hidden sm:block" />
+                <div>
+                  <p className="text-purple-200 font-semibold tracking-wide uppercase text-sm mb-1">
+                    New for 2026
+                  </p>
+                  <h2 className="text-3xl md:text-4xl font-serif text-white">
+                    The Gothmas Collection
+                  </h2>
+                  <p className="text-purple-100/70 mt-2 max-w-xl">
+                    Christmas, but darker: printable ornaments, gothic wall art, greeting
+                    cards, gift tags and wrap, and a 25-day countdown — in black, burgundy,
+                    and gold.
+                  </p>
+                </div>
+              </div>
+              <span className="shrink-0 px-8 py-4 rounded-2xl bg-purple-500/80 text-white text-lg font-semibold shadow-lg shadow-purple-900/50">
+                Shop Gothmas
+              </span>
+            </div>
+          </a>
         </section>
 
         {/* SANTA LETTERS */}
@@ -1060,12 +1203,7 @@ function ChristmasContent() {
                   <div className="absolute inset-0 bg-gradient-to-br from-purple-500/20 via-transparent to-indigo-600/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                   <div className="relative p-6">
                     <div className="aspect-square bg-gradient-to-br from-white/5 to-white/10 rounded-2xl mb-4 flex items-center justify-center overflow-hidden">
-                      <img
-                        src={product.image}
-                        alt={product.name}
-                        loading="lazy"
-                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                      />
+                      <GothmasGallery images={product.images} name={product.name} />
                     </div>
                     <h3 className="text-xl font-serif text-white mb-2">{product.name}</h3>
                     <p className="text-sm text-white/70 mb-3">{product.description}</p>
@@ -1077,7 +1215,7 @@ function ChristmasContent() {
                           type: product.type,
                           name: product.name,
                           description: product.description,
-                          image: product.image,
+                          image: product.images[0],
                           price: product.price,
                           priceId: product.priceId,
                         });
@@ -1161,7 +1299,7 @@ function ChristmasContent() {
               />
             </div>
             <p className="text-white/60 text-center">
-              © 2025 JULDD. All rights reserved. Made with love for magical holidays.
+              © 2026 JULDD. All rights reserved. Made with love for magical holidays.
             </p>
             <div className="flex gap-6">
               <a href="/privacy" className="text-white/60 hover:text-white transition-colors">
