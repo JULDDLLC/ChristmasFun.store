@@ -152,6 +152,47 @@ const PRODUCT_FILES: Record<string, { name: string; files: { label: string; url:
       { label: 'Cocoa Bar Set (ZIP)', url: 'https://drive.usercontent.google.com/download?id=1aL_WJXhWOcXZH52yq0PSissYkjjgvurp&export=download&confirm=t' },
     ],
   },
+  'personalized-engaged': {
+    name: 'Our First Christmas Engaged - Editable Ornament',
+    files: [
+      { label: 'Engaged Ornament - Editable + Print PDFs and PNG (ZIP)', url: 'https://drive.usercontent.google.com/download?id=1NnDyDQ0AYhdGp6Ch_ozloQB-ho58l_TT&export=download&confirm=t' },
+    ],
+  },
+  'personalized-baby': {
+    name: "Baby's First Christmas 2026 - Editable Photo Ornament",
+    files: [
+      { label: 'Photo Ornament - 3 Colorways, Editable + Print PDFs, PNGs, Instructions (ZIP)', url: 'https://drive.usercontent.google.com/download?id=1_C5clcmpEfUUOdFtNe9aH_HkzH-MXp8f&export=download&confirm=t' },
+    ],
+  },
+  'personalized-gingerbread': {
+    name: 'Gingerbread Name Ornaments and Stocking Tags - Editable Set',
+    files: [
+      { label: 'Gingerbread Tags - Editable, Blank and Print Sheets + Tag and Figure PNGs (ZIP)', url: 'https://drive.usercontent.google.com/download?id=1JZxxu1xJ5ddk_sPh07_YD-rdWdFWdr4J&export=download&confirm=t' },
+    ],
+  },
+  'personalized-year-review': {
+    name: 'The 2026 Year in Review - Keepsake Ornament Card',
+    files: [
+      { label: 'Year in Review Card - Editable + Print PDFs and PNG (ZIP)', url: 'https://drive.usercontent.google.com/download?id=1mfy27dMMqzucXKiUtjEvp4aFQQyHpMlv&export=download&confirm=t' },
+    ],
+  },
+  'personalized-pet': {
+    name: "Pet's First Christmas - Editable Photo Ornament",
+    files: [
+      { label: 'Pet Photo Ornament - Editable + Print PDFs, PNG, Instructions (ZIP)', url: 'https://drive.usercontent.google.com/download?id=1Z-TeNOVBLXMHWHqIGL_GGCr7ZKmOHlSb&export=download&confirm=t' },
+    ],
+  },
+  'personalized-collection': {
+    name: 'Personalized Ornaments - The Full Collection',
+    files: [
+      { label: 'Complete Collection - Everything (ZIP)', url: 'https://drive.usercontent.google.com/download?id=1J_YNvqfzrwmOD5izAx2r2ow-u2Xl7k9Z&export=download&confirm=t' },
+      { label: 'Engaged Ornament (ZIP)', url: 'https://drive.usercontent.google.com/download?id=1NnDyDQ0AYhdGp6Ch_ozloQB-ho58l_TT&export=download&confirm=t' },
+      { label: "Baby's First Christmas (ZIP)", url: 'https://drive.usercontent.google.com/download?id=1_C5clcmpEfUUOdFtNe9aH_HkzH-MXp8f&export=download&confirm=t' },
+      { label: 'Gingerbread Tags (ZIP)', url: 'https://drive.usercontent.google.com/download?id=1JZxxu1xJ5ddk_sPh07_YD-rdWdFWdr4J&export=download&confirm=t' },
+      { label: 'Year in Review (ZIP)', url: 'https://drive.usercontent.google.com/download?id=1mfy27dMMqzucXKiUtjEvp4aFQQyHpMlv&export=download&confirm=t' },
+      { label: "Pet's First Christmas (ZIP)", url: 'https://drive.usercontent.google.com/download?id=1Z-TeNOVBLXMHWHqIGL_GGCr7ZKmOHlSb&export=download&confirm=t' },
+    ],
+  },
 };
 
 export default function Download() {
