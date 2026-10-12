@@ -220,7 +220,7 @@ Deno.serve(async (req: Request) => {
               }
 
               <div style="margin-top:18px;color:#9ca3af;font-size:12px;line-height:1.6;">
-                Need help? Email <a href="mailto:support@juldd.com" style="color:#34d399;text-decoration:none;">support@juldd.com</a>
+                Need help? Email <a href="mailto:ChristmasMagicDesigns@juldd.com" style="color:#34d399;text-decoration:none;">ChristmasMagicDesigns@juldd.com</a>
               </div>
             </td>
           </tr>
