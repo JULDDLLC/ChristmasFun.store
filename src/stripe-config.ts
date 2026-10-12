@@ -133,6 +133,66 @@ export const STRIPE_PRODUCTS: StripeProduct[] = [
     currency: 'usd',
     mode: 'payment',
   },
+  {
+    id: 'prod_VQevsTEug9hXfM',
+    priceId: 'price_1UPnc7Bsr66TjEhQWXtfdtIA',
+    name: 'Nutcracker Wall Art Bundle - Set of 8',
+    description:
+      'Eight printable wall art designs from the ballet: the Nutcracker soldier standing guard, the Sugar Plum Fairy, Clara\'s Christmas Eve, the Mouse King, the Land of Sweets, and more. Jewel tones with gold details. Print-ready PDF and JPG files sized for 5x7, 8x10, and 11x14 frames. Instant download.',
+    price: 4.99,
+    currency: 'usd',
+    mode: 'payment',
+  },
+  {
+    id: 'prod_VQewc5R0iXX4yT',
+    priceId: 'price_1UPnc9Bsr66TjEhQ6PU6D7o1',
+    name: 'Color-Your-Own Nutcracker Wrap & Poster',
+    description:
+      'One oversized Nutcracker coloring design with a drummer soldier, a Christmas tree, the Sugar Plum Fairy, and candy. Print it large as a poster or table cover for kids to color, or use the tiled pages as gift wrap. Print-ready PDF at poster, letter, and wrap scales, plus the design as a PNG file. Instant download.',
+    price: 2.99,
+    currency: 'usd',
+    mode: 'payment',
+  },
+  {
+    id: 'prod_VQewfGZefTpUHt',
+    priceId: 'price_1UPncCBsr66TjEhQUmAoiOba',
+    name: 'Nutcracker Party Printable Kit',
+    description:
+      'Everything printable for a Nutcracker-themed party in one download: invitations with fill-in fields, tent place cards, a bunting banner that spells NUTCRACKER, food and drink labels, and thank-you cards. Jewel tones and gold throughout, with the Nutcracker soldier and Sugar Plum Fairy as the main figures. Print-ready PDFs. Instant download.',
+    price: 4.99,
+    currency: 'usd',
+    mode: 'payment',
+  },
+  {
+    id: 'prod_VQewF9ohOCWF6B',
+    priceId: 'price_1UPncEBsr66TjEhQrF2AJXBG',
+    name: 'Personalized Nutcracker Ornament',
+    description:
+      'A toy-soldier ornament design with room for a name and 2026, in three colorways: classic red, emerald, and plum. Open the editable PDF, click the name and year fields, type yours in, and print - no extra software needed. Print-ready PDF and PNG files included. Instant download.',
+    price: 4.99,
+    currency: 'usd',
+    mode: 'payment',
+  },
+  {
+    id: 'prod_VQew8nMhWptClD',
+    priceId: 'price_1UPncHBsr66TjEhQLNju2iU7',
+    name: 'Sugar Plum Cocoa Bar & Recipe Cards',
+    description:
+      'Printable signs and recipe cards for a Nutcracker-themed hot cocoa bar: an 8.5x11 cocoa bar sign, topping labels, and recipe cards for classic cocoa, peppermint cocoa, and spiced cocoa. Plum, cream, and gold design. Print-ready PDFs. Instant download.',
+    price: 3.99,
+    currency: 'usd',
+    mode: 'payment',
+  },
+  {
+    id: 'prod_VQewQIJ6vlokE3',
+    priceId: 'price_1UPncJBsr66TjEhQVrePkRnV',
+    name: 'Nutcrackercore - The Full Collection',
+    description:
+      'The complete Nutcrackercore collection in one download: the 8-print wall art bundle, the color-your-own wrap and poster, the party printable kit, the personalized ornament, and the Sugar Plum cocoa bar set. Instant download.',
+    price: 9.99,
+    currency: 'usd',
+    mode: 'payment',
+  },
 ];
 
 export const getProductById = (id: string): StripeProduct | undefined => {
