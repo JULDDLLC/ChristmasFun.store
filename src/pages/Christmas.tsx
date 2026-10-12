@@ -5,6 +5,7 @@ import {
   GraduationCap,
   ChevronRight,
   Sparkles,
+  Moon,
   Gift,
   Star,
   Plus,
@@ -305,6 +306,71 @@ function ChristmasContent() {
       title: 'Holiday Magic',
       file: 'https://cdn1.site-media.eu/images/0/21587501/coloringsheet12-WBA6Fy9wbtojx_ncIim57Q.jpg',
       description: 'Cheerful Christmas artwork',
+    },
+  ];
+
+  const gothmasProducts: Array<{
+    id: string;
+    type: 'gothmas_ornaments' | 'gothmas_wall_art' | 'gothmas_cards' | 'gothmas_tags_wrap' | 'gothmas_countdown' | 'gothmas_collection';
+    name: string;
+    description: string;
+    image: string;
+    price: number;
+    priceId: string;
+  }> = [
+    {
+      id: 'gothmas_ornaments',
+      type: 'gothmas_ornaments',
+      name: 'Ornament Design Bundle - Set of 12',
+      description: 'Twelve dark celestial ornament designs to print: crescent moons, a raven, black roses, and a black cat with a gold bow.',
+      image: 'https://drive.google.com/thumbnail?id=1iNNBrxzqcYMu6EplWg0EBxpvS41tOvjg&sz=w1200',
+      price: 4.99,
+      priceId: 'price_1UPbfPBsr66TjEhQAgZ52nsc',
+    },
+    {
+      id: 'gothmas_wall_art',
+      type: 'gothmas_wall_art',
+      name: 'Gothic Winter Wall Art - Set of 3',
+      description: 'A snow-covered gothic cathedral, a candlelit tree, and a winter raven. Print-ready in 5x7, 8x10, and 11x14.',
+      image: 'https://drive.google.com/thumbnail?id=1C79FxdiHiAP-coV48_5jdFjB0uHkRbV4&sz=w1200',
+      price: 2.99,
+      priceId: 'price_1UPbfkBsr66TjEhQKvjSkHYW',
+    },
+    {
+      id: 'gothmas_cards',
+      type: 'gothmas_cards',
+      name: 'Greeting Cards - Set of 6',
+      description: 'Six folded cards with ravens, black roses, and celestial details. Blank inside, print-ready with trim guides.',
+      image: 'https://drive.google.com/thumbnail?id=1ljhFf__QvyCrQ3VqB3isPMDZWQq-1leV&sz=w1200',
+      price: 2.99,
+      priceId: 'price_1UPbfnBsr66TjEhQbVsExDOc',
+    },
+    {
+      id: 'gothmas_tags_wrap',
+      type: 'gothmas_tags_wrap',
+      name: 'Gift Tags and Wrap Sheets',
+      description: 'Raven and rose gift tags, eight to a page with an editable-names version, plus two coordinating wrap designs.',
+      image: 'https://drive.google.com/thumbnail?id=1qEEt4JKl5Ru4NbDQfUsFOBpxdR3TlxbR&sz=w1200',
+      price: 2.99,
+      priceId: 'price_1UPbfsBsr66TjEhQrn4uFnwN',
+    },
+    {
+      id: 'gothmas_countdown',
+      type: 'gothmas_countdown',
+      name: 'Countdown Advent Cards - Set of 25',
+      description: 'One card for each day from December 1 to Christmas, each with a short, cozy prompt on the back. Two sizes included.',
+      image: 'https://drive.google.com/thumbnail?id=1TG7cRYJGSpl9NzWLJDEAa4R9Ct59PgU7&sz=w1200',
+      price: 4.99,
+      priceId: 'price_1UPbfvBsr66TjEhQ4fda2F6C',
+    },
+    {
+      id: 'gothmas_collection',
+      type: 'gothmas_collection',
+      name: 'The Gothmas Collection - All 5 Sets',
+      description: 'Every Gothmas set in one download: ornaments, wall art, greeting cards, tags and wrap, and the 25-card countdown.',
+      image: 'https://drive.google.com/thumbnail?id=1QOMNHdRga8aAeZP_1d2J21VcRK1P5A2t&sz=w1200',
+      price: 9.99,
+      priceId: 'price_1UPbfyBsr66TjEhQaZIpki1T',
     },
   ];
 
@@ -966,6 +1032,88 @@ function ChristmasContent() {
         </section>
 
         {/* FAQ */}
+        {/* GOTHMAS COLLECTION */}
+        <section id="gothmas" className="container mx-auto px-6 py-24">
+          <div className="text-center mb-16">
+            <div className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-gradient-to-r from-purple-600/30 to-indigo-700/30 backdrop-blur-xl border border-purple-300/40 text-purple-100 font-medium mb-6">
+              <Moon className="w-5 h-5 text-purple-200" />
+              New for 2026 - The Gothmas Collection
+            </div>
+            <h2 className="text-5xl md:text-6xl font-serif text-white mb-6">
+              Gothmas - A Darker Kind of Christmas
+            </h2>
+            <p className="text-lg md:text-xl text-white/80 max-w-2xl mx-auto leading-relaxed">
+              Black, burgundy, deep green, and gold. Printable ornaments, wall art, cards, and a countdown
+              for the people whose Christmas runs a little darker - elegant, never scary.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {gothmasProducts.map((product) => {
+              const inCart = isInCart(product.id);
+
+              return (
+                <div
+                  key={product.id}
+                  className="group relative overflow-hidden rounded-3xl bg-white/10 backdrop-blur-xl border border-white/20 shadow-2xl transition-all duration-500 hover:scale-105 hover:shadow-purple-500/30"
+                >
+                  <div className="absolute inset-0 bg-gradient-to-br from-purple-500/20 via-transparent to-indigo-600/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                  <div className="relative p-6">
+                    <div className="aspect-square bg-gradient-to-br from-white/5 to-white/10 rounded-2xl mb-4 flex items-center justify-center overflow-hidden">
+                      <img
+                        src={product.image}
+                        alt={product.name}
+                        loading="lazy"
+                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                      />
+                    </div>
+                    <h3 className="text-xl font-serif text-white mb-2">{product.name}</h3>
+                    <p className="text-sm text-white/70 mb-3">{product.description}</p>
+                    <p className="text-lg font-bold text-white mb-3">${product.price.toFixed(2)}</p>
+                    <button
+                      onClick={() => {
+                        addToCart({
+                          id: product.id,
+                          type: product.type,
+                          name: product.name,
+                          description: product.description,
+                          image: product.image,
+                          price: product.price,
+                          priceId: product.priceId,
+                        });
+                      }}
+                      disabled={inCart}
+                      className={`w-full py-2 px-4 rounded-xl font-semibold transition-all duration-300 border border-purple-300/30 flex items-center justify-center gap-2 ${
+                        inCart
+                          ? 'bg-green-600/50 text-white cursor-default'
+                          : 'bg-gradient-to-r from-purple-600 to-indigo-700 text-purple-50 hover:from-purple-700 hover:to-indigo-800'
+                      }`}
+                    >
+                      {inCart ? (
+                        <>
+                          <Check className="w-4 h-4" />
+                          In Cart
+                        </>
+                      ) : (
+                        <>
+                          <Plus className="w-4 h-4" />
+                          Add to Cart
+                        </>
+                      )}
+                    </button>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          <div className="text-center mt-12">
+            <p className="text-xl text-purple-100/90">
+              Every set is an instant download - print at home for your own tree, mantel, cards, and gifts.
+            </p>
+          </div>
+        </section>
+
         <section id="faq" className="container mx-auto px-6 py-24">
           <div className="max-w-3xl mx-auto">
             <h2 className="text-5xl md:text-6xl font-serif text-white text-center mb-16">
