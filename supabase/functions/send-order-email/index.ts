@@ -31,6 +31,12 @@ const PRODUCT_DOWNLOAD_MAP: Record<string, string> = {
   'nutcracker_ornament': 'https://christmasfun.store/download/nutcracker-ornament',
   'nutcracker_cocoa_set': 'https://christmasfun.store/download/nutcracker-cocoa',
   'nutcracker_collection': 'https://christmasfun.store/download/nutcracker-collection',
+  'personalized_engaged': 'https://christmasfun.store/download/personalized-engaged',
+  'personalized_baby': 'https://christmasfun.store/download/personalized-baby',
+  'personalized_gingerbread': 'https://christmasfun.store/download/personalized-gingerbread',
+  'personalized_year_review': 'https://christmasfun.store/download/personalized-year-review',
+  'personalized_pet': 'https://christmasfun.store/download/personalized-pet',
+  'personalized_collection': 'https://christmasfun.store/download/personalized-collection',
 };
 
 function getDownloadLinksFromProducts(products: Array<{ product_id: string }>): string[] {
