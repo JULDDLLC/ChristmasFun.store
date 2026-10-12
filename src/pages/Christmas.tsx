@@ -524,6 +524,110 @@ function ChristmasContent() {
     },
   ];
 
+  const nutcrackerProducts: Array<{
+    id: string;
+    type: 'nutcracker_wall_art' | 'nutcracker_coloring_wrap' | 'nutcracker_party_kit' | 'nutcracker_ornament' | 'nutcracker_cocoa_set' | 'nutcracker_collection';
+    name: string;
+    description: string;
+    images: string[];
+    price: number;
+    priceId: string;
+  }> = [
+    {
+      id: 'nutcracker_wall_art',
+      type: 'nutcracker_wall_art',
+      name: 'Wall Art Bundle - Set of 8',
+      description: 'Eight prints from the ballet: the Nutcracker soldier, the Sugar Plum Fairy, Clara, the Mouse King, and the Land of Sweets. Print-ready in 5x7, 8x10, and 11x14.',
+      images: [
+        'https://drive.google.com/thumbnail?id=1j2BqPZ87PolBHBDbB3CR8vr0Q6G6iujz&sz=w1200',
+        'https://drive.google.com/thumbnail?id=1vcfX9fjltDoo6aobtg_n4XtKQOc9Vgnd&sz=w1200',
+        'https://drive.google.com/thumbnail?id=1u3z-23CFTZCcW9fp0_mx1js1BPo6Uks0&sz=w1200',
+        'https://drive.google.com/thumbnail?id=1GMqQLP7oRfmsIF_gevgN4BYlAWP9NsF4&sz=w1200',
+        'https://drive.google.com/thumbnail?id=1ZKg5JY2ePh9i_DBZzqsUZEcI8KTdO-T5&sz=w1200',
+        'https://drive.google.com/thumbnail?id=1ImZCyaTesCTeVY05h7_Ziox_wxf1hLkG&sz=w1200',
+        'https://drive.google.com/thumbnail?id=15AiFCJUSDO6PlHvlhL_u_386qRopiOZy&sz=w1200',
+        'https://drive.google.com/thumbnail?id=11ZL2uji1guLghfaTiGNuZ0pnXKiL4xiI&sz=w1200',
+        'https://drive.google.com/thumbnail?id=1TKUfO8izwbSRsUH2-uaOs0jgUyXzS5qa&sz=w1200',
+      ],
+      price: 4.99,
+      priceId: 'price_1UPnc7Bsr66TjEhQWXtfdtIA',
+    },
+    {
+      id: 'nutcracker_coloring_wrap',
+      type: 'nutcracker_coloring_wrap',
+      name: 'Color-Your-Own Wrap & Poster',
+      description: 'One big Nutcracker coloring design with a drummer soldier, tree, Sugar Plum Fairy, and candy. Print it as a poster or table cover, or use the tiled pages as gift wrap.',
+      images: [
+        'https://drive.google.com/thumbnail?id=1yU4pRKZuQRAER5PUEWnRFLOnS9iteOlr&sz=w1200',
+        'https://drive.google.com/thumbnail?id=1BxsmbxIzSBRb3q87ZgUfc0Pue_EdLmzp&sz=w1200',
+      ],
+      price: 2.99,
+      priceId: 'price_1UPnc9Bsr66TjEhQ6PU6D7o1',
+    },
+    {
+      id: 'nutcracker_party_kit',
+      type: 'nutcracker_party_kit',
+      name: 'Party Printable Kit',
+      description: 'Invitations with fill-in fields, tent place cards, a bunting banner that spells NUTCRACKER, food and drink labels, and thank-you cards.',
+      images: [
+        'https://drive.google.com/thumbnail?id=1qf4aHo6kazYBHqS67FlbF3yPjeGe6VhS&sz=w1200',
+        'https://drive.google.com/thumbnail?id=15mtJlzAXF3MDoE8m81886es3F4nSzbMd&sz=w1200',
+        'https://drive.google.com/thumbnail?id=1vBJZa5ZU2r59HkmzV8Ib2KM8WnnR3iUX&sz=w1200',
+        'https://drive.google.com/thumbnail?id=1NNaEMULZzSCw-C-nRJIP2cbl-ZGOGZwV&sz=w1200',
+        'https://drive.google.com/thumbnail?id=1PWpIZ_o6T33xloq2ZJhRuqokB4sbf2ac&sz=w1200',
+        'https://drive.google.com/thumbnail?id=1RSoKci_sCHb3_wJokb3fsi2wiNBDcqVN&sz=w1200',
+      ],
+      price: 4.99,
+      priceId: 'price_1UPncCBsr66TjEhQUmAoiOba',
+    },
+    {
+      id: 'nutcracker_ornament',
+      type: 'nutcracker_ornament',
+      name: 'Personalized Nutcracker Ornament',
+      description: 'A toy-soldier ornament in three colorways: classic red, emerald, and plum. Open the editable PDF, type a name and year into the fields, and print.',
+      images: [
+        'https://drive.google.com/thumbnail?id=1b0gcki67aIL61wbP8csPggeEdhIUm07J&sz=w1200',
+        'https://drive.google.com/thumbnail?id=1a3GhItwZ9vAG2qgTPa-0zASV0q2g6Gp9&sz=w1200',
+        'https://drive.google.com/thumbnail?id=1oEb2P_tLKwodcm0Jh9-NNM8mxzk990BR&sz=w1200',
+        'https://drive.google.com/thumbnail?id=1IjWDGJL18Hk0a-2KFm3cmDZ3h7yChg9n&sz=w1200',
+      ],
+      price: 4.99,
+      priceId: 'price_1UPncEBsr66TjEhQrF2AJXBG',
+    },
+    {
+      id: 'nutcracker_cocoa_set',
+      type: 'nutcracker_cocoa_set',
+      name: 'Sugar Plum Cocoa Bar Set',
+      description: 'A cocoa bar sign, topping labels, and recipe cards for classic, peppermint, and spiced cocoa. Plum, cream, and gold.',
+      images: [
+        'https://drive.google.com/thumbnail?id=1JDGrIGdvs8BHfz-5dxjixvvPoqN7s0gx&sz=w1200',
+        'https://drive.google.com/thumbnail?id=1RCllKSzNERXn1EWk__WfcfgBBdSAX6AA&sz=w1200',
+        'https://drive.google.com/thumbnail?id=1g_Dtns-GkqP_PFr6WT3TB-gOzBVv01v0&sz=w1200',
+        'https://drive.google.com/thumbnail?id=1UUQRJrtah51BPP5JOibxZmldcdXJxaJz&sz=w1200',
+        'https://drive.google.com/thumbnail?id=1VnWNBggOe_xmuaKD__w0mzFqSAsGp4Qk&sz=w1200',
+        'https://drive.google.com/thumbnail?id=1FVpLfTADJfUIqY0slfjusinOTtwZS9Tg&sz=w1200',
+      ],
+      price: 3.99,
+      priceId: 'price_1UPncHBsr66TjEhQLNju2iU7',
+    },
+    {
+      id: 'nutcracker_collection',
+      type: 'nutcracker_collection',
+      name: 'The Nutcrackercore Collection - All 5 Sets',
+      description: 'Every Nutcrackercore set in one download: wall art, coloring wrap and poster, party kit, personalized ornament, and the cocoa bar set.',
+      images: [
+        'https://drive.google.com/thumbnail?id=1jLm3CHM_fVMeBU5mw-SdkAg5u0YOQ0Bb&sz=w1200',
+        'https://drive.google.com/thumbnail?id=1j2BqPZ87PolBHBDbB3CR8vr0Q6G6iujz&sz=w1200',
+        'https://drive.google.com/thumbnail?id=1yU4pRKZuQRAER5PUEWnRFLOnS9iteOlr&sz=w1200',
+        'https://drive.google.com/thumbnail?id=1qf4aHo6kazYBHqS67FlbF3yPjeGe6VhS&sz=w1200',
+        'https://drive.google.com/thumbnail?id=1b0gcki67aIL61wbP8csPggeEdhIUm07J&sz=w1200',
+        'https://drive.google.com/thumbnail?id=1JDGrIGdvs8BHfz-5dxjixvvPoqN7s0gx&sz=w1200',
+      ],
+      price: 9.99,
+      priceId: 'price_1UPncJBsr66TjEhQVrePkRnV',
+    },
+  ];
+
   const faqs = [
     {
       question: 'How quickly will I receive my designs?',
@@ -678,6 +782,14 @@ function ChristmasContent() {
                 className="text-purple-200 hover:text-white transition-colors font-semibold border border-purple-400/50 rounded-full px-4 py-1.5 bg-purple-500/20 hover:bg-purple-500/40"
               >
                 Gothmas
+                <span className="ml-1.5 rounded-full bg-amber-400 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-purple-950">New</span>
+              </a>
+              <a
+                href="#nutcrackercore"
+                className="text-red-200 hover:text-white transition-colors font-semibold border border-red-400/50 rounded-full px-4 py-1.5 bg-red-500/20 hover:bg-red-500/40"
+              >
+                Nutcrackercore
+                <span className="ml-1.5 rounded-full bg-amber-400 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-red-950">New</span>
               </a>
               <a
                 href="#teachers"
@@ -699,6 +811,14 @@ function ChristmasContent() {
                 className="md:hidden text-purple-200 font-semibold border border-purple-400/50 rounded-full px-3 py-1.5 bg-purple-500/20"
               >
                 Gothmas
+                <span className="ml-1.5 rounded-full bg-amber-400 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-purple-950">New</span>
+              </a>
+              <a
+                href="#nutcrackercore"
+                className="md:hidden text-red-200 font-semibold border border-red-400/50 rounded-full px-3 py-1.5 bg-red-500/20"
+              >
+                Nutcrackercore
+                <span className="ml-1.5 rounded-full bg-amber-400 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-red-950">New</span>
               </a>
               <ChristmasCartButton onClick={() => setIsCartOpen(true)} />
             </div>
@@ -1302,6 +1422,87 @@ function ChristmasContent() {
           <div className="text-center mt-12">
             <p className="text-xl text-purple-100/90">
               Every set is an instant download - print at home for your own tree, mantel, cards, and gifts.
+            </p>
+          </div>
+        </section>
+
+
+        {/* NUTCRACKERCORE COLLECTION */}
+        <section id="nutcrackercore" className="container mx-auto px-6 py-24">
+          <div className="text-center mb-16">
+            <p className="text-amber-300 font-semibold uppercase tracking-[0.25em] text-sm mb-4">
+              New for 2026
+            </p>
+            <div className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-gradient-to-r from-red-600/30 to-amber-600/30 backdrop-blur-xl border border-red-300/40 text-red-100 font-medium mb-6">
+              <Sparkles className="w-5 h-5 text-amber-200" />
+              The Nutcrackercore Collection
+            </div>
+            <h2 className="text-5xl md:text-6xl font-serif text-white mb-6">
+              Nutcrackercore - A Nutcracker Christmas
+            </h2>
+            <p className="text-lg md:text-xl text-white/80 max-w-2xl mx-auto leading-relaxed">
+              Ruby, emerald, deep plum, and gold. Printable wall art, a party kit, a color-your-own wrap,
+              and a personalized ornament, all drawn from the ballet.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {nutcrackerProducts.map((product) => {
+              const inCart = isInCart(product.id);
+
+              return (
+                <div
+                  key={product.id}
+                  className="group relative overflow-hidden rounded-3xl bg-white/10 backdrop-blur-xl border border-white/20 shadow-2xl transition-all duration-500 hover:scale-105 hover:shadow-red-500/30"
+                >
+                  <div className="absolute inset-0 bg-gradient-to-br from-red-500/20 via-transparent to-amber-600/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                  <div className="relative p-6">
+                    <div className="aspect-[4/3] bg-gradient-to-br from-white/5 to-white/10 rounded-2xl mb-4 flex items-center justify-center overflow-hidden">
+                      <GothmasGallery images={product.images} name={product.name} />
+                    </div>
+                    <h3 className="text-xl font-serif text-white mb-2">{product.name}</h3>
+                    <p className="text-sm text-white/70 mb-3">{product.description}</p>
+                    <p className="text-lg font-bold text-white mb-3">${product.price.toFixed(2)}</p>
+                    <button
+                      onClick={() => {
+                        addToCart({
+                          id: product.id,
+                          type: product.type,
+                          name: product.name,
+                          description: product.description,
+                          image: product.images[0],
+                          price: product.price,
+                          priceId: product.priceId,
+                        });
+                      }}
+                      disabled={inCart}
+                      className={`w-full py-2 px-4 rounded-xl font-semibold transition-all duration-300 border border-red-300/30 flex items-center justify-center gap-2 ${
+                        inCart
+                          ? 'bg-green-600/50 text-white cursor-default'
+                          : 'bg-gradient-to-r from-red-700 to-rose-800 text-red-50 hover:from-red-800 hover:to-rose-900'
+                      }`}
+                    >
+                      {inCart ? (
+                        <>
+                          <Check className="w-4 h-4" />
+                          In Cart
+                        </>
+                      ) : (
+                        <>
+                          <Plus className="w-4 h-4" />
+                          Add to Cart
+                        </>
+                      )}
+                    </button>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          <div className="text-center mt-12">
+            <p className="text-xl text-red-100/90">
+              Every set is an instant download - print at home for the party, the mantel, and the tree.
             </p>
           </div>
         </section>
