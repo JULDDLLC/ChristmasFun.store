@@ -56,7 +56,7 @@ export const STRIPE_PRODUCTS: StripeProduct[] = [
   {
     id: 'prod_TZPZj1hniwTEuF',
     priceId: 'price_1ScGjvBsr66TjEhQ4cRtPYm1',
-    name: 'All 18 Designs Bundle',
+    name: 'Christmas Classics Bundle',
     description:
       'Complete set of 14 Santa Letters + 4 Christmas Notes as printable 8.5 x 11 inch PNGs. All custom artwork.',
     price: 9.99,
@@ -68,7 +68,7 @@ export const STRIPE_PRODUCTS: StripeProduct[] = [
     priceId: 'price_1ScH6KBsr66TjEhQAhED4Lsd',
     name: 'Teacher License',
     description:
-      'One-time classroom license for unlimited classroom printing of all 18 Christmas Fun designs.',
+      'One-time classroom license for unlimited classroom printing of all 18 Christmas Classics designs (14 Santa Letters + 4 Christmas Notes).',
     price: 4.99,
     currency: 'usd',
     mode: 'payment',
