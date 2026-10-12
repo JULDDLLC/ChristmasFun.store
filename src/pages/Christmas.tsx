@@ -104,17 +104,17 @@ const GothmasGallery = ({ images, name }: { images: string[]; name: string }) =>
             </button>
           </div>
           <div
-            className="flex-1 min-h-0 overflow-auto flex"
-            onClick={(e) => { if (e.target === e.currentTarget) closeZoom(); }}
+            className="flex-1 min-h-0 overflow-auto"
+            onClick={(e) => { if ((e.target as HTMLElement).closest('img') === null) closeZoom(); }}
           >
-            <div className="m-auto p-2">
+            <div className="min-h-full w-max min-w-full mx-auto flex items-center justify-center p-2">
               <img
                 src={images[index]}
                 alt={name}
-                onClick={() => setDetail((d) => !d)}
+                onClick={(e) => { e.stopPropagation(); setDetail((d) => !d); }}
                 className={detail
                   ? "max-w-none max-h-none rounded-lg cursor-zoom-out"
-                  : "max-h-[calc(100vh-190px)] max-w-[94vw] object-contain rounded-lg cursor-zoom-in"}
+                  : "max-h-[78vh] max-w-[94vw] object-contain rounded-lg cursor-zoom-in"}
               />
             </div>
           </div>
