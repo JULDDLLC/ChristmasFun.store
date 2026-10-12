@@ -1041,34 +1041,55 @@ function ChristmasContent() {
           </div>
         </section>
 
-        {/* GOTHMAS BANNER */}
+        {/* NEW FOR 2026 COLLECTIONS BANNER */}
         <section className="container mx-auto px-6 pt-16 relative z-10">
-          <a
-            href="#gothmas"
-            className="block rounded-3xl border border-purple-400/30 bg-gradient-to-r from-purple-950/80 via-purple-900/60 to-slate-900/80 backdrop-blur-xl px-8 py-8 md:px-12 shadow-2xl shadow-purple-950/50 hover:border-purple-300/50 transition-colors"
-          >
-            <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-              <div className="flex items-center gap-5 text-center md:text-left">
-                <Moon className="w-10 h-10 text-purple-300 shrink-0 hidden sm:block" />
-                <div>
-                  <p className="text-purple-200 font-semibold tracking-wide uppercase text-sm mb-1">
-                    New for 2026
-                  </p>
-                  <h2 className="text-3xl md:text-4xl font-serif text-white">
-                    The Gothmas Collection
-                  </h2>
-                  <p className="text-purple-100/70 mt-2 max-w-xl">
-                    Christmas, but darker: printable ornaments, gothic wall art, greeting
-                    cards, gift tags and wrap, and a 25-day countdown — in black, burgundy,
-                    and gold.
-                  </p>
-                </div>
-              </div>
-              <span className="shrink-0 px-8 py-4 rounded-2xl bg-purple-500/80 text-white text-lg font-semibold shadow-lg shadow-purple-900/50">
+          <p className="text-center text-amber-300 font-semibold uppercase tracking-[0.25em] text-sm mb-6">
+            New for 2026 — Three New Collections
+          </p>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <a
+              href="#gothmas"
+              className="block rounded-3xl border border-purple-400/30 bg-gradient-to-br from-purple-950/80 via-purple-900/60 to-slate-900/80 backdrop-blur-xl px-7 py-7 shadow-2xl shadow-purple-950/50 hover:border-purple-300/60 transition-colors"
+            >
+              <Moon className="w-9 h-9 text-purple-300 mb-4" />
+              <h3 className="text-2xl font-serif text-white mb-2">The Gothmas Collection</h3>
+              <p className="text-purple-100/70 text-sm leading-relaxed mb-5">
+                Christmas, but darker: printable ornaments, gothic wall art, greeting cards,
+                gift tags and wrap, and a 25-day countdown — in black, burgundy, and gold.
+              </p>
+              <span className="inline-block px-6 py-3 rounded-2xl bg-purple-500/80 text-white font-semibold shadow-lg shadow-purple-900/50">
                 Shop Gothmas
               </span>
-            </div>
-          </a>
+            </a>
+            <a
+              href="#nutcrackercore"
+              className="block rounded-3xl border border-red-400/30 bg-gradient-to-br from-red-950/80 via-rose-900/50 to-slate-900/80 backdrop-blur-xl px-7 py-7 shadow-2xl shadow-red-950/50 hover:border-red-300/60 transition-colors"
+            >
+              <Sparkles className="w-9 h-9 text-red-300 mb-4" />
+              <h3 className="text-2xl font-serif text-white mb-2">Nutcrackercore</h3>
+              <p className="text-red-100/70 text-sm leading-relaxed mb-5">
+                A Nutcracker Christmas: storybook wall art, a printable party kit, a
+                personalized ornament, and a Sugar Plum cocoa bar set.
+              </p>
+              <span className="inline-block px-6 py-3 rounded-2xl bg-red-600/80 text-white font-semibold shadow-lg shadow-red-900/50">
+                Shop Nutcrackercore
+              </span>
+            </a>
+            <a
+              href="#personalized"
+              className="block rounded-3xl border border-emerald-400/30 bg-gradient-to-br from-emerald-950/80 via-emerald-900/50 to-slate-900/80 backdrop-blur-xl px-7 py-7 shadow-2xl shadow-emerald-950/50 hover:border-emerald-300/60 transition-colors"
+            >
+              <Gift className="w-9 h-9 text-emerald-300 mb-4" />
+              <h3 className="text-2xl font-serif text-white mb-2">Personalized Ornaments</h3>
+              <p className="text-emerald-100/70 text-sm leading-relaxed mb-5">
+                Their name on the tree: editable ornaments for newlyweds, baby's first
+                Christmas, pets, and gingerbread name tags for the whole family.
+              </p>
+              <span className="inline-block px-6 py-3 rounded-2xl bg-emerald-600/80 text-white font-semibold shadow-lg shadow-emerald-900/50">
+                Shop Personalized
+              </span>
+            </a>
+          </div>
         </section>
 
         {/* SANTA LETTERS */}
