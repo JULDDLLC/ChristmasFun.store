@@ -38,6 +38,12 @@ const PRICE_ID_BY_TYPE: Record<string, string> = {
   all_18_bundle: "price_1ScGjvBsr66TjEhQ4cRtPYm1",
   teacher_license: "price_1ScH6KBsr66TjEhQAhED4Lsd",
   free_coloring: "price_1SctvEBsr66TjEhQ5XQ8NUxl",
+  gothmas_ornaments: "price_1UPbfPBsr66TjEhQAgZ52nsc",
+  gothmas_wall_art: "price_1UPbfkBsr66TjEhQKvjSkHYW",
+  gothmas_cards: "price_1UPbfnBsr66TjEhQbVsExDOc",
+  gothmas_tags_wrap: "price_1UPbfsBsr66TjEhQrn4uFnwN",
+  gothmas_countdown: "price_1UPbfvBsr66TjEhQ4fda2F6C",
+  gothmas_collection: "price_1UPbfyBsr66TjEhQaZIpki1T",
 };
 
 function json(body: unknown, status = 200) {
