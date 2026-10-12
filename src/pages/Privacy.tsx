@@ -29,7 +29,7 @@ export default function Privacy() {
         <div className="max-w-4xl mx-auto">
           <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl p-12 shadow-2xl">
             <h1 className="text-5xl font-serif text-white mb-8">Privacy Policy</h1>
-            <p className="text-white/60 text-sm mb-12">Last Updated: December 7, 2024</p>
+            <p className="text-white/60 text-sm mb-12">Last Updated: October 12, 2026</p>
 
             <div className="space-y-8 text-white/80">
               <section>
