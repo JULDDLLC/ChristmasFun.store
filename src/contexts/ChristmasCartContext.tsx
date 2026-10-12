@@ -2,9 +2,10 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 
 export interface ChristmasCartItem {
   id: string;
-  type: 'santa_letter' | 'christmas_note';
+  type: 'santa_letter' | 'christmas_note' | 'gothmas_ornaments' | 'gothmas_wall_art' | 'gothmas_cards' | 'gothmas_tags_wrap' | 'gothmas_countdown' | 'gothmas_collection';
   designNumber?: number;
   noteNumber?: number;
+  priceId?: string;
   name: string;
   description: string;
   image: string;
