@@ -32,6 +32,12 @@ const PRICE_ID_TO_PRODUCT = new Map<string, { product_id: string; label: string 
   ["price_1ScGjvBsr66TjEhQ4cRtPYm1", { product_id: "all_18_bundle", label: "All 18 Designs Bundle" }],
   ["price_1ScH6KBsr66TjEhQAhED4Lsd", { product_id: "teacher_license", label: "Teacher License" }],
   ["price_1SctvEBsr66TjEhQ5XQ8NUxl", { product_id: "free_coloring", label: "Free Coloring Sheets" }],
+  ["price_1UPbfPBsr66TjEhQAgZ52nsc", { product_id: "gothmas_ornaments", label: "Gothmas Ornament Design Bundle" }],
+  ["price_1UPbfkBsr66TjEhQKvjSkHYW", { product_id: "gothmas_wall_art", label: "Gothic Winter Wall Art Set of 3" }],
+  ["price_1UPbfnBsr66TjEhQbVsExDOc", { product_id: "gothmas_cards", label: "Gothmas Greeting Cards Set of 6" }],
+  ["price_1UPbfsBsr66TjEhQrn4uFnwN", { product_id: "gothmas_tags_wrap", label: "Raven and Rose Gift Tags and Wrap" }],
+  ["price_1UPbfvBsr66TjEhQ4fda2F6C", { product_id: "gothmas_countdown", label: "Gothmas Countdown Advent Cards" }],
+  ["price_1UPbfyBsr66TjEhQaZIpki1T", { product_id: "gothmas_collection", label: "Gothmas Collection - All 5 Sets" }],
 ]);
 
 function pickMeta(md: Record<string, any> | null | undefined, key1: string, key2: string) {
