@@ -19,6 +19,12 @@ const PRODUCT_DOWNLOAD_MAP: Record<string, string> = {
   'complete_bundle': 'https://christmasfun.store/download/all-18-bundle',
   'teacher_license': 'https://christmasfun.store/download/teacher-license',
   'free_coloring': 'https://christmasfun.store/download/free-coloring',
+  'gothmas_ornaments': 'https://christmasfun.store/download/gothmas-ornaments',
+  'gothmas_wall_art': 'https://christmasfun.store/download/gothmas-wall-art',
+  'gothmas_cards': 'https://christmasfun.store/download/gothmas-cards',
+  'gothmas_tags_wrap': 'https://christmasfun.store/download/gothmas-tags-wrap',
+  'gothmas_countdown': 'https://christmasfun.store/download/gothmas-countdown',
+  'gothmas_collection': 'https://christmasfun.store/download/gothmas-collection',
 };
 
 function getDownloadLinksFromProducts(products: Array<{ product_id: string }>): string[] {
