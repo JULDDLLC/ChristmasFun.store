@@ -29,7 +29,7 @@ export default function Terms() {
         <div className="max-w-4xl mx-auto">
           <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl p-12 shadow-2xl">
             <h1 className="text-5xl font-serif text-white mb-8">Terms of Service</h1>
-            <p className="text-white/60 text-sm mb-12">Last Updated: December 7, 2024</p>
+            <p className="text-white/60 text-sm mb-12">Last Updated: October 12, 2026</p>
 
             <div className="space-y-8 text-white/80">
               <section>
@@ -62,7 +62,7 @@ export default function Terms() {
                   <li>Digital downloads are delivered instantly upon payment confirmation</li>
                   <li>Files are provided in PDF format optimized for 8.5" x 11" printing</li>
                   <li>You are responsible for downloading and saving your files</li>
-                  <li>Download links are valid for 30 days after purchase</li>
+                  <li>Download links do not expire — save your files after downloading</li>
                 </ul>
               </section>
 
@@ -109,7 +109,7 @@ export default function Terms() {
               <section>
                 <h2 className="text-2xl font-serif text-white mb-4">9. Limitations</h2>
                 <p className="leading-relaxed">
-                  In no event shall JULDD or its suppliers be liable for any damages (including, without limitation, damages for loss of data or profit) arising out of the use or inability to use the materials on ChristmasMFun.store.
+                  In no event shall JULDD or its suppliers be liable for any damages (including, without limitation, damages for loss of data or profit) arising out of the use or inability to use the materials on ChristmasFun.store.
                 </p>
               </section>
 
