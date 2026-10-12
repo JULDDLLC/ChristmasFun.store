@@ -111,6 +111,47 @@ const PRODUCT_FILES: Record<string, { name: string; files: { label: string; url:
       { label: 'Countdown Cards (ZIP)', url: 'https://drive.usercontent.google.com/download?id=1VfJmLLEfN_RT1iKdtW5J0OdPHsSM75Tm&export=download&confirm=t' },
     ],
   },
+  'nutcracker-wall-art': {
+    name: 'Nutcracker Wall Art Bundle - Set of 8',
+    files: [
+      { label: 'Wall Art Bundle - 8 Prints in 3 Sizes (ZIP)', url: 'https://drive.usercontent.google.com/download?id=12lOyeyKb6Uqyl7ESCcc3dvJRBZQYucIs&export=download&confirm=t' },
+    ],
+  },
+  'nutcracker-coloring': {
+    name: 'Color-Your-Own Nutcracker Wrap & Poster',
+    files: [
+      { label: 'Coloring Wrap & Poster - All Scales (ZIP)', url: 'https://drive.usercontent.google.com/download?id=1F3OfBojKcOO73trjKS4D98bhPG6XhTWz&export=download&confirm=t' },
+    ],
+  },
+  'nutcracker-party': {
+    name: 'Nutcracker Party Printable Kit',
+    files: [
+      { label: 'Party Kit - Invitations, Place Cards, Banner, Labels, Thank-You Cards (ZIP)', url: 'https://drive.usercontent.google.com/download?id=15PTiK8ywytjxl45lF-0BXTMO9bP4sAtH&export=download&confirm=t' },
+    ],
+  },
+  'nutcracker-ornament': {
+    name: 'Personalized Nutcracker Ornament',
+    files: [
+      { label: 'Personalized Ornament - 3 Colorways, Editable + Print (ZIP)', url: 'https://drive.usercontent.google.com/download?id=1z1o7OhH6-9HCNBh7FxrDnz2zRE07YWaR&export=download&confirm=t' },
+    ],
+  },
+  'nutcracker-cocoa': {
+    name: 'Sugar Plum Cocoa Bar & Recipe Cards',
+    files: [
+      { label: 'Cocoa Bar Set - Sign, Labels, Recipe Cards (ZIP)', url: 'https://drive.usercontent.google.com/download?id=1aL_WJXhWOcXZH52yq0PSissYkjjgvurp&export=download&confirm=t' },
+    ],
+  },
+  'nutcracker-collection': {
+    name: 'Nutcrackercore - The Full Collection',
+    files: [
+      { label: 'Complete Collection - Everything (ZIP)', url: 'https://drive.usercontent.google.com/download?id=1KBgmrFLrH4lPX0Jt1umtGyZpHAFFZcHX&export=download&confirm=t' },
+      { label: 'Wall Art Bundle (ZIP)', url: 'https://drive.usercontent.google.com/download?id=12lOyeyKb6Uqyl7ESCcc3dvJRBZQYucIs&export=download&confirm=t' },
+      { label: 'Coloring Wrap & Poster (ZIP)', url: 'https://drive.usercontent.google.com/download?id=1F3OfBojKcOO73trjKS4D98bhPG6XhTWz&export=download&confirm=t' },
+      { label: 'Party Printable Kit (ZIP)', url: 'https://drive.usercontent.google.com/download?id=15PTiK8ywytjxl45lF-0BXTMO9bP4sAtH&export=download&confirm=t' },
+      { label: 'Personalized Ornament (ZIP)', url: 'https://drive.usercontent.google.com/download?id=1z1o7OhH6-9HCNBh7FxrDnz2zRE07YWaR&export=download&confirm=t' },
+      { label: 'Cocoa Bar Set (ZIP)', url: 'https://drive.usercontent.google.com/download?id=1aL_WJXhWOcXZH52yq0PSissYkjjgvurp&export=download&confirm=t' },
+    ],
+  },
 };
 
 export default function Download() {
