@@ -1132,7 +1132,7 @@ function ChristmasContent() {
           <div className="text-center mb-16">
             <div className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-gradient-to-r from-red-600/30 to-red-700/30 backdrop-blur-xl border border-amber-400/40 text-amber-200 font-medium mb-6">
               <Sparkles className="w-5 h-5 text-amber-300" />
-              New Christmas Notes Collection
+              Christmas Notes Collection
             </div>
             <h2 className="text-5xl md:text-6xl font-serif text-white mb-6">
               Christmas Notes &amp; Stationery
@@ -1457,7 +1457,7 @@ function ChristmasContent() {
                 </div>
 
                 <h2 className="text-5xl md:text-6xl font-serif text-white mb-4">
-                  Get All 18 Designs
+                  The Christmas Classics Bundle
                 </h2>
                 <p className="text-xl text-white/80 mb-4">
                   14 Santa Letters + 4 Christmas Notes
@@ -1495,6 +1495,45 @@ function ChristmasContent() {
                 </button>
               </div>
             </div>
+          </div>
+        </section>
+
+        {/* ABOUT */}
+        <section id="about" className="container mx-auto px-6 py-24">
+          <div className="max-w-3xl mx-auto text-center">
+            <p className="text-amber-300 font-semibold uppercase tracking-[0.25em] text-sm mb-6">
+              About the shop
+            </p>
+            <h2 className="text-4xl md:text-5xl font-serif text-white mb-6">
+              Made for magical Christmases
+            </h2>
+            <p className="text-lg text-white/80 leading-relaxed mb-8">
+              ChristmasFun.store is a small independent shop creating original printable
+              Christmas designs — Santa letters, stationery, wall art, greeting cards, and
+              more. Every design is made in-house, delivered instantly by email, and prints
+              beautifully at home on standard paper.
+            </p>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-10">
+              <div className="rounded-2xl bg-white/5 backdrop-blur-xl border border-white/10 px-6 py-5">
+                <p className="text-amber-200 font-semibold mb-1">Instant download</p>
+                <p className="text-sm text-white/70">Links arrive by email right after checkout</p>
+              </div>
+              <div className="rounded-2xl bg-white/5 backdrop-blur-xl border border-white/10 px-6 py-5">
+                <p className="text-amber-200 font-semibold mb-1">Print at home</p>
+                <p className="text-sm text-white/70">Designed for standard 8.5&Prime; x 11&Prime; paper</p>
+              </div>
+              <div className="rounded-2xl bg-white/5 backdrop-blur-xl border border-white/10 px-6 py-5">
+                <p className="text-amber-200 font-semibold mb-1">Original artwork</p>
+                <p className="text-sm text-white/70">Every design created for this shop</p>
+              </div>
+            </div>
+            <p className="text-white/70">
+              Questions about an order or a design? Write to{' '}
+              <a href="mailto:ChristmasMagicDesigns@juldd.com" className="text-amber-300 hover:underline font-medium">
+                ChristmasMagicDesigns@juldd.com
+              </a>{' '}
+              — a real person reads every message.
+            </p>
           </div>
         </section>
 
