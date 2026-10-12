@@ -44,6 +44,12 @@ const PRICE_ID_TO_PRODUCT = new Map<string, { product_id: string; label: string 
   ["price_1UPncEBsr66TjEhQrF2AJXBG", { product_id: "nutcracker_ornament", label: "Personalized Nutcracker Ornament" }],
   ["price_1UPncHBsr66TjEhQLNju2iU7", { product_id: "nutcracker_cocoa_set", label: "Sugar Plum Cocoa Bar & Recipe Cards" }],
   ["price_1UPncJBsr66TjEhQVrePkRnV", { product_id: "nutcracker_collection", label: "Nutcrackercore - The Full Collection" }],
+  ["price_1UPo4BBsr66TjEhQ47OQNQlz", { product_id: "personalized_engaged", label: "Our First Christmas Engaged - Editable Ornament" }],
+  ["price_1UPo4DBsr66TjEhQoBY2dpuZ", { product_id: "personalized_baby", label: "Baby's First Christmas 2026 - Editable Photo Ornament" }],
+  ["price_1UPo4FBsr66TjEhQw4HquAvT", { product_id: "personalized_gingerbread", label: "Gingerbread Name Ornaments and Stocking Tags - Editable Set" }],
+  ["price_1UPo4HBsr66TjEhQPsaoETnj", { product_id: "personalized_year_review", label: "The 2026 Year in Review - Keepsake Ornament Card" }],
+  ["price_1UPo4KBsr66TjEhQQTrj8HzZ", { product_id: "personalized_pet", label: "Pet's First Christmas - Editable Photo Ornament" }],
+  ["price_1UPo4MBsr66TjEhQMIEzjICq", { product_id: "personalized_collection", label: "Personalized Ornaments - The Full Collection" }],
 ]);
 
 function pickMeta(md: Record<string, any> | null | undefined, key1: string, key2: string) {
