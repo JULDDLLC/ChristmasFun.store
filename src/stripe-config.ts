@@ -78,7 +78,7 @@ export const STRIPE_PRODUCTS: StripeProduct[] = [
     priceId: 'price_1UPbfPBsr66TjEhQAgZ52nsc',
     name: 'Gothmas Ornament Design Bundle - 12 Dark Holiday Designs',
     description:
-      'Twelve printable ornament designs in a dark, celestial style: a crescent moon and stars, a raven on a branch, black roses, a black cat with a gold bow, and more. High-resolution PNG files (full square artwork) made for printing at home. Instant download from ChristmasFun.store.',
+      'Twelve printable ornament designs in a dark, celestial style: a crescent moon and stars, a raven on a branch, black roses, a black cat with a gold bow, and more. Print at home, cut to a circle, and add to a blank ornament — flat wood or ceramic blanks, or inside clear fillable ornaments. High-resolution PNG files (full square artwork). Instant download from ChristmasFun.store.',
     price: 4.99,
     currency: 'usd',
     mode: 'payment',
