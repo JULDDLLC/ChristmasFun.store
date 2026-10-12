@@ -50,6 +50,12 @@ const PRICE_ID_BY_TYPE: Record<string, string> = {
   nutcracker_ornament: "price_1UPncEBsr66TjEhQrF2AJXBG",
   nutcracker_cocoa_set: "price_1UPncHBsr66TjEhQLNju2iU7",
   nutcracker_collection: "price_1UPncJBsr66TjEhQVrePkRnV",
+  personalized_engaged: "price_1UPo4BBsr66TjEhQ47OQNQlz",
+  personalized_baby: "price_1UPo4DBsr66TjEhQoBY2dpuZ",
+  personalized_gingerbread: "price_1UPo4FBsr66TjEhQw4HquAvT",
+  personalized_year_review: "price_1UPo4HBsr66TjEhQPsaoETnj",
+  personalized_pet: "price_1UPo4KBsr66TjEhQQTrj8HzZ",
+  personalized_collection: "price_1UPo4MBsr66TjEhQMIEzjICq",
 };
 
 function json(body: unknown, status = 200) {
