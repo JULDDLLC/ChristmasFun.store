@@ -44,6 +44,12 @@ const PRICE_ID_BY_TYPE: Record<string, string> = {
   gothmas_tags_wrap: "price_1UPbfsBsr66TjEhQrn4uFnwN",
   gothmas_countdown: "price_1UPbfvBsr66TjEhQ4fda2F6C",
   gothmas_collection: "price_1UPbfyBsr66TjEhQaZIpki1T",
+  nutcracker_wall_art: "price_1UPnc7Bsr66TjEhQWXtfdtIA",
+  nutcracker_coloring_wrap: "price_1UPnc9Bsr66TjEhQ6PU6D7o1",
+  nutcracker_party_kit: "price_1UPncCBsr66TjEhQUmAoiOba",
+  nutcracker_ornament: "price_1UPncEBsr66TjEhQrF2AJXBG",
+  nutcracker_cocoa_set: "price_1UPncHBsr66TjEhQLNju2iU7",
+  nutcracker_collection: "price_1UPncJBsr66TjEhQVrePkRnV",
 };
 
 function json(body: unknown, status = 200) {
