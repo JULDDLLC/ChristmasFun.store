@@ -193,6 +193,66 @@ export const STRIPE_PRODUCTS: StripeProduct[] = [
     currency: 'usd',
     mode: 'payment',
   },
+  {
+    id: 'prod_VQfOjg3b64aPuG',
+    priceId: 'price_1UPo4BBsr66TjEhQ47OQNQlz',
+    name: 'Our First Christmas Engaged - Editable Ornament',
+    description:
+      'A printable ornament for couples who got engaged this year: a glossy ruby bauble with gold rings on deep emerald, with a cream banner for your names. Open the editable PDF, click the name and year fields, type yours in, and print - no extra software needed. A filled sample and the blank PNG design are included. Instant download.',
+    price: 4.99,
+    currency: 'usd',
+    mode: 'payment',
+  },
+  {
+    id: 'prod_VQfPxG280WFrXA',
+    priceId: 'price_1UPo4DBsr66TjEhQoBY2dpuZ',
+    name: 'Baby\'s First Christmas 2026 - Editable Photo Ornament',
+    description:
+      'A photo ornament frame for a baby\'s first Christmas in three colorways: jewel rose-pink, sapphire blue, and classic red-green, each with an oval photo window, a teddy and booties, and a name plate. Open the editable PDF, click the name field, type the baby\'s name in, and print - no extra software needed. Instructions for sizing and placing the photo are included. Instant download.',
+    price: 4.99,
+    currency: 'usd',
+    mode: 'payment',
+  },
+  {
+    id: 'prod_VQfPS1UukJdmxI',
+    priceId: 'price_1UPo4FBsr66TjEhQw4HquAvT',
+    name: 'Gingerbread Name Ornaments and Stocking Tags - Editable Set',
+    description:
+      'Gingerbread name tags that work as tree ornaments or stocking tags, with four figures: a boy, a little boy, a girl, and a plain gingerbread. Open the editable PDF, click the name fields, type a name for every kid in the family, and print - no extra software needed. Blank and filled-sample sheets, single-tag PNGs, and cut-out figure PNGs are included. Instant download.',
+    price: 2.99,
+    currency: 'usd',
+    mode: 'payment',
+  },
+  {
+    id: 'prod_VQfPVskc1mC0Uj',
+    priceId: 'price_1UPo4HBsr66TjEhQPsaoETnj',
+    name: 'The 2026 Year in Review - Keepsake Ornament Card',
+    description:
+      'A keepsake ornament card that sums up your family\'s 2026, with room for the family name and five of the year\'s big moments. Open the editable PDF, click the fields, type yours in, and print - no extra software needed. Prints flat as a card or hangs as an ornament. A filled sample is included. Instant download.',
+    price: 3.99,
+    currency: 'usd',
+    mode: 'payment',
+  },
+  {
+    id: 'prod_VQfPEhb49PeF7N',
+    priceId: 'price_1UPo4KBsr66TjEhQQTrj8HzZ',
+    name: 'Pet\'s First Christmas - Editable Photo Ornament',
+    description:
+      'A photo ornament frame for the dog or cat who joined the family this year, with a paw-print ring, a puppy and kitten, and an oval photo window. Open the editable PDF, click the name and year fields, type your pet\'s in, and print - no extra software needed. Instructions for sizing and placing the photo are included. Instant download.',
+    price: 4.99,
+    currency: 'usd',
+    mode: 'payment',
+  },
+  {
+    id: 'prod_VQfPhThhNeMCs5',
+    priceId: 'price_1UPo4MBsr66TjEhQMIEzjICq',
+    name: 'Personalized Ornaments - The Full Collection',
+    description:
+      'The complete Personalized Ornaments collection in one download: the engaged ornament, the baby\'s first Christmas photo ornament, the gingerbread name ornament and stocking tag set, the 2026 year in review keepsake card, and the pet\'s first Christmas photo ornament. Every set is editable - type names and details into the PDF fields and print, no extra software needed. Instant download.',
+    price: 9.99,
+    currency: 'usd',
+    mode: 'payment',
+  },
 ];
 
 export const getProductById = (id: string): StripeProduct | undefined => {
