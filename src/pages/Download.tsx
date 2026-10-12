@@ -70,6 +70,47 @@ const PRODUCT_FILES: Record<string, { name: string; files: { label: string; url:
       { label: 'Holiday Magic (Kids)', url: 'https://cdn1.site-media.eu/images/0/21587501/coloringsheet12-WBA6Fy9wbtojx_ncIim57Q.jpg' },
     ],
   },
+  'gothmas-ornaments': {
+    name: 'Gothmas Ornament Design Bundle',
+    files: [
+      { label: 'Ornament Bundle - All 12 Designs (ZIP)', url: 'https://drive.usercontent.google.com/download?id=1aWTGythNTTfSV0FRSAzZMYvfDj08psSC&export=download&confirm=t' },
+    ],
+  },
+  'gothmas-wall-art': {
+    name: 'Gothic Winter Wall Art Set of 3',
+    files: [
+      { label: 'Wall Art Set - 3 Prints in 3 Sizes (ZIP)', url: 'https://drive.usercontent.google.com/download?id=18gpGToDyGOpoQDME47DzFDsr-yMWs-Cq&export=download&confirm=t' },
+    ],
+  },
+  'gothmas-cards': {
+    name: 'Gothmas Greeting Cards - Set of 6',
+    files: [
+      { label: 'Greeting Cards - Print PDF + Card Fronts (ZIP)', url: 'https://drive.usercontent.google.com/download?id=1aetP27-cVha99vzvkX1zAtfHv29qG373&export=download&confirm=t' },
+    ],
+  },
+  'gothmas-tags-wrap': {
+    name: 'Raven and Rose Gift Tags and Wrap Sheets',
+    files: [
+      { label: 'Gift Tags + Wrap Sheets (ZIP)', url: 'https://drive.usercontent.google.com/download?id=1-ckWD7FuhuUVlpD_mTrLGXzcYkHJSKAE&export=download&confirm=t' },
+    ],
+  },
+  'gothmas-countdown': {
+    name: 'Gothmas Countdown - 25 Advent Calendar Cards',
+    files: [
+      { label: 'Countdown Cards - Both Sizes (ZIP)', url: 'https://drive.usercontent.google.com/download?id=1VfJmLLEfN_RT1iKdtW5J0OdPHsSM75Tm&export=download&confirm=t' },
+    ],
+  },
+  'gothmas-collection': {
+    name: 'Gothmas Collection - All 5 Sets',
+    files: [
+      { label: 'Complete Collection - Everything (ZIP)', url: 'https://drive.usercontent.google.com/download?id=1hI1oZ_hEaZ9y6DEn3ZHEhKfDT-hkT0Dv&export=download&confirm=t' },
+      { label: 'Ornament Bundle (ZIP)', url: 'https://drive.usercontent.google.com/download?id=1aWTGythNTTfSV0FRSAzZMYvfDj08psSC&export=download&confirm=t' },
+      { label: 'Wall Art Set (ZIP)', url: 'https://drive.usercontent.google.com/download?id=18gpGToDyGOpoQDME47DzFDsr-yMWs-Cq&export=download&confirm=t' },
+      { label: 'Greeting Cards (ZIP)', url: 'https://drive.usercontent.google.com/download?id=1aetP27-cVha99vzvkX1zAtfHv29qG373&export=download&confirm=t' },
+      { label: 'Gift Tags and Wrap (ZIP)', url: 'https://drive.usercontent.google.com/download?id=1-ckWD7FuhuUVlpD_mTrLGXzcYkHJSKAE&export=download&confirm=t' },
+      { label: 'Countdown Cards (ZIP)', url: 'https://drive.usercontent.google.com/download?id=1VfJmLLEfN_RT1iKdtW5J0OdPHsSM75Tm&export=download&confirm=t' },
+    ],
+  },
 };
 
 export default function Download() {
