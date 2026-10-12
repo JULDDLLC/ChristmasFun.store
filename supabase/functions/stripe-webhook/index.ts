@@ -38,6 +38,12 @@ const PRICE_ID_TO_PRODUCT = new Map<string, { product_id: string; label: string 
   ["price_1UPbfsBsr66TjEhQrn4uFnwN", { product_id: "gothmas_tags_wrap", label: "Raven and Rose Gift Tags and Wrap" }],
   ["price_1UPbfvBsr66TjEhQ4fda2F6C", { product_id: "gothmas_countdown", label: "Gothmas Countdown Advent Cards" }],
   ["price_1UPbfyBsr66TjEhQaZIpki1T", { product_id: "gothmas_collection", label: "Gothmas Collection - All 5 Sets" }],
+  ["price_1UPnc7Bsr66TjEhQWXtfdtIA", { product_id: "nutcracker_wall_art", label: "Nutcracker Wall Art Bundle - Set of 8" }],
+  ["price_1UPnc9Bsr66TjEhQ6PU6D7o1", { product_id: "nutcracker_coloring_wrap", label: "Color-Your-Own Nutcracker Wrap & Poster" }],
+  ["price_1UPncCBsr66TjEhQUmAoiOba", { product_id: "nutcracker_party_kit", label: "Nutcracker Party Printable Kit" }],
+  ["price_1UPncEBsr66TjEhQrF2AJXBG", { product_id: "nutcracker_ornament", label: "Personalized Nutcracker Ornament" }],
+  ["price_1UPncHBsr66TjEhQLNju2iU7", { product_id: "nutcracker_cocoa_set", label: "Sugar Plum Cocoa Bar & Recipe Cards" }],
+  ["price_1UPncJBsr66TjEhQVrePkRnV", { product_id: "nutcracker_collection", label: "Nutcrackercore - The Full Collection" }],
 ]);
 
 function pickMeta(md: Record<string, any> | null | undefined, key1: string, key2: string) {
