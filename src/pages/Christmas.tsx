@@ -628,6 +628,101 @@ function ChristmasContent() {
     },
   ];
 
+  const personalizedProducts: Array<{
+    id: string;
+    type: 'personalized_engaged' | 'personalized_baby' | 'personalized_gingerbread' | 'personalized_year_review' | 'personalized_pet' | 'personalized_collection';
+    name: string;
+    description: string;
+    images: string[];
+    price: number;
+    priceId: string;
+  }> = [
+    {
+      id: 'personalized_engaged',
+      type: 'personalized_engaged',
+      name: 'Our First Christmas Engaged',
+      description: 'A glossy ruby bauble with gold rings and a cream banner for your names. Type them into the editable PDF and print - no extra software needed.',
+      images: [
+        'https://drive.google.com/thumbnail?id=1C5zx3wQ_NFkI0-PYTb3noP_ukZ0e3o8_&sz=w1200',
+        'https://drive.google.com/thumbnail?id=1VzyZlFcNQPmCkyHDEdbXSmyqWbdhSbfb&sz=w1200',
+        'https://drive.google.com/thumbnail?id=1h1yZ06jF7I4tSB2wuTYxGPvbLwGaBIv6&sz=w1200',
+      ],
+      price: 4.99,
+      priceId: 'price_1UPo4BBsr66TjEhQ47OQNQlz',
+    },
+    {
+      id: 'personalized_baby',
+      type: 'personalized_baby',
+      name: "Baby's First Christmas 2026",
+      description: "A photo ornament frame in jewel rose-pink, sapphire blue, and classic red-green, with an oval window for the baby's photo. Type the name into the editable PDF and print.",
+      images: [
+        'https://drive.google.com/thumbnail?id=10KKiX2n-MTixBoiuYn1_LT-OP6Jx8qbF&sz=w1200',
+        'https://drive.google.com/thumbnail?id=1J3Vty6DcDSpE0FDha0Uh9JoGgGSaM5kH&sz=w1200',
+        'https://drive.google.com/thumbnail?id=19HwpJWNcD7ubwwxTCtAXJ8SxafIbfrm2&sz=w1200',
+        'https://drive.google.com/thumbnail?id=1QNecmmMfsMKiCRgxr_unjk3p9yoy59aq&sz=w1200',
+      ],
+      price: 4.99,
+      priceId: 'price_1UPo4DBsr66TjEhQoBY2dpuZ',
+    },
+    {
+      id: 'personalized_gingerbread',
+      type: 'personalized_gingerbread',
+      name: 'Gingerbread Name Ornaments & Tags',
+      description: 'Boy, little boy, girl, and plain gingerbread figures with type-in name fields - one for every kid in the family. Hang them as tree ornaments or stocking tags.',
+      images: [
+        'https://drive.google.com/thumbnail?id=1edpujtt2tE26pCEgfsdN7Xu4OG_4ViT4&sz=w1200',
+        'https://drive.google.com/thumbnail?id=1rnHTgcrJc4xlek6yxg79eFYyNJl3yvdw&sz=w1200',
+        'https://drive.google.com/thumbnail?id=1AU2Wh__9zz8bJp9IeJJBcVBFy8KH0U_-&sz=w1200',
+        'https://drive.google.com/thumbnail?id=1vMVbM_5ek4hLq6S7aKWDHE15S3d16lc-&sz=w1200',
+        'https://drive.google.com/thumbnail?id=1SoFbsOORpkKdvY-T6MsRS3p2XNTMzdib&sz=w1200',
+      ],
+      price: 2.99,
+      priceId: 'price_1UPo4FBsr66TjEhQw4HquAvT',
+    },
+    {
+      id: 'personalized_year_review',
+      type: 'personalized_year_review',
+      name: 'The 2026 Year in Review',
+      description: "A keepsake ornament card with your family name and five lines for the year's big moments - a move, a new baby, a wedding. Type yours into the editable PDF and print.",
+      images: [
+        'https://drive.google.com/thumbnail?id=1ub0Yzh0oNzZxSrVtQLNlJdchs0GI2GW6&sz=w1200',
+        'https://drive.google.com/thumbnail?id=1RXB_LyytICrA_b-W1_2ZLHW8QnGqhd9w&sz=w1200',
+        'https://drive.google.com/thumbnail?id=1H9hKY9_eM-DgAGutWYj15JTNsLEhwRp-&sz=w1200',
+      ],
+      price: 3.99,
+      priceId: 'price_1UPo4HBsr66TjEhQPsaoETnj',
+    },
+    {
+      id: 'personalized_pet',
+      type: 'personalized_pet',
+      name: "Pet's First Christmas",
+      description: "A paw-print photo frame for the dog or cat who joined the family this year, with a puppy and kitten under the oval window. Type the name and year into the editable PDF and print.",
+      images: [
+        'https://drive.google.com/thumbnail?id=1qL9tYLa4d-8UNvdDxU8F-c5mk60skJVR&sz=w1200',
+        'https://drive.google.com/thumbnail?id=1Tkcsr5528Mx3fB6HlQSQC7W447Vi6Y6y&sz=w1200',
+        'https://drive.google.com/thumbnail?id=1beYQCgUjb8v2gtXxZdBTpmQMfC1XJYOQ&sz=w1200',
+      ],
+      price: 4.99,
+      priceId: 'price_1UPo4KBsr66TjEhQQTrj8HzZ',
+    },
+    {
+      id: 'personalized_collection',
+      type: 'personalized_collection',
+      name: 'The Personalized Collection - All 5 Sets',
+      description: "Every Personalized Ornaments set in one download: the engaged ornament, baby's first Christmas, gingerbread tags, the year in review, and pet's first Christmas.",
+      images: [
+        'https://drive.google.com/thumbnail?id=1Q3QRmfHhic7K19rTULU3XYyAWnJZK2-A&sz=w1200',
+        'https://drive.google.com/thumbnail?id=1C5zx3wQ_NFkI0-PYTb3noP_ukZ0e3o8_&sz=w1200',
+        'https://drive.google.com/thumbnail?id=10KKiX2n-MTixBoiuYn1_LT-OP6Jx8qbF&sz=w1200',
+        'https://drive.google.com/thumbnail?id=1edpujtt2tE26pCEgfsdN7Xu4OG_4ViT4&sz=w1200',
+        'https://drive.google.com/thumbnail?id=1ub0Yzh0oNzZxSrVtQLNlJdchs0GI2GW6&sz=w1200',
+        'https://drive.google.com/thumbnail?id=1qL9tYLa4d-8UNvdDxU8F-c5mk60skJVR&sz=w1200',
+      ],
+      price: 9.99,
+      priceId: 'price_1UPo4MBsr66TjEhQMIEzjICq',
+    },
+  ];
+
   const faqs = [
     {
       question: 'How quickly will I receive my designs?',
@@ -792,6 +887,13 @@ function ChristmasContent() {
                 <span className="ml-1.5 rounded-full bg-amber-400 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-red-950">New</span>
               </a>
               <a
+                href="#personalized"
+                className="text-emerald-200 hover:text-white transition-colors font-semibold border border-emerald-400/50 rounded-full px-4 py-1.5 bg-emerald-500/20 hover:bg-emerald-500/40"
+              >
+                Personalized
+                <span className="ml-1.5 rounded-full bg-amber-400 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-emerald-950">New</span>
+              </a>
+              <a
                 href="#teachers"
                 className="text-white/90 hover:text-amber-300 transition-colors font-medium"
               >
@@ -819,6 +921,13 @@ function ChristmasContent() {
               >
                 Nutcrackercore
                 <span className="ml-1.5 rounded-full bg-amber-400 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-red-950">New</span>
+              </a>
+              <a
+                href="#personalized"
+                className="md:hidden text-emerald-200 font-semibold border border-emerald-400/50 rounded-full px-3 py-1.5 bg-emerald-500/20"
+              >
+                Personalized
+                <span className="ml-1.5 rounded-full bg-amber-400 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-emerald-950">New</span>
               </a>
               <ChristmasCartButton onClick={() => setIsCartOpen(true)} />
             </div>
@@ -1503,6 +1612,87 @@ function ChristmasContent() {
           <div className="text-center mt-12">
             <p className="text-xl text-red-100/90">
               Every set is an instant download - print at home for the party, the mantel, and the tree.
+            </p>
+          </div>
+        </section>
+
+
+        {/* PERSONALIZED ORNAMENTS COLLECTION */}
+        <section id="personalized" className="container mx-auto px-6 py-24">
+          <div className="text-center mb-16">
+            <p className="text-amber-300 font-semibold uppercase tracking-[0.25em] text-sm mb-4">
+              New for 2026
+            </p>
+            <div className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-gradient-to-r from-emerald-600/30 to-green-700/30 backdrop-blur-xl border border-emerald-300/40 text-emerald-100 font-medium mb-6">
+              <Sparkles className="w-5 h-5 text-emerald-200" />
+              The Personalized Ornaments Collection
+            </div>
+            <h2 className="text-5xl md:text-6xl font-serif text-white mb-6">
+              Personalized Ornaments - Their Name on the Tree
+            </h2>
+            <p className="text-lg md:text-xl text-white/80 max-w-2xl mx-auto leading-relaxed">
+              Deep emerald, ruby, and glowing gold. Editable ornaments for engagements, new babies, new
+              pets, and the whole family - type the names into the PDF and print at home. No extra software needed.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {personalizedProducts.map((product) => {
+              const inCart = isInCart(product.id);
+
+              return (
+                <div
+                  key={product.id}
+                  className="group relative overflow-hidden rounded-3xl bg-white/10 backdrop-blur-xl border border-white/20 shadow-2xl transition-all duration-500 hover:scale-105 hover:shadow-emerald-500/30"
+                >
+                  <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/20 via-transparent to-green-600/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                  <div className="relative p-6">
+                    <div className="aspect-[4/3] bg-gradient-to-br from-white/5 to-white/10 rounded-2xl mb-4 flex items-center justify-center overflow-hidden">
+                      <GothmasGallery images={product.images} name={product.name} />
+                    </div>
+                    <h3 className="text-xl font-serif text-white mb-2">{product.name}</h3>
+                    <p className="text-sm text-white/70 mb-3">{product.description}</p>
+                    <p className="text-lg font-bold text-white mb-3">${product.price.toFixed(2)}</p>
+                    <button
+                      onClick={() => {
+                        addToCart({
+                          id: product.id,
+                          type: product.type,
+                          name: product.name,
+                          description: product.description,
+                          image: product.images[0],
+                          price: product.price,
+                          priceId: product.priceId,
+                        });
+                      }}
+                      disabled={inCart}
+                      className={`w-full py-2 px-4 rounded-xl font-semibold transition-all duration-300 border border-emerald-300/30 flex items-center justify-center gap-2 ${
+                        inCart
+                          ? 'bg-green-600/50 text-white cursor-default'
+                          : 'bg-gradient-to-r from-emerald-700 to-green-800 text-emerald-50 hover:from-emerald-800 hover:to-green-900'
+                      }`}
+                    >
+                      {inCart ? (
+                        <>
+                          <Check className="w-4 h-4" />
+                          In Cart
+                        </>
+                      ) : (
+                        <>
+                          <Plus className="w-4 h-4" />
+                          Add to Cart
+                        </>
+                      )}
+                    </button>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          <div className="text-center mt-12">
+            <p className="text-xl text-emerald-100/90">
+              Every set is an instant download - type in the names, print at home, and hang them on the tree.
             </p>
           </div>
         </section>
