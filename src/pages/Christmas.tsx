@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import {
   ShoppingCart,
   Download,
@@ -87,7 +88,7 @@ const GothmasGallery = ({ images, name }: { images: string[]; name: string }) =>
       >
         <Maximize2 className="w-4 h-4" />
       </button>
-      {zoom && (
+      {zoom && createPortal((
         <div className="fixed inset-0 z-[120] bg-black/95 flex flex-col">
           <div className="flex items-center justify-between gap-3 px-4 py-3">
             <span className="rounded-full bg-zinc-900/95 border border-white/30 text-white/90 text-sm font-medium px-3 py-1.5 truncate">
@@ -135,7 +136,7 @@ const GothmasGallery = ({ images, name }: { images: string[]; name: string }) =>
             )}
           </div>
         </div>
-      )}
+      ), document.body)}
     </div>
   );
 };
