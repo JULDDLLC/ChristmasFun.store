@@ -1,6 +1,31 @@
 import { useEffect, useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useSearchParams } from 'react-router-dom';
 import { Download as DownloadIcon, Loader2, AlertCircle, Home, FileDown } from 'lucide-react';
+
+// Design number -> delivery file for single Santa Letter purchases.
+// The delivery email links /download/santa-letter?design=N so each buyer gets the exact design they chose.
+const SANTA_LETTER_DESIGNS: Record<number, { label: string; url: string }> = {
+  1: { label: 'Design 1 - Vintage Storybook Santa', url: 'https://cdn1.site-media.eu/images/0/21587768/design1-Z3wu6c1nLAh3ACrbe46Gmg.png' },
+  2: { label: 'Design 2 - Christmas Eve Heartside', url: 'https://cdn1.site-media.eu/images/0/21587759/design2-Xs-oos-r7fL_Gn4-yusolg.png' },
+  3: { label: 'Design 3 - Snowy Cutie Santa', url: 'https://cdn1.site-media.eu/images/0/21587758/design3-rpLHL3OeUCdrIqzMr7wNYA.png' },
+  4: { label: 'Design 4 - Felt Santa Reindeer', url: 'https://cdn1.site-media.eu/images/0/21587450/DearSanta2-EyDV0P1Wf8rh1mYm0lQwew.png' },
+  5: { label: 'Design 5 - Felt Santa Elves', url: 'https://cdn1.site-media.eu/images/0/21587438/DearSantaLetter-X4mrLdblVYGmVh_xVEIdhg.png' },
+  6: { label: 'Design 6 - Snowflake Wonder', url: 'https://cdn1.site-media.eu/images/0/21587392/DearSantaLetter4-_CjR-X24vAzawUhHvsEB7A.png' },
+  7: { label: 'Design 7 - Bold Metallic Shine', url: 'https://cdn1.site-media.eu/images/0/21587432/DearSantaLetter1-Gr0SVAqpn4KVS5U8qkGlfQ.png' },
+  8: { label: 'Design 8 - Bold Faux Glitter', url: 'https://cdn1.site-media.eu/images/0/21587416/DearSantaLetter2-3iGVMx_c3Va-NcPSt486AA.png' },
+  9: { label: 'Design 9 - Gamer', url: 'https://cdn1.site-media.eu/images/0/21587763/design9-be-BNu7ELngHsB4-prRBsw.png' },
+  10: { label: 'Design 10 - Fortnite Inspired', url: 'https://cdn1.site-media.eu/images/0/21587361/DearSantaLetter8-7XA4wULg3muTEB7z7NkmXg.png' },
+  11: { label: 'Design 11 - Bold Santa Reindeer', url: 'https://cdn1.site-media.eu/images/0/21587888/design11-y92iFyQtYnasvWXozYAjTg.png' },
+  12: { label: 'Design 12 - Comic Bold Glitter', url: 'https://cdn1.site-media.eu/images/0/21587761/design12-mVBhwMJJ1BEl0y8ocesZlQ.png' },
+  13: { label: 'Design 13 - Roblox Inspired', url: 'https://cdn1.site-media.eu/images/0/21587363/DearSantaLetter7-hENBo0gX6c_LqXxJD56whQ.png' },
+  14: { label: 'Design 14 - Traditional Glitter', url: 'https://cdn1.site-media.eu/images/0/21587399/DearSantaLetter3-PmrmOxSHQkpwG_jKh2M2vQ.png' },
+  15: { label: "Design 15 - Baby's First Christmas", url: 'https://drive.usercontent.google.com/download?id=1p3V8Nig-5vCpIlSWTdxEnbOT06GNYwtI&export=download&confirm=t' },
+  16: { label: 'Design 16 - Reindeer Games', url: 'https://drive.usercontent.google.com/download?id=1T4vmXr7kWTmSU7HyhJbE9a0r5MkHVDmD&export=download&confirm=t' },
+  17: { label: 'Design 17 - Julius & Gemma Christmas', url: 'https://drive.usercontent.google.com/download?id=1JIG8Mngh3tnFxR5vSUfrOxvK1t0JQkzB&export=download&confirm=t' },
+  18: { label: "Design 18 - Santa's Workshop", url: 'https://drive.usercontent.google.com/download?id=18m6YOCIXmn9eRKmDtZupmmfdKq_oqhV6&export=download&confirm=t' },
+  19: { label: 'Design 19 - North Pole Post Office', url: 'https://drive.usercontent.google.com/download?id=1XvyWZjitTDb2fMQgXW8xOwVhGM1RI-hb&export=download&confirm=t' },
+  20: { label: 'Design 20 - The Nice List', url: 'https://drive.usercontent.google.com/download?id=1PFUKgPVDhONlaUxsf8GROeyrZxTjtdPZ&export=download&confirm=t' },
+};
 
 const PRODUCT_FILES: Record<string, { name: string; files: { label: string; url: string }[] }> = {
   'santa-letter': {
@@ -25,7 +50,7 @@ const PRODUCT_FILES: Record<string, { name: string; files: { label: string; url:
     ],
   },
   'all-18-bundle': {
-    name: 'Christmas Classics Bundle (All 18 Designs)',
+    name: 'Christmas Classics Bundle (All 24 Designs)',
     files: [
       { label: 'Design 1 - Vintage Storybook Santa', url: 'https://cdn1.site-media.eu/images/0/21587768/design1-Z3wu6c1nLAh3ACrbe46Gmg.png' },
       { label: 'Design 2 - Christmas Eve Heartside', url: 'https://cdn1.site-media.eu/images/0/21587759/design2-Xs-oos-r7fL_Gn4-yusolg.png' },
@@ -41,6 +66,12 @@ const PRODUCT_FILES: Record<string, { name: string; files: { label: string; url:
       { label: 'Design 12 - Comic Bold Glitter', url: 'https://cdn1.site-media.eu/images/0/21587761/design12-mVBhwMJJ1BEl0y8ocesZlQ.png' },
       { label: 'Design 13 - Roblox Inspired', url: 'https://cdn1.site-media.eu/images/0/21587363/DearSantaLetter7-hENBo0gX6c_LqXxJD56whQ.png' },
       { label: 'Design 14 - Traditional Glitter', url: 'https://cdn1.site-media.eu/images/0/21587399/DearSantaLetter3-PmrmOxSHQkpwG_jKh2M2vQ.png' },
+      { label: "Design 15 - Baby's First Christmas", url: 'https://drive.usercontent.google.com/download?id=1p3V8Nig-5vCpIlSWTdxEnbOT06GNYwtI&export=download&confirm=t' },
+      { label: 'Design 16 - Reindeer Games', url: 'https://drive.usercontent.google.com/download?id=1T4vmXr7kWTmSU7HyhJbE9a0r5MkHVDmD&export=download&confirm=t' },
+      { label: 'Design 17 - Julius & Gemma Christmas', url: 'https://drive.usercontent.google.com/download?id=1JIG8Mngh3tnFxR5vSUfrOxvK1t0JQkzB&export=download&confirm=t' },
+      { label: "Design 18 - Santa's Workshop", url: 'https://drive.usercontent.google.com/download?id=18m6YOCIXmn9eRKmDtZupmmfdKq_oqhV6&export=download&confirm=t' },
+      { label: 'Design 19 - North Pole Post Office', url: 'https://drive.usercontent.google.com/download?id=1XvyWZjitTDb2fMQgXW8xOwVhGM1RI-hb&export=download&confirm=t' },
+      { label: 'Design 20 - The Nice List', url: 'https://drive.usercontent.google.com/download?id=1PFUKgPVDhONlaUxsf8GROeyrZxTjtdPZ&export=download&confirm=t' },
       { label: 'Christmas Note 1 - Vintage Lined', url: 'https://cdn1.site-media.eu/images/0/21587536/ChristmasNotes-RFAy0MOttbNqrOGEc3EkCg.png' },
       { label: 'Christmas Note 2 - Workshop Lined', url: 'https://cdn1.site-media.eu/images/0/21587693/ChristmasNotes3-lined-J0xhPIRuUzj56rqkQCSn0A.png' },
       { label: 'Christmas Note 3 - Workshop Blank', url: 'https://cdn1.site-media.eu/images/0/21587575/ChristmasNotes3-KfzspG5RqPBYZ-u3jxt5tQ.png' },
@@ -51,7 +82,7 @@ const PRODUCT_FILES: Record<string, { name: string; files: { label: string; url:
     name: 'Teacher License Bundle',
     files: [
       { label: 'Teacher License Certificate', url: 'https://cdn1.site-media.eu/images/0/21587768/design1-Z3wu6c1nLAh3ACrbe46Gmg.png' },
-      { label: 'All 14 Santa Letters (ZIP)', url: 'https://cdn1.site-media.eu/images/0/21587768/design1-Z3wu6c1nLAh3ACrbe46Gmg.png' },
+      { label: 'All 20 Santa Letters (ZIP)', url: 'https://drive.usercontent.google.com/download?id=1JfbO-XueNfgCxRpuMEGbP_Yqu4yOBQZy&export=download&confirm=t' },
       { label: 'All 4 Christmas Notes (ZIP)', url: 'https://cdn1.site-media.eu/images/0/21587536/ChristmasNotes-RFAy0MOttbNqrOGEc3EkCg.png' },
     ],
   },
@@ -195,15 +226,30 @@ const PRODUCT_FILES: Record<string, { name: string; files: { label: string; url:
   },
 };
 
+// Alias so new delivery emails can link /download/all-24-bundle;
+// old /download/all-18-bundle links keep working.
+PRODUCT_FILES['all-24-bundle'] = PRODUCT_FILES['all-18-bundle'];
+
 export default function Download() {
   const { productId } = useParams<{ productId: string }>();
+  const [searchParams] = useSearchParams();
   const [loading, setLoading] = useState(true);
   const [product, setProduct] = useState<{ name: string; files: { label: string; url: string }[] } | null>(null);
 
   useEffect(() => {
     const timer = setTimeout(() => {
       if (productId && PRODUCT_FILES[productId]) {
-        setProduct(PRODUCT_FILES[productId]);
+        let entry = PRODUCT_FILES[productId];
+        // Single Santa Letter purchase: serve the exact design the buyer chose.
+        // The delivery email links /download/santa-letter?design=N.
+        if (productId === 'santa-letter') {
+          const n = parseInt(searchParams.get('design') || '1', 10);
+          const chosen = SANTA_LETTER_DESIGNS[n];
+          if (chosen) {
+            entry = { name: `Santa Letter - ${chosen.label}`, files: [{ label: chosen.label, url: chosen.url }] };
+          }
+        }
+        setProduct(entry);
       }
       setLoading(false);
     }, 500);
