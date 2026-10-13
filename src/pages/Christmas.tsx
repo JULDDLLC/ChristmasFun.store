@@ -348,6 +348,42 @@ function ChristmasContent() {
       image:
         'https://cdn1.site-media.eu/images/0/21587399/DearSantaLetter3-PmrmOxSHQkpwG_jKh2M2vQ.png',
     },
+    {
+      title: "Baby's First Christmas",
+      description: 'Soft pastel keepsake letter for a precious first Christmas',
+      image:
+        'https://drive.google.com/thumbnail?id=1p3V8Nig-5vCpIlSWTdxEnbOT06GNYwtI&sz=w1200',
+    },
+    {
+      title: 'Reindeer Games',
+      description: 'Rudolph and reindeer friends with a glowing red nose',
+      image:
+        'https://drive.google.com/thumbnail?id=1T4vmXr7kWTmSU7HyhJbE9a0r5MkHVDmD&sz=w1200',
+    },
+    {
+      title: 'Julius & Gemma Christmas',
+      description: 'Two panda friends trimming the tree and opening gifts',
+      image:
+        'https://drive.google.com/thumbnail?id=1JIG8Mngh3tnFxR5vSUfrOxvK1t0JQkzB&sz=w1200',
+    },
+    {
+      title: "Santa's Workshop",
+      description: 'Busy toy workshop with teddy bears and a wooden train',
+      image:
+        'https://drive.google.com/thumbnail?id=18m6YOCIXmn9eRKmDtZupmmfdKq_oqhV6&sz=w1200',
+    },
+    {
+      title: 'North Pole Post Office',
+      description: 'Special delivery - letters, stamps and parcels to Santa',
+      image:
+        'https://drive.google.com/thumbnail?id=1XvyWZjitTDb2fMQgXW8xOwVhGM1RI-hb&sz=w1200',
+    },
+    {
+      title: 'The Nice List',
+      description: 'Official Nice List certificate with quill and candelabra',
+      image:
+        'https://drive.google.com/thumbnail?id=1PFUKgPVDhONlaUxsf8GROeyrZxTjtdPZ&sz=w1200',
+    },
   ];
 
   const christmasNotes = [
@@ -998,7 +1034,7 @@ function ChristmasContent() {
               </h1>
 
               <p className="text-lg md:text-xl text-amber-100/80 max-w-2xl mx-auto leading-relaxed tracking-wide">
-  Includes 14 Santa Letters · 4 Christmas Notes 
+  Includes 20 Santa Letters · 4 Christmas Notes 
                 · 10 Bonus Christmas Coloring Pages
 </p>
 
@@ -1096,7 +1132,7 @@ function ChristmasContent() {
         {/* SANTA LETTERS */}
         <section id="designs" className="container mx-auto px-6 py-24">
           <div className="text-center mb-16">
-            <h2 className="text-5xl md:text-6xl font-serif text-white mb-6">14 Magical Designs</h2>
+            <h2 className="text-5xl md:text-6xl font-serif text-white mb-6">20 Magical Designs</h2>
             <p className="text-xl text-white/70 max-w-2xl mx-auto">
               Each design is an original, handcrafted illustration created exclusively for this collection.
             </p>
@@ -1460,7 +1496,7 @@ function ChristmasContent() {
                   The Christmas Classics Bundle
                 </h2>
                 <p className="text-xl text-white/80 mb-4">
-                  14 Santa Letters + 4 Christmas Notes
+                  20 Santa Letters + 4 Christmas Notes
                 </p>
                 <div className="text-7xl font-bold text-amber-300 mb-8">Only $9.99</div>
 

@@ -17,7 +17,7 @@ export interface StripeProduct {
  * - The prod_ IDs should match exactly what you posted:
  *   Santa Letter (Single) - prod_TZQ2aWVqAN4SzG
  *   Christmas Note (Single) - prod_TZPUQIpa5aK6cV
- *   All 18 Designs Bundle - prod_TZPZj1hniwTEuF
+ *   Christmas Classics Bundle (All 24 Designs) - prod_TZPZj1hniwTEuF
  *   Christmas Notes Bundle (4 Notes) - prod_TZPsGPYV4Mdkmr
  *   Teacher License – prod_TZPwxZFjMvlgfb
  */
@@ -58,7 +58,7 @@ export const STRIPE_PRODUCTS: StripeProduct[] = [
     priceId: 'price_1ScGjvBsr66TjEhQ4cRtPYm1',
     name: 'Christmas Classics Bundle',
     description:
-      'Complete set of 14 Santa Letters + 4 Christmas Notes as printable 8.5 x 11 inch PNGs. All custom artwork.',
+      'Complete set of 20 Santa Letters + 4 Christmas Notes as printable 8.5 x 11 inch PNGs. All custom artwork.',
     price: 9.99,
     currency: 'usd',
     mode: 'payment',
@@ -68,7 +68,7 @@ export const STRIPE_PRODUCTS: StripeProduct[] = [
     priceId: 'price_1ScH6KBsr66TjEhQAhED4Lsd',
     name: 'Teacher License',
     description:
-      'One-time classroom license for unlimited classroom printing of all 18 Christmas Classics designs (14 Santa Letters + 4 Christmas Notes).',
+      'One-time classroom license for unlimited classroom printing of all 24 Christmas Classics designs (20 Santa Letters + 4 Christmas Notes).',
     price: 4.99,
     currency: 'usd',
     mode: 'payment',
