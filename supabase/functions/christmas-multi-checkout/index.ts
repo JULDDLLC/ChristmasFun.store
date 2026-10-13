@@ -136,6 +136,13 @@ Deno.serve(async (req: Request) => {
 
     const line_items = buildLineItems(cartItems);
 
+    // Collect the Santa Letter design numbers so the delivery email can link
+    // each buyer to the exact design(s) they chose: /download/santa-letter?design=N
+    const letterDesigns = cartItems
+      .filter((item) => String(item.type || '').trim() === 'santa_letter' && Number(item.designNumber) > 0)
+      .map((item) => String(Number(item.designNumber)));
+    const designNumbers = Array.from(new Set(letterDesigns)).join(',');
+
     const session = await stripe.checkout.sessions.create({
       mode: "payment",
       customer_email: email,
@@ -145,6 +152,7 @@ Deno.serve(async (req: Request) => {
       cancel_url: cancelUrl,
       metadata: {
         source: "christmasfun.store",
+        design_numbers: designNumbers,
         cart_json: JSON.stringify(cartItems).slice(0, 490),
       },
     });

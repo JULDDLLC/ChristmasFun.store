@@ -196,6 +196,7 @@ Deno.serve(async (req) => {
       productType: product_type || md.productType || "",
       design_number: design_number || md.design_number || "",
       designNumber: design_number || md.designNumber || "",
+      design_numbers: md.design_numbers || md.designNumbers || "",
 
       // Inferred products from line items (helps multi-cart and missing metadata)
       inferredProducts,

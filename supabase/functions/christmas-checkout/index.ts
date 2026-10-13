@@ -76,6 +76,7 @@ Deno.serve(async (req: Request) => {
       cancel_url: `${origin}/`,
       metadata: {
         product_id: productId || priceId,
+        design_number: String(body.designNumber || body.design_number || ''),
         source: "christmasfun.store",
       },
     });

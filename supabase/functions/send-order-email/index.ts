@@ -15,8 +15,8 @@ const PRODUCT_DOWNLOAD_MAP: Record<string, string> = {
   'christmas_note': 'https://christmasfun.store/download/christmas-note',
   'christmas_notes_bundle': 'https://christmasfun.store/download/notes-bundle',
   'notes_bundle': 'https://christmasfun.store/download/notes-bundle',
-  'all_18_bundle': 'https://christmasfun.store/download/all-18-bundle',
-  'complete_bundle': 'https://christmasfun.store/download/all-18-bundle',
+  'all_18_bundle': 'https://christmasfun.store/download/all-24-bundle',
+  'complete_bundle': 'https://christmasfun.store/download/all-24-bundle',
   'teacher_license': 'https://christmasfun.store/download/teacher-license',
   'free_coloring': 'https://christmasfun.store/download/free-coloring',
   'gothmas_ornaments': 'https://christmasfun.store/download/gothmas-ornaments',
@@ -106,6 +106,35 @@ Deno.serve(async (req: Request) => {
     }
 
     console.log('send-order-email payload:', { to, productName, productType, orderNumber, downloadLinks, rawBody: body });
+
+    // Single Santa Letter purchases carry the chosen design number(s) through
+    // checkout metadata -> webhook -> this function. When present, link each
+    // buyer straight to their exact design: /download/santa-letter?design=N
+    // (the download page resolves the design number to the right file).
+    const designNums: string[] = [];
+    const singleDn = body.design_number ?? body.designNumber;
+    if (singleDn !== undefined && singleDn !== null && String(singleDn).trim() !== '') {
+      designNums.push(String(singleDn).trim());
+    }
+    const multiDn = body.design_numbers ?? body.designNumbers;
+    if (multiDn !== undefined && multiDn !== null && String(multiDn).trim() !== '') {
+      designNums.push(...String(multiDn).split(',').map((s: string) => s.trim()).filter(Boolean));
+    }
+    const validDesignNums = Array.from(
+      new Set(
+        designNums
+          .map((n) => parseInt(n, 10))
+          .filter((n) => Number.isInteger(n) && n >= 1 && n <= 20)
+      )
+    );
+    if (validDesignNums.length > 0) {
+      const genericLetterLink = PRODUCT_DOWNLOAD_MAP['santa_letter'];
+      downloadLinks = downloadLinks.flatMap((link) =>
+        link === genericLetterLink
+          ? validDesignNums.map((n) => `${genericLetterLink}?design=${n}`)
+          : [link]
+      );
+    }
 
     if (!to) {
       return new Response(JSON.stringify({ error: 'Missing email address' }), {
