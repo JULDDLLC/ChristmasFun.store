@@ -81,7 +81,7 @@ const PRODUCT_FILES: Record<string, { name: string; files: { label: string; url:
   'teacher-license': {
     name: 'Teacher License Bundle',
     files: [
-      { label: 'Teacher License Certificate', url: 'https://cdn1.site-media.eu/images/0/21587768/design1-Z3wu6c1nLAh3ACrbe46Gmg.png' },
+      { label: 'Teacher License Certificate', url: 'https://drive.usercontent.google.com/download?id=1MQHqg4IIky2j76Ek_QQIrjsh8XBrmht7&export=download&confirm=t' },
       { label: 'All 20 Santa Letters (ZIP)', url: 'https://drive.usercontent.google.com/download?id=1JfbO-XueNfgCxRpuMEGbP_Yqu4yOBQZy&export=download&confirm=t' },
       { label: 'All 4 Christmas Notes (ZIP)', url: 'https://drive.usercontent.google.com/download?id=1Jd0BQ44nMipVxyE0Ol8JwdHyRUUWtf0b&export=download&confirm=t' },
     ],
