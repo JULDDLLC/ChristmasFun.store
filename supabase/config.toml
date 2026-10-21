@@ -1,0 +1,20 @@
+[functions.stripe-webhook]
+verify_jwt = false
+
+[functions.christmas-checkout]
+verify_jwt = false
+
+[functions.christmas-multi-checkout]
+verify_jwt = false
+
+[functions.stripe-checkout]
+verify_jwt = true
+
+[functions.send-order-email]
+verify_jwt = false
+
+[functions.send-freebie-coloring]
+verify_jwt = false
+
+[functions.download-file]
+verify_jwt = false
