@@ -176,6 +176,20 @@ Deno.serve(async (req) => {
       console.error("Failed to list line items:", e?.message || e);
     }
 
+    // SCOPE GUARD (added Oct 21, 2026): this webhook endpoint receives every
+    // checkout.session.completed on the shared JULDD LLC Stripe account,
+    // including non-ChristmasFun orders (for example, the We Rise Up Strong
+    // read-along book sold through a Stripe Payment Link). Only orders that
+    // carry ChristmasFun checkout metadata, or at least one line item whose
+    // price is a known ChristmasFun price, are ChristmasFun orders. Anything
+    // else is acknowledged and skipped so no Christmas delivery email is sent.
+    const hasChristmasMetadata = Boolean(product_id || order_id);
+    const hasKnownPrice = inferredProducts.some((p) => p.product_id !== "unknown");
+    if (!hasChristmasMetadata && !hasKnownPrice) {
+      console.log("Ignored: not a ChristmasFun order", { session_id: sessionId });
+      return okText("ignored: not a ChristmasFun order");
+    }
+
     // Decide what to send to send-order-email.
     // Your send-order-email complained “Missing required fields”, so we send a wide payload.
     const payload = {
