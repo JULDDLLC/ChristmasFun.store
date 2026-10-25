@@ -14,12 +14,15 @@ function isValidEmail(email: string) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test((email || "").trim());
 }
 
+const CLASSICS_BUNDLE_PRICE_ID = 'price_1ScGjvBsr66TjEhQ4cRtPYm1';
+
 export function ChristmasCartDrawer({ isOpen, onClose, customerEmail }: Props) {
-  const { items, total, clearCart, removeFromCart } = useChristmasCart() as any;
+  const { items, total, clearCart, removeFromCart, addToCart } = useChristmasCart() as any;
 
   const [email, setEmail] = useState(customerEmail || "");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
+  const [upsellDismissed, setUpsellDismissed] = useState(false);
 
   const computedTotal = useMemo(() => {
     if (typeof total === "number") return total;
@@ -101,6 +104,30 @@ export function ChristmasCartDrawer({ isOpen, onClose, customerEmail }: Props) {
     }
   }
 
+  const cartList: any[] = Array.isArray(items) ? items : [];
+  const hasMemoryNightKit = cartList.some((i: any) => i.type === 'memory_night_kit');
+  const hasClassicsBundle = cartList.some(
+    (i: any) =>
+      i.id === 'all_18_bundle' ||
+      i.type === 'all_18_bundle' ||
+      i.priceId === CLASSICS_BUNDLE_PRICE_ID
+  );
+  const showKitUpsell = hasMemoryNightKit && !hasClassicsBundle && !upsellDismissed;
+
+  const addClassicsBundle = () => {
+    addToCart?.({
+      id: 'all_18_bundle',
+      type: 'all_18_bundle',
+      name: 'Christmas Classics Bundle',
+      description:
+        'Complete set of 20 Santa Letters + 4 Christmas Notes as printable 8.5 x 11 inch PNGs. All custom artwork.',
+      image:
+        'https://cdn1.site-media.eu/images/0/21587768/design1-Z3wu6c1nLAh3ACrbe46Gmg.png',
+      price: 9.99,
+      priceId: CLASSICS_BUNDLE_PRICE_ID,
+    });
+  };
+
   if (!isOpen) return null;
 
   return (
@@ -136,6 +163,31 @@ export function ChristmasCartDrawer({ isOpen, onClose, customerEmail }: Props) {
         {error ? (
           <div className="mb-4 rounded-xl bg-red-900/40 border border-red-500/50 text-red-200 p-3">
             {error}
+          </div>
+        ) : null}
+
+        {showKitUpsell ? (
+          <div className="mb-4 rounded-2xl bg-green-950/60 border border-amber-400/40 p-4">
+            <div className="flex items-start justify-between gap-3">
+              <div className="text-amber-200 font-semibold text-sm">Complete the night</div>
+              <button
+                onClick={() => setUpsellDismissed(true)}
+                className="text-white/50 hover:text-white text-sm px-1 leading-none"
+                title="Dismiss"
+              >
+                ✕
+              </button>
+            </div>
+            <p className="text-white/75 text-sm mt-1 leading-relaxed">
+              Add the Christmas Classics Bundle, all 20 Santa letters plus 4 Christmas notes, for
+              $9.99. A letter for every grandkid pairs perfectly with the kit's keepsake page.
+            </p>
+            <button
+              onClick={addClassicsBundle}
+              className="w-full mt-3 rounded-xl bg-gradient-to-r from-green-600 to-emerald-700 text-white font-semibold py-2.5 border border-amber-400/30"
+            >
+              Add the Classics Bundle - $9.99
+            </button>
           </div>
         ) : null}
 
