@@ -263,6 +263,16 @@ export const STRIPE_PRODUCTS: StripeProduct[] = [
     currency: 'usd',
     mode: 'payment',
   },
+  {
+    id: 'prod_VVacOkCIL3pFLE',
+    priceId: 'price_1UUZROBsr66TjEhQpbSjSgQ0',
+    name: 'The 24 Day Elf Kit',
+    description:
+      '73 pages of elf magic, planned for you. Boy and girl elf editions of the arrival and goodbye letters, an Elf Adoption Certificate and Christmas Eve Final Report, 24 daily elf notes, 36 handwritten mini cards including Night Off excuse cards and Secret Missions for older kids, a fillable Elf Passport, the Official Nice O Meter, a wish list letter to Santa, a 14 page games pack with 4 unique bingo boards, props and signs, Magic Dust labels, a printable sheet of 12 embossed North Pole seals, 2 coloring pages, and a parent guide with a 24 night staging calendar, a letter from Santa to the parents, the Keeping the Magic guide, and the Santa\'s Helper Invitation for tweens and teens. 38 fillable fields type right in the PDF. Instant download, print at home on US Letter paper.',
+    price: 9.99,
+    currency: 'usd',
+    mode: 'payment',
+  },
 ];
 
 export const getProductById = (id: string): StripeProduct | undefined => {

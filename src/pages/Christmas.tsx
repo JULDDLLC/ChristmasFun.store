@@ -812,6 +812,34 @@ function ChristmasContent() {
     },
   ];
 
+
+  const elfKitProducts: Array<{
+    id: string;
+    type: 'elf_kit';
+    name: string;
+    description: string;
+    images: string[];
+    price: number;
+    priceId: string;
+  }> = [
+    {
+      id: 'elf_kit',
+      type: 'elf_kit',
+      name: 'The 24 Day Elf Kit',
+      description: '73 pages of elf magic, planned for you: boy and girl elf arrival and goodbye letters, an Elf Adoption Certificate and a Christmas Eve Final Report, 24 daily elf notes (report cards, jokes and missions, kindness cards), 36 handwritten mini cards including Night Off excuses for forgotten nights and Secret Missions for older kids, a fillable Elf Passport, the Official Nice O Meter, a wish list letter to Santa, a 14 page games pack with 4 unique bingo boards, props and signs, Magic Dust labels, a printable sheet of 12 embossed North Pole seals, 2 coloring pages of the elves, and a parent guide with a 24 night staging calendar (starred 30 second nights included), a letter from Santa to the parents, the Keeping the Magic guide, and the Santa\'s Helper Invitation that brings tweens and teens into the magic. 38 fillable fields type right in the PDF.',
+      images: [
+        'https://drive.google.com/thumbnail?id=1oylV1KY_6CQHLtjhyYKmiaj987FjEc7_&sz=w1200',
+        'https://drive.google.com/thumbnail?id=1Q8TDHzCH4iY_VxAh8Eze8mZ0vXCuPC9u&sz=w1200',
+        'https://drive.google.com/thumbnail?id=1sfjO3ionZuuh9aMuGivd49ZmlH-DzzFr&sz=w1200',
+        'https://drive.google.com/thumbnail?id=1k-f8zGW0xcNh2zkozXwlAKcJVh981lHE&sz=w1200',
+        'https://drive.google.com/thumbnail?id=1zkeZjwikwj_zzgcaCTOAJIvqRFH1bPtg&sz=w1200',
+        'https://drive.google.com/thumbnail?id=1aih76O4IkBVwE7-BX8sHQIEtYumoXL2w&sz=w1200',
+      ],
+      price: 9.99,
+      priceId: 'price_1UUZROBsr66TjEhQpbSjSgQ0',
+    },
+  ];
+
   const faqs = [
     {
       question: 'How quickly will I receive my designs?',
@@ -927,7 +955,7 @@ function ChristmasContent() {
         <nav className="container mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <img src="/logo_(2).png" alt="JULDD" className="h-12 w-auto" />
+              <img src="https://drive.google.com/thumbnail?id=1DPlx__vUHjFZ4zh3CTp-HWC-FX1dNtjQ&sz=w1200" alt="ChristmasFun.store" className="h-12 w-auto" />
             </div>
 
             <div className="hidden md:flex items-center gap-8">
@@ -994,6 +1022,13 @@ function ChristmasContent() {
               >
                 Memory Night
                 <span className="ml-1.5 rounded-full bg-amber-400 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-green-950">New</span>
+              </a>
+              <a
+                href="#elf-kit"
+                className="text-red-200 hover:text-white transition-colors font-semibold border border-red-400/50 rounded-full px-4 py-1.5 bg-red-500/20 hover:bg-red-500/40"
+              >
+                Elf Kit
+                <span className="ml-1.5 rounded-full bg-amber-400 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-red-950">New</span>
               </a>
               <a
                 href="#faq"
@@ -1075,6 +1110,13 @@ function ChristmasContent() {
                 <span className="ml-1.5 rounded-full bg-amber-400 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-green-950">New</span>
               </a>
               <a
+                href="#elf-kit"
+                className="inline-flex items-center shrink-0 text-red-200 font-semibold border border-red-400/50 rounded-full px-3 py-1.5 bg-red-500/20"
+              >
+                Elf Kit
+                <span className="ml-1.5 rounded-full bg-amber-400 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-red-950">New</span>
+              </a>
+              <a
                 href="#faq"
                 className="inline-flex items-center shrink-0 text-white/90 font-medium border border-white/30 rounded-full px-3 py-1.5 bg-white/10"
               >
@@ -1128,7 +1170,7 @@ function ChristmasContent() {
               </h1>
 
               <p className="text-lg md:text-xl text-amber-100/80 max-w-2xl mx-auto leading-relaxed tracking-wide">
-  Includes 20 Santa Letters · 4 Christmas Notes · 10 Free Coloring Pages · Plus Gothmas, Nutcrackercore, Personalized Ornaments &amp; the Memory Night Kit
+  Includes 20 Santa Letters · 4 Christmas Notes · 10 Free Coloring Pages · Plus Gothmas, Nutcrackercore, Personalized Ornaments, the Memory Night Kit &amp; the 24 Day Elf Kit
 </p>
 
               <div className="flex flex-col sm:flex-row items-center justify-center gap-6 mt-12">
@@ -1232,6 +1274,21 @@ function ChristmasContent() {
               </p>
               <span className="inline-block px-6 py-3 rounded-2xl bg-green-600/80 text-white font-semibold shadow-lg shadow-green-900/50">
                 Shop Memory Night
+              </span>
+            </a>
+            <a
+              href="#elf-kit"
+              className="block rounded-3xl border border-red-400/30 bg-gradient-to-br from-red-950/80 via-rose-900/50 to-slate-900/80 backdrop-blur-xl px-7 py-7 shadow-2xl shadow-red-950/50 hover:border-red-300/60 transition-colors"
+            >
+              <Sparkles className="w-9 h-9 text-amber-300 mb-4" />
+              <h3 className="text-2xl font-serif text-white mb-2">The 24 Day Elf Kit</h3>
+              <p className="text-red-100/70 text-sm leading-relaxed mb-5">
+                Every night of December, planned: boy and girl elf letters, 24 daily notes,
+                handwritten mini cards, games, props, North Pole seals, and a staging calendar
+                with a believability trick for every scene.
+              </p>
+              <span className="inline-block px-6 py-3 rounded-2xl bg-red-600/80 text-white font-semibold shadow-lg shadow-red-900/50">
+                Shop the Elf Kit
               </span>
             </a>
           </div>
@@ -2003,6 +2060,88 @@ function ChristmasContent() {
           </div>
         </section>
 
+
+        <section id="elf-kit" className="container mx-auto px-6 py-24">
+          <div className="text-center mb-16">
+            <p className="text-amber-300 font-semibold uppercase tracking-[0.25em] text-sm mb-4">
+              New for 2026
+            </p>
+            <div className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-gradient-to-r from-red-700/30 to-amber-600/30 backdrop-blur-xl border border-red-300/40 text-red-100 font-medium mb-6">
+              <Sparkles className="w-5 h-5 text-amber-200" />
+              The 24 Day Elf Kit
+            </div>
+            <h2 className="text-5xl md:text-6xl font-serif text-white mb-6">
+              24 Days of Elf Magic, Planned for You
+            </h2>
+            <p className="text-lg md:text-xl text-white/80 max-w-2xl mx-auto leading-relaxed">
+              The whole month of elf magic in one premium printable kit, with a boy elf and a girl
+              elf so every family finds theirs. A staging calendar with a fresh scene and a
+              believability detail for every night, handwritten mini cards from your elf, games,
+              props, North Pole seals, and a Keeping the Magic guide for the questions smart kids ask.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {elfKitProducts.map((product) => {
+              const inCart = isInCart(product.id);
+
+              return (
+                <div
+                  key={product.id}
+                  className="group relative overflow-hidden rounded-3xl bg-white/10 backdrop-blur-xl border border-white/20 shadow-2xl transition-all duration-500 hover:scale-105 hover:shadow-amber-500/30 lg:col-start-2"
+                >
+                  <div className="absolute inset-0 bg-gradient-to-br from-amber-500/20 via-transparent to-red-600/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                  <div className="relative p-6">
+                    <div className="aspect-[4/3] bg-gradient-to-br from-white/5 to-white/10 rounded-2xl mb-4 flex items-center justify-center overflow-hidden">
+                      <GothmasGallery images={product.images} name={product.name} />
+                    </div>
+                    <h3 className="text-xl font-serif text-white mb-2">{product.name}</h3>
+                    <p className="text-sm text-white/70 mb-3">{product.description}</p>
+                    <p className="text-lg font-bold text-white mb-3">${product.price.toFixed(2)}</p>
+                    <button
+                      onClick={() => {
+                        addToCart({
+                          id: product.id,
+                          type: product.type,
+                          name: product.name,
+                          description: product.description,
+                          image: product.images[0],
+                          price: product.price,
+                          priceId: product.priceId,
+                        });
+                      }}
+                      disabled={inCart}
+                      className={`w-full py-2 px-4 rounded-xl font-semibold transition-all duration-300 border border-amber-300/30 flex items-center justify-center gap-2 ${
+                        inCart
+                          ? 'bg-green-600/50 text-white cursor-default'
+                          : 'bg-gradient-to-r from-red-700 to-red-900 text-red-50 hover:from-red-800 hover:to-rose-950'
+                      }`}
+                    >
+                      {inCart ? (
+                        <>
+                          <Check className="w-4 h-4" />
+                          In Cart
+                        </>
+                      ) : (
+                        <>
+                          <Plus className="w-4 h-4" />
+                          Add to Cart
+                        </>
+                      )}
+                    </button>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          <div className="text-center mt-12">
+            <p className="text-xl text-red-100/90">
+              One kit, every night of December handled, an instant download you can print tonight and use again every year.
+            </p>
+          </div>
+        </section>
+
         <section id="faq" className="container mx-auto px-6 py-24">
           <div className="max-w-3xl mx-auto">
             <h2 className="text-5xl md:text-6xl font-serif text-white text-center mb-16">
@@ -2054,10 +2193,10 @@ function ChristmasContent() {
           <div className="flex flex-col items-center gap-6">
             <div className="flex items-center gap-3">
               <img
-                src="/logo_(2).png"
-                alt="JULDD"
+                src="https://drive.google.com/thumbnail?id=1DPlx__vUHjFZ4zh3CTp-HWC-FX1dNtjQ&sz=w1200"
+                alt="ChristmasFun.store"
                 loading="lazy"
-                className="h-10 w-auto opacity-80"
+                className="h-12 w-auto opacity-90"
               />
             </div>
             <p className="text-white/60 text-center">
@@ -2093,6 +2232,9 @@ function ChristmasContent() {
               </a>
               <a href="#memory-night" className="text-white/60 hover:text-white transition-colors">
                 Memory Night
+              </a>
+              <a href="#elf-kit" className="text-white/60 hover:text-white transition-colors">
+                Elf Kit
               </a>
               <a href="#faq" className="text-white/60 hover:text-white transition-colors">
                 FAQ
