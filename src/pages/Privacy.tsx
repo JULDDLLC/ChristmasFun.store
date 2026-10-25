@@ -12,7 +12,7 @@ export default function Privacy() {
         <nav className="container mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <img src="/logo_(2).png" alt="JULDD" className="h-12 w-auto" />
+              <img src="https://drive.google.com/thumbnail?id=1DPlx__vUHjFZ4zh3CTp-HWC-FX1dNtjQ&sz=w1200" alt="ChristmasFun.store" className="h-12 w-auto" />
             </div>
             <button
               onClick={() => navigate('/')}

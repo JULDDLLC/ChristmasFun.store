@@ -230,6 +230,12 @@ const PRODUCT_FILES: Record<string, { name: string; files: { label: string; url:
       { label: 'Christmas Memory Night Kit (43 page PDF)', url: 'https://drive.usercontent.google.com/download?id=1JnJAN_dwhvSg2sbrQ6Rb7P_e6Juxxuwz&export=download&confirm=t', filename: 'Christmas_Memory_Night_Kit.pdf' },
     ],
   },
+  'elf-kit': {
+    name: 'The 24 Day Elf Kit',
+    files: [
+      { label: 'The 24 Day Elf Kit (ZIP, 73 pages in 10 PDFs)', url: 'https://drive.usercontent.google.com/download?id=1zSOZZ30qUS8gwrGnsvzNIvN9F1DnSwsk&export=download&confirm=t', filename: '24-Day-Elf-Kit.zip' },
+    ],
+  },
 };
 
 // Alias so new delivery emails can link /download/all-24-bundle;
