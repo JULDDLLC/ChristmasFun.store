@@ -794,6 +794,7 @@ function ChristmasContent() {
       name: 'Christmas Memory Night Kit',
       description: 'Everything you need to host the Christmas night your family talks about all year, planned for you in one printable kit: a host guide that runs the whole evening, 6 coordinated games for every age at the table, 36 conversation cards in three levels, a 24 item photo scavenger hunt, 8 large print recipe cards, a 2026 family keepsake to fill in, save, and reopen next Christmas, plus 24 From Santa gift tags, a gift list and budget tracker, a My Letter to Santa page, and a Nice List Certificate. Personalize the host name and family name right in the PDF before you print.',
       images: [
+        'https://drive.google.com/thumbnail?id=1DUnC97EtWOJU8zj_sSVOBqjKYXZlTf9a&sz=w1200',
         'https://drive.google.com/thumbnail?id=1dJgEuFlob2aT-Xgu84mWQi3qRypN0s55&sz=w1200',
         'https://drive.google.com/thumbnail?id=1aP3h5M1ugh6kMomS41bxNbf5l34SOrWh&sz=w1200',
         'https://drive.google.com/thumbnail?id=1ZMBp5QDdZTDeluq8mos4iBZZeEfcIFLW&sz=w1200',
