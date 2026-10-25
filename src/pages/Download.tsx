@@ -210,7 +210,7 @@ const PRODUCT_FILES: Record<string, { name: string; files: { label: string; url:
   'personalized-pet': {
     name: "Pet's First Christmas - Editable Photo Ornament",
     files: [
-      { label: 'Pet Photo Ornament - Editable + Print PDFs, PNG, Instructions (ZIP)', url: 'https://drive.usercontent.google.com/download?id=1Z-TeNOVBLXMHWHqIGL_GGCr7ZKmOHlSb&export=download&confirm=t' },
+      { label: 'Pet Photo Ornaments - Puppy and Kitten Editable + Print PDFs, PNGs, Instructions (ZIP)', url: 'https://drive.usercontent.google.com/download?id=1Z-TeNOVBLXMHWHqIGL_GGCr7ZKmOHlSb&export=download&confirm=t' },
     ],
   },
   'personalized-collection': {
