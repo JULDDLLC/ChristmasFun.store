@@ -238,7 +238,7 @@ export const STRIPE_PRODUCTS: StripeProduct[] = [
     priceId: 'price_1UPo4KBsr66TjEhQQTrj8HzZ',
     name: 'Pet\'s First Christmas - Editable Photo Ornament',
     description:
-      'A photo ornament frame for the dog or cat who joined the family this year, with a paw-print ring, a puppy and kitten, and an oval photo window. Open the editable PDF, click the name and year fields, type your pet\'s in, and print - no extra software needed. Instructions for sizing and placing the photo are included. Instant download.',
+      'Two photo ornament frames in one download, one for a puppy and one for a kitten, each with a paw-print ring and an oval photo window. Open the editable PDF for your pet, click the name and year fields, type theirs in, and print, no extra software needed. Instructions for sizing and placing the photo are included. Instant download.',
     price: 4.99,
     currency: 'usd',
     mode: 'payment',
