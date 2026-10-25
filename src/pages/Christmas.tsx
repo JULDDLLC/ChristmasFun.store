@@ -996,11 +996,18 @@ function ChristmasContent() {
                 Bundle
               </a>
               <a
-                href="#gothmas"
-                className="text-purple-200 hover:text-white transition-colors font-semibold border border-purple-400/50 rounded-full px-4 py-1.5 bg-purple-500/20 hover:bg-purple-500/40"
+                href="#elf-kit"
+                className="text-red-200 hover:text-white transition-colors font-semibold border border-red-400/50 rounded-full px-4 py-1.5 bg-red-500/20 hover:bg-red-500/40"
               >
-                Gothmas
-                <span className="ml-1.5 rounded-full bg-amber-400 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-purple-950">New</span>
+                Elf Kit
+                <span className="ml-1.5 rounded-full bg-amber-400 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-red-950">New</span>
+              </a>
+              <a
+                href="#memory-night"
+                className="text-green-200 hover:text-white transition-colors font-semibold border border-green-400/50 rounded-full px-4 py-1.5 bg-green-500/20 hover:bg-green-500/40"
+              >
+                Memory Night
+                <span className="ml-1.5 rounded-full bg-amber-400 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-green-950">New</span>
               </a>
               <a
                 href="#nutcrackercore"
@@ -1017,18 +1024,11 @@ function ChristmasContent() {
                 <span className="ml-1.5 rounded-full bg-amber-400 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-emerald-950">New</span>
               </a>
               <a
-                href="#memory-night"
-                className="text-green-200 hover:text-white transition-colors font-semibold border border-green-400/50 rounded-full px-4 py-1.5 bg-green-500/20 hover:bg-green-500/40"
+                href="#gothmas"
+                className="text-purple-200 hover:text-white transition-colors font-semibold border border-purple-400/50 rounded-full px-4 py-1.5 bg-purple-500/20 hover:bg-purple-500/40"
               >
-                Memory Night
-                <span className="ml-1.5 rounded-full bg-amber-400 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-green-950">New</span>
-              </a>
-              <a
-                href="#elf-kit"
-                className="text-red-200 hover:text-white transition-colors font-semibold border border-red-400/50 rounded-full px-4 py-1.5 bg-red-500/20 hover:bg-red-500/40"
-              >
-                Elf Kit
-                <span className="ml-1.5 rounded-full bg-amber-400 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-red-950">New</span>
+                Gothmas
+                <span className="ml-1.5 rounded-full bg-amber-400 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-purple-950">New</span>
               </a>
               <a
                 href="#faq"
@@ -1082,11 +1082,18 @@ function ChristmasContent() {
                 Bundle
               </a>
               <a
-                href="#gothmas"
-                className="inline-flex items-center shrink-0 text-purple-200 font-semibold border border-purple-400/50 rounded-full px-3 py-1.5 bg-purple-500/20"
+                href="#elf-kit"
+                className="inline-flex items-center shrink-0 text-red-200 font-semibold border border-red-400/50 rounded-full px-3 py-1.5 bg-red-500/20"
               >
-                Gothmas
-                <span className="ml-1.5 rounded-full bg-amber-400 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-purple-950">New</span>
+                Elf Kit
+                <span className="ml-1.5 rounded-full bg-amber-400 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-red-950">New</span>
+              </a>
+              <a
+                href="#memory-night"
+                className="inline-flex items-center shrink-0 text-green-200 font-semibold border border-green-400/50 rounded-full px-3 py-1.5 bg-green-500/20"
+              >
+                Memory Night
+                <span className="ml-1.5 rounded-full bg-amber-400 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-green-950">New</span>
               </a>
               <a
                 href="#nutcrackercore"
@@ -1103,18 +1110,11 @@ function ChristmasContent() {
                 <span className="ml-1.5 rounded-full bg-amber-400 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-emerald-950">New</span>
               </a>
               <a
-                href="#memory-night"
-                className="inline-flex items-center shrink-0 text-green-200 font-semibold border border-green-400/50 rounded-full px-3 py-1.5 bg-green-500/20"
+                href="#gothmas"
+                className="inline-flex items-center shrink-0 text-purple-200 font-semibold border border-purple-400/50 rounded-full px-3 py-1.5 bg-purple-500/20"
               >
-                Memory Night
-                <span className="ml-1.5 rounded-full bg-amber-400 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-green-950">New</span>
-              </a>
-              <a
-                href="#elf-kit"
-                className="inline-flex items-center shrink-0 text-red-200 font-semibold border border-red-400/50 rounded-full px-3 py-1.5 bg-red-500/20"
-              >
-                Elf Kit
-                <span className="ml-1.5 rounded-full bg-amber-400 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-red-950">New</span>
+                Gothmas
+                <span className="ml-1.5 rounded-full bg-amber-400 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-purple-950">New</span>
               </a>
               <a
                 href="#faq"
@@ -1220,17 +1220,33 @@ function ChristmasContent() {
           </p>
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
             <a
-              href="#gothmas"
-              className="block rounded-3xl border border-purple-400/30 bg-gradient-to-br from-purple-950/80 via-purple-900/60 to-slate-900/80 backdrop-blur-xl px-7 py-7 shadow-2xl shadow-purple-950/50 hover:border-purple-300/60 transition-colors"
+              href="#elf-kit"
+              className="block rounded-3xl border border-red-400/30 bg-gradient-to-br from-red-950/80 via-rose-900/50 to-slate-900/80 backdrop-blur-xl px-7 py-7 shadow-2xl shadow-red-950/50 hover:border-red-300/60 transition-colors"
             >
-              <Moon className="w-9 h-9 text-purple-300 mb-4" />
-              <h3 className="text-2xl font-serif text-white mb-2">The Gothmas Collection</h3>
-              <p className="text-purple-100/70 text-sm leading-relaxed mb-5">
-                Christmas, but darker: printable ornaments, gothic wall art, greeting cards,
-                gift tags and wrap, and a 25-day countdown, in black, burgundy, and gold.
+              <Sparkles className="w-9 h-9 text-amber-300 mb-4" />
+              <h3 className="text-2xl font-serif text-white mb-2">The 24 Day Elf Kit</h3>
+              <p className="text-red-100/70 text-sm leading-relaxed mb-5">
+                Every night of December, planned: boy and girl elf letters, 24 daily notes,
+                handwritten mini cards, games, props, North Pole seals, and a staging calendar
+                with a believability trick for every scene.
               </p>
-              <span className="inline-block px-6 py-3 rounded-2xl bg-purple-500/80 text-white font-semibold shadow-lg shadow-purple-900/50">
-                Shop Gothmas
+              <span className="inline-block px-6 py-3 rounded-2xl bg-red-600/80 text-white font-semibold shadow-lg shadow-red-900/50">
+                Shop the Elf Kit
+              </span>
+            </a>
+            <a
+              href="#memory-night"
+              className="block rounded-3xl border border-green-400/30 bg-gradient-to-br from-green-950/80 via-green-900/50 to-slate-900/80 backdrop-blur-xl px-7 py-7 shadow-2xl shadow-green-950/50 hover:border-green-300/60 transition-colors"
+            >
+              <Star className="w-9 h-9 text-amber-300 mb-4" />
+              <h3 className="text-2xl font-serif text-white mb-2">Christmas Memory Night Kit</h3>
+              <p className="text-green-100/70 text-sm leading-relaxed mb-5">
+                One hosted family night, fully planned for you: games for every age, conversation
+                cards that get Grandma and Grandpa's stories told, a photo scavenger hunt, recipes,
+                and a keepsake to reopen next Christmas.
+              </p>
+              <span className="inline-block px-6 py-3 rounded-2xl bg-green-600/80 text-white font-semibold shadow-lg shadow-green-900/50">
+                Shop Memory Night
               </span>
             </a>
             <a
@@ -1262,33 +1278,17 @@ function ChristmasContent() {
               </span>
             </a>
             <a
-              href="#memory-night"
-              className="block rounded-3xl border border-green-400/30 bg-gradient-to-br from-green-950/80 via-green-900/50 to-slate-900/80 backdrop-blur-xl px-7 py-7 shadow-2xl shadow-green-950/50 hover:border-green-300/60 transition-colors"
+              href="#gothmas"
+              className="block rounded-3xl border border-purple-400/30 bg-gradient-to-br from-purple-950/80 via-purple-900/60 to-slate-900/80 backdrop-blur-xl px-7 py-7 shadow-2xl shadow-purple-950/50 hover:border-purple-300/60 transition-colors"
             >
-              <Star className="w-9 h-9 text-amber-300 mb-4" />
-              <h3 className="text-2xl font-serif text-white mb-2">Christmas Memory Night Kit</h3>
-              <p className="text-green-100/70 text-sm leading-relaxed mb-5">
-                One hosted family night, fully planned for you: games for every age, conversation
-                cards that get Grandma and Grandpa's stories told, a photo scavenger hunt, recipes,
-                and a keepsake to reopen next Christmas.
+              <Moon className="w-9 h-9 text-purple-300 mb-4" />
+              <h3 className="text-2xl font-serif text-white mb-2">The Gothmas Collection</h3>
+              <p className="text-purple-100/70 text-sm leading-relaxed mb-5">
+                Christmas, but darker: printable ornaments, gothic wall art, greeting cards,
+                gift tags and wrap, and a 25-day countdown, in black, burgundy, and gold.
               </p>
-              <span className="inline-block px-6 py-3 rounded-2xl bg-green-600/80 text-white font-semibold shadow-lg shadow-green-900/50">
-                Shop Memory Night
-              </span>
-            </a>
-            <a
-              href="#elf-kit"
-              className="block rounded-3xl border border-red-400/30 bg-gradient-to-br from-red-950/80 via-rose-900/50 to-slate-900/80 backdrop-blur-xl px-7 py-7 shadow-2xl shadow-red-950/50 hover:border-red-300/60 transition-colors"
-            >
-              <Sparkles className="w-9 h-9 text-amber-300 mb-4" />
-              <h3 className="text-2xl font-serif text-white mb-2">The 24 Day Elf Kit</h3>
-              <p className="text-red-100/70 text-sm leading-relaxed mb-5">
-                Every night of December, planned: boy and girl elf letters, 24 daily notes,
-                handwritten mini cards, games, props, North Pole seals, and a staging calendar
-                with a believability trick for every scene.
-              </p>
-              <span className="inline-block px-6 py-3 rounded-2xl bg-red-600/80 text-white font-semibold shadow-lg shadow-red-900/50">
-                Shop the Elf Kit
+              <span className="inline-block px-6 py-3 rounded-2xl bg-purple-500/80 text-white font-semibold shadow-lg shadow-purple-900/50">
+                Shop Gothmas
               </span>
             </a>
           </div>
@@ -1700,71 +1700,36 @@ function ChristmasContent() {
         </section>
 
         {/* ABOUT */}
-        <section id="about" className="container mx-auto px-6 py-24">
-          <div className="max-w-3xl mx-auto text-center">
-            <p className="text-amber-300 font-semibold uppercase tracking-[0.25em] text-sm mb-6">
-              About the shop
-            </p>
-            <h2 className="text-4xl md:text-5xl font-serif text-white mb-6">
-              Made for magical Christmases
-            </h2>
-            <p className="text-lg text-white/80 leading-relaxed mb-8">
-              ChristmasFun.store is a small independent shop creating original printable
-              Christmas designs: Santa letters, stationery, wall art, greeting cards, and
-              more. Every design is made in-house, delivered instantly by email, and prints
-              beautifully at home on standard paper.
-            </p>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-10">
-              <div className="rounded-2xl bg-white/5 backdrop-blur-xl border border-white/10 px-6 py-5">
-                <p className="text-amber-200 font-semibold mb-1">Instant download</p>
-                <p className="text-sm text-white/70">Links arrive by email right after checkout</p>
-              </div>
-              <div className="rounded-2xl bg-white/5 backdrop-blur-xl border border-white/10 px-6 py-5">
-                <p className="text-amber-200 font-semibold mb-1">Print at home</p>
-                <p className="text-sm text-white/70">Designed for standard 8.5&Prime; x 11&Prime; paper</p>
-              </div>
-              <div className="rounded-2xl bg-white/5 backdrop-blur-xl border border-white/10 px-6 py-5">
-                <p className="text-amber-200 font-semibold mb-1">Original artwork</p>
-                <p className="text-sm text-white/70">Every design created for this shop</p>
-              </div>
-            </div>
-            <p className="text-white/70">
-              Questions about an order or a design? Write to{' '}
-              <a href="mailto:ChristmasMagicDesigns@juldd.com" className="text-amber-300 hover:underline font-medium">
-                ChristmasMagicDesigns@juldd.com
-              </a>.{' '}
-              A real person reads every message.
-            </p>
-          </div>
-        </section>
-
-        {/* FAQ */}
-        {/* GOTHMAS COLLECTION */}
-        <section id="gothmas" className="container mx-auto px-6 py-24">
+        <section id="elf-kit" className="container mx-auto px-6 py-24">
           <div className="text-center mb-16">
-            <div className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-gradient-to-r from-purple-600/30 to-indigo-700/30 backdrop-blur-xl border border-purple-300/40 text-purple-100 font-medium mb-6">
-              <Moon className="w-5 h-5 text-purple-200" />
-              New for 2026 - The Gothmas Collection
+            <p className="text-amber-300 font-semibold uppercase tracking-[0.25em] text-sm mb-4">
+              New for 2026
+            </p>
+            <div className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-gradient-to-r from-red-700/30 to-amber-600/30 backdrop-blur-xl border border-red-300/40 text-red-100 font-medium mb-6">
+              <Sparkles className="w-5 h-5 text-amber-200" />
+              The 24 Day Elf Kit
             </div>
             <h2 className="text-5xl md:text-6xl font-serif text-white mb-6">
-              Gothmas - A Darker Kind of Christmas
+              24 Days of Elf Magic, Planned for You
             </h2>
             <p className="text-lg md:text-xl text-white/80 max-w-2xl mx-auto leading-relaxed">
-              Black, burgundy, deep green, and gold. Printable ornaments, wall art, cards, and a countdown
-              for the people whose Christmas runs a little darker - elegant, never scary.
+              The whole month of elf magic in one premium printable kit, with a boy elf and a girl
+              elf so every family finds theirs. A staging calendar with a fresh scene and a
+              believability detail for every night, handwritten mini cards from your elf, games,
+              props, North Pole seals, and a Keeping the Magic guide for the questions smart kids ask.
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {gothmasProducts.map((product) => {
+            {elfKitProducts.map((product) => {
               const inCart = isInCart(product.id);
 
               return (
                 <div
                   key={product.id}
-                  className="group relative overflow-hidden rounded-3xl bg-white/10 backdrop-blur-xl border border-white/20 shadow-2xl transition-all duration-500 hover:scale-105 hover:shadow-purple-500/30"
+                  className="group relative overflow-hidden rounded-3xl bg-white/10 backdrop-blur-xl border border-white/20 shadow-2xl transition-all duration-500 hover:scale-105 hover:shadow-amber-500/30 lg:col-start-2"
                 >
-                  <div className="absolute inset-0 bg-gradient-to-br from-purple-500/20 via-transparent to-indigo-600/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                  <div className="absolute inset-0 bg-gradient-to-br from-amber-500/20 via-transparent to-red-600/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                   <div className="relative p-6">
                     <div className="aspect-[4/3] bg-gradient-to-br from-white/5 to-white/10 rounded-2xl mb-4 flex items-center justify-center overflow-hidden">
                       <GothmasGallery images={product.images} name={product.name} />
@@ -1785,10 +1750,10 @@ function ChristmasContent() {
                         });
                       }}
                       disabled={inCart}
-                      className={`w-full py-2 px-4 rounded-xl font-semibold transition-all duration-300 border border-purple-300/30 flex items-center justify-center gap-2 ${
+                      className={`w-full py-2 px-4 rounded-xl font-semibold transition-all duration-300 border border-amber-300/30 flex items-center justify-center gap-2 ${
                         inCart
                           ? 'bg-green-600/50 text-white cursor-default'
-                          : 'bg-gradient-to-r from-purple-600 to-indigo-700 text-purple-50 hover:from-purple-700 hover:to-indigo-800'
+                          : 'bg-gradient-to-r from-red-700 to-red-900 text-red-50 hover:from-red-800 hover:to-rose-950'
                       }`}
                     >
                       {inCart ? (
@@ -1810,14 +1775,93 @@ function ChristmasContent() {
           </div>
 
           <div className="text-center mt-12">
-            <p className="text-xl text-purple-100/90">
-              Every set is an instant download - print at home for your own tree, mantel, cards, and gifts.
+            <p className="text-xl text-red-100/90">
+              One kit, every night of December handled, an instant download you can print tonight and use again every year.
+            </p>
+          </div>
+        </section>
+
+        <section id="memory-night" className="container mx-auto px-6 py-24">
+          <div className="text-center mb-16">
+            <p className="text-amber-300 font-semibold uppercase tracking-[0.25em] text-sm mb-4">
+              New for 2026
+            </p>
+            <div className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-gradient-to-r from-green-700/30 to-amber-600/30 backdrop-blur-xl border border-green-300/40 text-green-100 font-medium mb-6">
+              <Star className="w-5 h-5 text-amber-200" />
+              The Christmas Memory Night Kit
+            </div>
+            <h2 className="text-5xl md:text-6xl font-serif text-white mb-6">
+              Memory Night - Host a Night They Will Never Forget
+            </h2>
+            <p className="text-lg md:text-xl text-white/80 max-w-2xl mx-auto leading-relaxed">
+              Everything you need to host the Christmas night your family talks about all year, planned
+              for you in one printable kit. Deep green, classic red, and antique gold, made for
+              grandparents, grandkids, and everyone at the table.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {memoryKitProducts.map((product) => {
+              const inCart = isInCart(product.id);
+
+              return (
+                <div
+                  key={product.id}
+                  className="group relative overflow-hidden rounded-3xl bg-white/10 backdrop-blur-xl border border-white/20 shadow-2xl transition-all duration-500 hover:scale-105 hover:shadow-amber-500/30 lg:col-start-2"
+                >
+                  <div className="absolute inset-0 bg-gradient-to-br from-amber-500/20 via-transparent to-green-600/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                  <div className="relative p-6">
+                    <div className="aspect-[4/3] bg-gradient-to-br from-white/5 to-white/10 rounded-2xl mb-4 flex items-center justify-center overflow-hidden">
+                      <GothmasGallery images={product.images} name={product.name} />
+                    </div>
+                    <h3 className="text-xl font-serif text-white mb-2">{product.name}</h3>
+                    <p className="text-sm text-white/70 mb-3">{product.description}</p>
+                    <p className="text-lg font-bold text-white mb-3">${product.price.toFixed(2)}</p>
+                    <button
+                      onClick={() => {
+                        addToCart({
+                          id: product.id,
+                          type: product.type,
+                          name: product.name,
+                          description: product.description,
+                          image: product.images[0],
+                          price: product.price,
+                          priceId: product.priceId,
+                        });
+                      }}
+                      disabled={inCart}
+                      className={`w-full py-2 px-4 rounded-xl font-semibold transition-all duration-300 border border-amber-300/30 flex items-center justify-center gap-2 ${
+                        inCart
+                          ? 'bg-green-600/50 text-white cursor-default'
+                          : 'bg-gradient-to-r from-green-700 to-green-900 text-green-50 hover:from-green-800 hover:to-emerald-950'
+                      }`}
+                    >
+                      {inCart ? (
+                        <>
+                          <Check className="w-4 h-4" />
+                          In Cart
+                        </>
+                      ) : (
+                        <>
+                          <Plus className="w-4 h-4" />
+                          Add to Cart
+                        </>
+                      )}
+                    </button>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          <div className="text-center mt-12">
+            <p className="text-xl text-green-100/90">
+              One kit, one unforgettable night - an instant download you can print tonight and use again every year.
             </p>
           </div>
         </section>
 
 
-        {/* NUTCRACKERCORE COLLECTION */}
         <section id="nutcrackercore" className="container mx-auto px-6 py-24">
           <div className="text-center mb-16">
             <p className="text-amber-300 font-semibold uppercase tracking-[0.25em] text-sm mb-4">
@@ -1980,35 +2024,31 @@ function ChristmasContent() {
 
 
         {/* MEMORY NIGHT KIT */}
-        <section id="memory-night" className="container mx-auto px-6 py-24">
+        <section id="gothmas" className="container mx-auto px-6 py-24">
           <div className="text-center mb-16">
-            <p className="text-amber-300 font-semibold uppercase tracking-[0.25em] text-sm mb-4">
-              New for 2026
-            </p>
-            <div className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-gradient-to-r from-green-700/30 to-amber-600/30 backdrop-blur-xl border border-green-300/40 text-green-100 font-medium mb-6">
-              <Star className="w-5 h-5 text-amber-200" />
-              The Christmas Memory Night Kit
+            <div className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-gradient-to-r from-purple-600/30 to-indigo-700/30 backdrop-blur-xl border border-purple-300/40 text-purple-100 font-medium mb-6">
+              <Moon className="w-5 h-5 text-purple-200" />
+              New for 2026 - The Gothmas Collection
             </div>
             <h2 className="text-5xl md:text-6xl font-serif text-white mb-6">
-              Memory Night - Host a Night They Will Never Forget
+              Gothmas - A Darker Kind of Christmas
             </h2>
             <p className="text-lg md:text-xl text-white/80 max-w-2xl mx-auto leading-relaxed">
-              Everything you need to host the Christmas night your family talks about all year, planned
-              for you in one printable kit. Deep green, classic red, and antique gold, made for
-              grandparents, grandkids, and everyone at the table.
+              Black, burgundy, deep green, and gold. Printable ornaments, wall art, cards, and a countdown
+              for the people whose Christmas runs a little darker - elegant, never scary.
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {memoryKitProducts.map((product) => {
+            {gothmasProducts.map((product) => {
               const inCart = isInCart(product.id);
 
               return (
                 <div
                   key={product.id}
-                  className="group relative overflow-hidden rounded-3xl bg-white/10 backdrop-blur-xl border border-white/20 shadow-2xl transition-all duration-500 hover:scale-105 hover:shadow-amber-500/30 lg:col-start-2"
+                  className="group relative overflow-hidden rounded-3xl bg-white/10 backdrop-blur-xl border border-white/20 shadow-2xl transition-all duration-500 hover:scale-105 hover:shadow-purple-500/30"
                 >
-                  <div className="absolute inset-0 bg-gradient-to-br from-amber-500/20 via-transparent to-green-600/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                  <div className="absolute inset-0 bg-gradient-to-br from-purple-500/20 via-transparent to-indigo-600/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                   <div className="relative p-6">
                     <div className="aspect-[4/3] bg-gradient-to-br from-white/5 to-white/10 rounded-2xl mb-4 flex items-center justify-center overflow-hidden">
                       <GothmasGallery images={product.images} name={product.name} />
@@ -2029,10 +2069,10 @@ function ChristmasContent() {
                         });
                       }}
                       disabled={inCart}
-                      className={`w-full py-2 px-4 rounded-xl font-semibold transition-all duration-300 border border-amber-300/30 flex items-center justify-center gap-2 ${
+                      className={`w-full py-2 px-4 rounded-xl font-semibold transition-all duration-300 border border-purple-300/30 flex items-center justify-center gap-2 ${
                         inCart
                           ? 'bg-green-600/50 text-white cursor-default'
-                          : 'bg-gradient-to-r from-green-700 to-green-900 text-green-50 hover:from-green-800 hover:to-emerald-950'
+                          : 'bg-gradient-to-r from-purple-600 to-indigo-700 text-purple-50 hover:from-purple-700 hover:to-indigo-800'
                       }`}
                     >
                       {inCart ? (
@@ -2054,94 +2094,54 @@ function ChristmasContent() {
           </div>
 
           <div className="text-center mt-12">
-            <p className="text-xl text-green-100/90">
-              One kit, one unforgettable night - an instant download you can print tonight and use again every year.
+            <p className="text-xl text-purple-100/90">
+              Every set is an instant download - print at home for your own tree, mantel, cards, and gifts.
             </p>
           </div>
         </section>
 
 
-        <section id="elf-kit" className="container mx-auto px-6 py-24">
-          <div className="text-center mb-16">
-            <p className="text-amber-300 font-semibold uppercase tracking-[0.25em] text-sm mb-4">
-              New for 2026
+        {/* NUTCRACKERCORE COLLECTION */}
+        <section id="about" className="container mx-auto px-6 py-24">
+          <div className="max-w-3xl mx-auto text-center">
+            <p className="text-amber-300 font-semibold uppercase tracking-[0.25em] text-sm mb-6">
+              About the shop
             </p>
-            <div className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-gradient-to-r from-red-700/30 to-amber-600/30 backdrop-blur-xl border border-red-300/40 text-red-100 font-medium mb-6">
-              <Sparkles className="w-5 h-5 text-amber-200" />
-              The 24 Day Elf Kit
-            </div>
-            <h2 className="text-5xl md:text-6xl font-serif text-white mb-6">
-              24 Days of Elf Magic, Planned for You
+            <h2 className="text-4xl md:text-5xl font-serif text-white mb-6">
+              Made for magical Christmases
             </h2>
-            <p className="text-lg md:text-xl text-white/80 max-w-2xl mx-auto leading-relaxed">
-              The whole month of elf magic in one premium printable kit, with a boy elf and a girl
-              elf so every family finds theirs. A staging calendar with a fresh scene and a
-              believability detail for every night, handwritten mini cards from your elf, games,
-              props, North Pole seals, and a Keeping the Magic guide for the questions smart kids ask.
+            <p className="text-lg text-white/80 leading-relaxed mb-8">
+              ChristmasFun.store is a small independent shop creating original printable
+              Christmas designs: Santa letters, stationery, wall art, greeting cards, and
+              more. Every design is made in-house, delivered instantly by email, and prints
+              beautifully at home on standard paper.
             </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {elfKitProducts.map((product) => {
-              const inCart = isInCart(product.id);
-
-              return (
-                <div
-                  key={product.id}
-                  className="group relative overflow-hidden rounded-3xl bg-white/10 backdrop-blur-xl border border-white/20 shadow-2xl transition-all duration-500 hover:scale-105 hover:shadow-amber-500/30 lg:col-start-2"
-                >
-                  <div className="absolute inset-0 bg-gradient-to-br from-amber-500/20 via-transparent to-red-600/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                  <div className="relative p-6">
-                    <div className="aspect-[4/3] bg-gradient-to-br from-white/5 to-white/10 rounded-2xl mb-4 flex items-center justify-center overflow-hidden">
-                      <GothmasGallery images={product.images} name={product.name} />
-                    </div>
-                    <h3 className="text-xl font-serif text-white mb-2">{product.name}</h3>
-                    <p className="text-sm text-white/70 mb-3">{product.description}</p>
-                    <p className="text-lg font-bold text-white mb-3">${product.price.toFixed(2)}</p>
-                    <button
-                      onClick={() => {
-                        addToCart({
-                          id: product.id,
-                          type: product.type,
-                          name: product.name,
-                          description: product.description,
-                          image: product.images[0],
-                          price: product.price,
-                          priceId: product.priceId,
-                        });
-                      }}
-                      disabled={inCart}
-                      className={`w-full py-2 px-4 rounded-xl font-semibold transition-all duration-300 border border-amber-300/30 flex items-center justify-center gap-2 ${
-                        inCart
-                          ? 'bg-green-600/50 text-white cursor-default'
-                          : 'bg-gradient-to-r from-red-700 to-red-900 text-red-50 hover:from-red-800 hover:to-rose-950'
-                      }`}
-                    >
-                      {inCart ? (
-                        <>
-                          <Check className="w-4 h-4" />
-                          In Cart
-                        </>
-                      ) : (
-                        <>
-                          <Plus className="w-4 h-4" />
-                          Add to Cart
-                        </>
-                      )}
-                    </button>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-
-          <div className="text-center mt-12">
-            <p className="text-xl text-red-100/90">
-              One kit, every night of December handled, an instant download you can print tonight and use again every year.
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-10">
+              <div className="rounded-2xl bg-white/5 backdrop-blur-xl border border-white/10 px-6 py-5">
+                <p className="text-amber-200 font-semibold mb-1">Instant download</p>
+                <p className="text-sm text-white/70">Links arrive by email right after checkout</p>
+              </div>
+              <div className="rounded-2xl bg-white/5 backdrop-blur-xl border border-white/10 px-6 py-5">
+                <p className="text-amber-200 font-semibold mb-1">Print at home</p>
+                <p className="text-sm text-white/70">Designed for standard 8.5&Prime; x 11&Prime; paper</p>
+              </div>
+              <div className="rounded-2xl bg-white/5 backdrop-blur-xl border border-white/10 px-6 py-5">
+                <p className="text-amber-200 font-semibold mb-1">Original artwork</p>
+                <p className="text-sm text-white/70">Every design created for this shop</p>
+              </div>
+            </div>
+            <p className="text-white/70">
+              Questions about an order or a design? Write to{' '}
+              <a href="mailto:ChristmasMagicDesigns@juldd.com" className="text-amber-300 hover:underline font-medium">
+                ChristmasMagicDesigns@juldd.com
+              </a>.{' '}
+              A real person reads every message.
             </p>
           </div>
         </section>
 
+        {/* FAQ */}
+        {/* GOTHMAS COLLECTION */}
         <section id="faq" className="container mx-auto px-6 py-24">
           <div className="max-w-3xl mx-auto">
             <h2 className="text-5xl md:text-6xl font-serif text-white text-center mb-16">
@@ -2221,8 +2221,11 @@ function ChristmasContent() {
               <a href="#bundle" className="text-white/60 hover:text-white transition-colors">
                 Bundle
               </a>
-              <a href="#gothmas" className="text-white/60 hover:text-white transition-colors">
-                Gothmas
+              <a href="#elf-kit" className="text-white/60 hover:text-white transition-colors">
+                Elf Kit
+              </a>
+              <a href="#memory-night" className="text-white/60 hover:text-white transition-colors">
+                Memory Night
               </a>
               <a href="#nutcrackercore" className="text-white/60 hover:text-white transition-colors">
                 Nutcrackercore
@@ -2230,11 +2233,8 @@ function ChristmasContent() {
               <a href="#personalized" className="text-white/60 hover:text-white transition-colors">
                 Personalized
               </a>
-              <a href="#memory-night" className="text-white/60 hover:text-white transition-colors">
-                Memory Night
-              </a>
-              <a href="#elf-kit" className="text-white/60 hover:text-white transition-colors">
-                Elf Kit
+              <a href="#gothmas" className="text-white/60 hover:text-white transition-colors">
+                Gothmas
               </a>
               <a href="#faq" className="text-white/60 hover:text-white transition-colors">
                 FAQ
