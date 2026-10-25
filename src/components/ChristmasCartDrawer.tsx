@@ -216,7 +216,7 @@ export function ChristmasCartDrawer({ isOpen, onClose, customerEmail }: Props) {
                 <img
                   src={item.image}
                   alt={item.name}
-                  className="w-16 h-20 object-cover rounded-xl border border-white/10"
+                  className="w-16 h-20 object-contain rounded-xl border border-white/10"
                 />
               ) : (
                 <div className="w-16 h-20 rounded-xl bg-white/10 border border-white/10" />

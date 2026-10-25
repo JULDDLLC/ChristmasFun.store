@@ -29,7 +29,7 @@ const PRICE_ID_TO_PRODUCT = new Map<string, { product_id: string; label: string 
   ["price_1ScHCUBsr66TjEhQI5HBQqtU", { product_id: "santa_letter_single", label: "Santa Letter (Single)" }],
   ["price_1ScGfNBsr66TjEhQxdfKXMcn", { product_id: "christmas_note_single", label: "Christmas Note (Single)" }],
   ["price_1ScH30Bsr66TjEhQhwLwFAME", { product_id: "christmas_notes_bundle", label: "Christmas Notes Bundle" }],
-  ["price_1ScGjvBsr66TjEhQ4cRtPYm1", { product_id: "all_18_bundle", label: "All 18 Designs Bundle" }],
+  ["price_1ScGjvBsr66TjEhQ4cRtPYm1", { product_id: "all_18_bundle", label: "Christmas Classics Bundle" }],
   ["price_1ScH6KBsr66TjEhQAhED4Lsd", { product_id: "teacher_license", label: "Teacher License" }],
   ["price_1SctvEBsr66TjEhQ5XQ8NUxl", { product_id: "free_coloring", label: "Free Coloring Sheets" }],
   ["price_1UPbfPBsr66TjEhQAgZ52nsc", { product_id: "gothmas_ornaments", label: "Gothmas Ornament Design Bundle" }],
