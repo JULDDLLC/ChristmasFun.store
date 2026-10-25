@@ -27,7 +27,7 @@ const SANTA_LETTER_DESIGNS: Record<number, { label: string; url: string }> = {
   20: { label: 'Design 20 - The Nice List', url: 'https://drive.usercontent.google.com/download?id=1PFUKgPVDhONlaUxsf8GROeyrZxTjtdPZ&export=download&confirm=t' },
 };
 
-const PRODUCT_FILES: Record<string, { name: string; files: { label: string; url: string }[] }> = {
+const PRODUCT_FILES: Record<string, { name: string; files: { label: string; url: string; filename?: string }[] }> = {
   'santa-letter': {
     name: 'Santa Letter',
     files: [
@@ -224,6 +224,12 @@ const PRODUCT_FILES: Record<string, { name: string; files: { label: string; url:
       { label: "Pet's First Christmas (ZIP)", url: 'https://drive.usercontent.google.com/download?id=1Z-TeNOVBLXMHWHqIGL_GGCr7ZKmOHlSb&export=download&confirm=t' },
     ],
   },
+  'memory-night-kit': {
+    name: 'Christmas Memory Night Kit',
+    files: [
+      { label: 'Christmas Memory Night Kit (43 page PDF)', url: 'https://drive.usercontent.google.com/download?id=1JnJAN_dwhvSg2sbrQ6Rb7P_e6Juxxuwz&export=download&confirm=t', filename: 'Christmas_Memory_Night_Kit.pdf' },
+    ],
+  },
 };
 
 // Alias so new delivery emails can link /download/all-24-bundle;
@@ -234,7 +240,7 @@ export default function Download() {
   const { productId } = useParams<{ productId: string }>();
   const [searchParams] = useSearchParams();
   const [loading, setLoading] = useState(true);
-  const [product, setProduct] = useState<{ name: string; files: { label: string; url: string }[] } | null>(null);
+  const [product, setProduct] = useState<{ name: string; files: { label: string; url: string; filename?: string }[] } | null>(null);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -339,7 +345,7 @@ export default function Download() {
                   <span className="text-white font-medium">{file.label}</span>
                 </div>
                 <button
-                  onClick={() => handleDownload(file.url, `${file.label.replace(/\s+/g, '_')}.png`)}
+                  onClick={() => handleDownload(file.url, file.filename ?? `${file.label.replace(/\s+/g, '_')}.png`)}
                   className="px-4 py-2 rounded-lg bg-gradient-to-r from-green-500 to-emerald-600 text-white font-semibold text-sm hover:from-green-600 hover:to-emerald-700 transition-all flex items-center gap-2"
                 >
                   <DownloadIcon className="w-4 h-4" />

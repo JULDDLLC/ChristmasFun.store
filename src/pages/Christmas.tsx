@@ -779,6 +779,35 @@ function ChristmasContent() {
     },
   ];
 
+  const memoryKitProducts: Array<{
+    id: string;
+    type: 'memory_night_kit';
+    name: string;
+    description: string;
+    images: string[];
+    price: number;
+    priceId: string;
+  }> = [
+    {
+      id: 'memory_night_kit',
+      type: 'memory_night_kit',
+      name: 'Christmas Memory Night Kit',
+      description: 'Everything you need to host the Christmas night your family talks about all year, planned for you in one printable kit: a host guide that runs the whole evening, 6 coordinated games for every age at the table, 36 conversation cards in three levels, a 24 item photo scavenger hunt, 8 large print recipe cards, a 2026 family keepsake to fill in, save, and reopen next Christmas, plus 24 From Santa gift tags, a gift list and budget tracker, a My Letter to Santa page, and a Nice List Certificate. Personalize the host name and family name right in the PDF before you print.',
+      images: [
+        'https://drive.google.com/thumbnail?id=1dJgEuFlob2aT-Xgu84mWQi3qRypN0s55&sz=w1200',
+        'https://drive.google.com/thumbnail?id=1aP3h5M1ugh6kMomS41bxNbf5l34SOrWh&sz=w1200',
+        'https://drive.google.com/thumbnail?id=1ZMBp5QDdZTDeluq8mos4iBZZeEfcIFLW&sz=w1200',
+        'https://drive.google.com/thumbnail?id=1SyTDz2Gqrz40ACa9X8hBECHPvOUkF8s-&sz=w1200',
+        'https://drive.google.com/thumbnail?id=18vsyg-JLrw0NmXYsm6WLpmH_XTXFbIKm&sz=w1200',
+        'https://drive.google.com/thumbnail?id=1mjSSdMwQI-GOQT3L4vVaIkfih5xKRNBG&sz=w1200',
+        'https://drive.google.com/thumbnail?id=1Vsa6PJTwqazKR_X_XDfDQ447_LZC0VYu&sz=w1200',
+        'https://drive.google.com/thumbnail?id=1qknD9aoodS8xMPKEAzFvAp3g1tXIQNHE&sz=w1200',
+      ],
+      price: 14.99,
+      priceId: 'price_1UUU19Bsr66TjEhQPV367Jqt',
+    },
+  ];
+
   const faqs = [
     {
       question: 'How quickly will I receive my designs?',
@@ -950,6 +979,13 @@ function ChristmasContent() {
                 <span className="ml-1.5 rounded-full bg-amber-400 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-emerald-950">New</span>
               </a>
               <a
+                href="#memory-night"
+                className="text-green-200 hover:text-white transition-colors font-semibold border border-green-400/50 rounded-full px-4 py-1.5 bg-green-500/20 hover:bg-green-500/40"
+              >
+                Memory Night
+                <span className="ml-1.5 rounded-full bg-amber-400 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-green-950">New</span>
+              </a>
+              <a
                 href="#teachers"
                 className="text-white/90 hover:text-amber-300 transition-colors font-medium"
               >
@@ -984,6 +1020,13 @@ function ChristmasContent() {
               >
                 Personalized
                 <span className="ml-1.5 rounded-full bg-amber-400 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-emerald-950">New</span>
+              </a>
+              <a
+                href="#memory-night"
+                className="md:hidden text-green-200 font-semibold border border-green-400/50 rounded-full px-3 py-1.5 bg-green-500/20"
+              >
+                Memory Night
+                <span className="ml-1.5 rounded-full bg-amber-400 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-green-950">New</span>
               </a>
               <ChristmasCartButton onClick={() => setIsCartOpen(true)} />
             </div>
@@ -1081,9 +1124,9 @@ function ChristmasContent() {
         {/* NEW FOR 2026 COLLECTIONS BANNER */}
         <section className="container mx-auto px-6 pt-16 relative z-10">
           <p className="text-center text-amber-300 font-semibold uppercase tracking-[0.25em] text-sm mb-6">
-            New for 2026 — Three New Collections
+            New for 2026: Four New Collections
           </p>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
             <a
               href="#gothmas"
               className="block rounded-3xl border border-purple-400/30 bg-gradient-to-br from-purple-950/80 via-purple-900/60 to-slate-900/80 backdrop-blur-xl px-7 py-7 shadow-2xl shadow-purple-950/50 hover:border-purple-300/60 transition-colors"
@@ -1124,6 +1167,21 @@ function ChristmasContent() {
               </p>
               <span className="inline-block px-6 py-3 rounded-2xl bg-emerald-600/80 text-white font-semibold shadow-lg shadow-emerald-900/50">
                 Shop Personalized
+              </span>
+            </a>
+            <a
+              href="#memory-night"
+              className="block rounded-3xl border border-green-400/30 bg-gradient-to-br from-green-950/80 via-green-900/50 to-slate-900/80 backdrop-blur-xl px-7 py-7 shadow-2xl shadow-green-950/50 hover:border-green-300/60 transition-colors"
+            >
+              <Star className="w-9 h-9 text-amber-300 mb-4" />
+              <h3 className="text-2xl font-serif text-white mb-2">Christmas Memory Night Kit</h3>
+              <p className="text-green-100/70 text-sm leading-relaxed mb-5">
+                One hosted family night, fully planned for you: games for every age, conversation
+                cards that get Grandma and Grandpa's stories told, a photo scavenger hunt, recipes,
+                and a keepsake to reopen next Christmas.
+              </p>
+              <span className="inline-block px-6 py-3 rounded-2xl bg-green-600/80 text-white font-semibold shadow-lg shadow-green-900/50">
+                Shop Memory Night
               </span>
             </a>
           </div>
@@ -1809,6 +1867,88 @@ function ChristmasContent() {
           <div className="text-center mt-12">
             <p className="text-xl text-emerald-100/90">
               Every set is an instant download - type in the names, print at home, and hang them on the tree.
+            </p>
+          </div>
+        </section>
+
+
+        {/* MEMORY NIGHT KIT */}
+        <section id="memory-night" className="container mx-auto px-6 py-24">
+          <div className="text-center mb-16">
+            <p className="text-amber-300 font-semibold uppercase tracking-[0.25em] text-sm mb-4">
+              New for 2026
+            </p>
+            <div className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-gradient-to-r from-green-700/30 to-amber-600/30 backdrop-blur-xl border border-green-300/40 text-green-100 font-medium mb-6">
+              <Star className="w-5 h-5 text-amber-200" />
+              The Christmas Memory Night Kit
+            </div>
+            <h2 className="text-5xl md:text-6xl font-serif text-white mb-6">
+              Memory Night - Host a Night They Will Never Forget
+            </h2>
+            <p className="text-lg md:text-xl text-white/80 max-w-2xl mx-auto leading-relaxed">
+              Everything you need to host the Christmas night your family talks about all year, planned
+              for you in one printable kit. Deep green, classic red, and antique gold, made for
+              grandparents, grandkids, and everyone at the table.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {memoryKitProducts.map((product) => {
+              const inCart = isInCart(product.id);
+
+              return (
+                <div
+                  key={product.id}
+                  className="group relative overflow-hidden rounded-3xl bg-white/10 backdrop-blur-xl border border-white/20 shadow-2xl transition-all duration-500 hover:scale-105 hover:shadow-amber-500/30 lg:col-start-2"
+                >
+                  <div className="absolute inset-0 bg-gradient-to-br from-amber-500/20 via-transparent to-green-600/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                  <div className="relative p-6">
+                    <div className="aspect-[4/3] bg-gradient-to-br from-white/5 to-white/10 rounded-2xl mb-4 flex items-center justify-center overflow-hidden">
+                      <GothmasGallery images={product.images} name={product.name} />
+                    </div>
+                    <h3 className="text-xl font-serif text-white mb-2">{product.name}</h3>
+                    <p className="text-sm text-white/70 mb-3">{product.description}</p>
+                    <p className="text-lg font-bold text-white mb-3">${product.price.toFixed(2)}</p>
+                    <button
+                      onClick={() => {
+                        addToCart({
+                          id: product.id,
+                          type: product.type,
+                          name: product.name,
+                          description: product.description,
+                          image: product.images[0],
+                          price: product.price,
+                          priceId: product.priceId,
+                        });
+                      }}
+                      disabled={inCart}
+                      className={`w-full py-2 px-4 rounded-xl font-semibold transition-all duration-300 border border-amber-300/30 flex items-center justify-center gap-2 ${
+                        inCart
+                          ? 'bg-green-600/50 text-white cursor-default'
+                          : 'bg-gradient-to-r from-green-700 to-green-900 text-green-50 hover:from-green-800 hover:to-emerald-950'
+                      }`}
+                    >
+                      {inCart ? (
+                        <>
+                          <Check className="w-4 h-4" />
+                          In Cart
+                        </>
+                      ) : (
+                        <>
+                          <Plus className="w-4 h-4" />
+                          Add to Cart
+                        </>
+                      )}
+                    </button>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          <div className="text-center mt-12">
+            <p className="text-xl text-green-100/90">
+              One kit, one unforgettable night - an instant download you can print tonight and use again every year.
             </p>
           </div>
         </section>

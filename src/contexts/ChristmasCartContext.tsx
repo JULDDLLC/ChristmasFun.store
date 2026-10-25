@@ -2,7 +2,7 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 
 export interface ChristmasCartItem {
   id: string;
-  type: 'santa_letter' | 'christmas_note' | 'gothmas_ornaments' | 'gothmas_wall_art' | 'gothmas_cards' | 'gothmas_tags_wrap' | 'gothmas_countdown' | 'gothmas_collection' | 'nutcracker_wall_art' | 'nutcracker_coloring_wrap' | 'nutcracker_party_kit' | 'nutcracker_ornament' | 'nutcracker_cocoa_set' | 'nutcracker_collection' | 'personalized_engaged' | 'personalized_baby' | 'personalized_gingerbread' | 'personalized_year_review' | 'personalized_pet' | 'personalized_collection';
+  type: 'santa_letter' | 'christmas_note' | 'gothmas_ornaments' | 'gothmas_wall_art' | 'gothmas_cards' | 'gothmas_tags_wrap' | 'gothmas_countdown' | 'gothmas_collection' | 'nutcracker_wall_art' | 'nutcracker_coloring_wrap' | 'nutcracker_party_kit' | 'nutcracker_ornament' | 'nutcracker_cocoa_set' | 'nutcracker_collection' | 'personalized_engaged' | 'personalized_baby' | 'personalized_gingerbread' | 'personalized_year_review' | 'personalized_pet' | 'personalized_collection' | 'memory_night_kit' | 'all_18_bundle';
   designNumber?: number;
   noteNumber?: number;
   priceId?: string;
