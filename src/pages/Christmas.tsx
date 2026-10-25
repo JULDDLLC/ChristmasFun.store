@@ -46,7 +46,7 @@ const GothmasGallery = ({ images, name }: { images: string[]; name: string }) =>
   const chip = "flex items-center gap-2 rounded-full bg-zinc-900/95 border border-white/50 text-white shadow-lg transition-colors hover:bg-zinc-700";
 
   return (
-    <div className="relative w-full h-full bg-black/30">
+    <div className="relative w-full h-full bg-[#f3ecdd]">
       <img
         src={images[index]}
         alt={name}
@@ -89,10 +89,10 @@ const GothmasGallery = ({ images, name }: { images: string[]; name: string }) =>
         <Maximize2 className="w-4 h-4" />
       </button>
       {zoom && createPortal((
-        <div className="fixed inset-0 z-[120] bg-black/95 flex flex-col">
+        <div className="fixed inset-0 z-[120] bg-[#1d150e]/95 flex flex-col">
           <div className="flex items-center justify-between gap-3 px-4 py-3">
             <span className="rounded-full bg-zinc-900/95 border border-white/30 text-white/90 text-sm font-medium px-3 py-1.5 truncate">
-              {name} — {index + 1} / {total}
+              {name}: {index + 1} / {total}
             </span>
             <button
               type="button"
@@ -177,7 +177,7 @@ const DesignCard = ({
             src={image}
             alt={title}
             loading="lazy"
-            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+            className="w-full h-full object-contain transition-transform duration-500 group-hover:scale-110"
           />
         </div>
 
@@ -482,7 +482,7 @@ function ChristmasContent() {
       id: 'gothmas_ornaments',
       type: 'gothmas_ornaments',
       name: 'Ornament Design Bundle - Set of 12',
-      description: 'Print at home, cut to a circle, and add to a blank ornament — flat wood or ceramic blanks, or inside clear fillable ornaments. Twelve dark celestial designs: crescent moons, a raven, black roses, and a black cat with a gold bow.',
+      description: 'Print at home, cut to a circle, and add to a blank ornament (flat wood or ceramic blanks, or inside clear fillable ornaments). Twelve dark celestial designs: crescent moons, a raven, black roses, and a black cat with a gold bow.',
       images: [
         'https://drive.google.com/thumbnail?id=1QG1V39MOXJFIo7hPzS7fpREjd-2W8Pvv&sz=w1200',
         'https://drive.google.com/thumbnail?id=1iNNBrxzqcYMu6EplWg0EBxpvS41tOvjg&sz=w1200',
@@ -822,7 +822,7 @@ function ChristmasContent() {
     {
       question: 'How do I personalize an editable design?',
       answer:
-        'Right inside the PDF — no Canva account and no special software needed. Open the editable PDF in any free PDF reader (like Adobe Acrobat Reader, or the PDF viewer built into your web browser), click the name field, type your names or message, and print. Every editable listing also includes a filled sample so you can see the finished look, print-ready files, and a short instruction sheet.',
+        'Right inside the PDF, no Canva account and no special software needed. Open the editable PDF in any free PDF reader (like Adobe Acrobat Reader, or the PDF viewer built into your web browser), click the name field, type your names or message, and print. Every editable listing also includes a filled sample so you can see the finished look, print-ready files, and a short instruction sheet.',
     },
     {
       question: 'Can I use these in my classroom?',
@@ -952,6 +952,12 @@ function ChristmasContent() {
                 Free Coloring
               </a>
               <a
+                href="#teachers"
+                className="text-white/90 hover:text-amber-300 transition-colors font-medium"
+              >
+                Teachers
+              </a>
+              <a
                 href="#bundle"
                 className="text-white/90 hover:text-amber-300 transition-colors font-medium"
               >
@@ -986,12 +992,6 @@ function ChristmasContent() {
                 <span className="ml-1.5 rounded-full bg-amber-400 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-green-950">New</span>
               </a>
               <a
-                href="#teachers"
-                className="text-white/90 hover:text-amber-300 transition-colors font-medium"
-              >
-                Teachers
-              </a>
-              <a
                 href="#faq"
                 className="text-white/90 hover:text-amber-300 transition-colors font-medium"
               >
@@ -999,36 +999,83 @@ function ChristmasContent() {
               </a>
             </div>
 
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-4 shrink-0">
+              <ChristmasCartButton onClick={() => setIsCartOpen(true)} />
+            </div>
+          </div>
+
+          <div className="md:hidden mt-3 overflow-x-auto whitespace-nowrap">
+            <div className="flex items-center gap-2 w-max">
+              <a
+                href="#home"
+                className="inline-flex items-center shrink-0 text-white/90 font-medium border border-white/30 rounded-full px-3 py-1.5 bg-white/10"
+              >
+                Home
+              </a>
+              <a
+                href="#designs"
+                className="inline-flex items-center shrink-0 text-white/90 font-medium border border-white/30 rounded-full px-3 py-1.5 bg-white/10"
+              >
+                Santa Letters
+              </a>
+              <a
+                href="#christmas-notes"
+                className="inline-flex items-center shrink-0 text-white/90 font-medium border border-white/30 rounded-full px-3 py-1.5 bg-white/10"
+              >
+                Christmas Notes
+              </a>
+              <a
+                href="#adult-coloring"
+                className="inline-flex items-center shrink-0 text-white/90 font-medium border border-white/30 rounded-full px-3 py-1.5 bg-white/10"
+              >
+                Free Coloring
+              </a>
+              <a
+                href="#teachers"
+                className="inline-flex items-center shrink-0 text-white/90 font-medium border border-white/30 rounded-full px-3 py-1.5 bg-white/10"
+              >
+                Teachers
+              </a>
+              <a
+                href="#bundle"
+                className="inline-flex items-center shrink-0 text-white/90 font-medium border border-white/30 rounded-full px-3 py-1.5 bg-white/10"
+              >
+                Bundle
+              </a>
               <a
                 href="#gothmas"
-                className="md:hidden text-purple-200 font-semibold border border-purple-400/50 rounded-full px-3 py-1.5 bg-purple-500/20"
+                className="inline-flex items-center shrink-0 text-purple-200 font-semibold border border-purple-400/50 rounded-full px-3 py-1.5 bg-purple-500/20"
               >
                 Gothmas
                 <span className="ml-1.5 rounded-full bg-amber-400 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-purple-950">New</span>
               </a>
               <a
                 href="#nutcrackercore"
-                className="md:hidden text-red-200 font-semibold border border-red-400/50 rounded-full px-3 py-1.5 bg-red-500/20"
+                className="inline-flex items-center shrink-0 text-red-200 font-semibold border border-red-400/50 rounded-full px-3 py-1.5 bg-red-500/20"
               >
                 Nutcrackercore
                 <span className="ml-1.5 rounded-full bg-amber-400 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-red-950">New</span>
               </a>
               <a
                 href="#personalized"
-                className="md:hidden text-emerald-200 font-semibold border border-emerald-400/50 rounded-full px-3 py-1.5 bg-emerald-500/20"
+                className="inline-flex items-center shrink-0 text-emerald-200 font-semibold border border-emerald-400/50 rounded-full px-3 py-1.5 bg-emerald-500/20"
               >
                 Personalized
                 <span className="ml-1.5 rounded-full bg-amber-400 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-emerald-950">New</span>
               </a>
               <a
                 href="#memory-night"
-                className="md:hidden text-green-200 font-semibold border border-green-400/50 rounded-full px-3 py-1.5 bg-green-500/20"
+                className="inline-flex items-center shrink-0 text-green-200 font-semibold border border-green-400/50 rounded-full px-3 py-1.5 bg-green-500/20"
               >
                 Memory Night
                 <span className="ml-1.5 rounded-full bg-amber-400 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-green-950">New</span>
               </a>
-              <ChristmasCartButton onClick={() => setIsCartOpen(true)} />
+              <a
+                href="#faq"
+                className="inline-flex items-center shrink-0 text-white/90 font-medium border border-white/30 rounded-full px-3 py-1.5 bg-white/10"
+              >
+                FAQ
+              </a>
             </div>
           </div>
         </nav>
@@ -1103,7 +1150,7 @@ function ChristmasContent() {
                   <div className="absolute inset-0 bg-gradient-to-r from-transparent via-amber-300/30 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
                   <div className="relative flex items-center gap-3">
                     <Gift className="w-6 h-6 text-amber-300" />
-                    <span className="text-amber-100">Get the Full Bundle — $9.99</span>
+                    <span className="text-amber-100">Get the Full Bundle, $9.99</span>
                   </div>
                 </button>
 
@@ -1114,7 +1161,7 @@ function ChristmasContent() {
                   }}
                   className="px-10 py-5 rounded-2xl bg-white/10 backdrop-blur-xl border-2 border-amber-400/30 text-amber-100 text-xl font-semibold hover:bg-amber-900/30 transition-all duration-300 transform hover:scale-105"
                 >
-                  Browse Individual Letters — $0.99
+                  Browse Individual Letters, $0.99
                 </button>
               </div>
             </div>
@@ -1135,7 +1182,7 @@ function ChristmasContent() {
               <h3 className="text-2xl font-serif text-white mb-2">The Gothmas Collection</h3>
               <p className="text-purple-100/70 text-sm leading-relaxed mb-5">
                 Christmas, but darker: printable ornaments, gothic wall art, greeting cards,
-                gift tags and wrap, and a 25-day countdown — in black, burgundy, and gold.
+                gift tags and wrap, and a 25-day countdown, in black, burgundy, and gold.
               </p>
               <span className="inline-block px-6 py-3 rounded-2xl bg-purple-500/80 text-white font-semibold shadow-lg shadow-purple-900/50">
                 Shop Gothmas
@@ -1257,7 +1304,7 @@ function ChristmasContent() {
                         src={note.image}
                         alt={note.title}
                         loading="lazy"
-                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                        className="w-full h-full object-contain transition-transform duration-500 group-hover:scale-110"
                       />
                     </div>
                     <h3 className="text-xl font-serif text-white mb-2">{note.title}</h3>
@@ -1313,7 +1360,7 @@ function ChristmasContent() {
                 onClick={() => handleCheckout('notes_bundle_299')}
                 className="group relative px-8 py-3 rounded-xl bg-gradient-to-r from-red-600 to-red-700 text-amber-100 text-lg font-bold shadow-lg hover:shadow-red-500/50 transition-all duration-300 transform hover:scale-105 border-2 border-amber-400/40"
               >
-                <div className="relative flex items-center gap-2">Get All 4 Notes — $2.99</div>
+                <div className="relative flex items-center gap-2">Get All 4 Notes, $2.99</div>
               </button>
             </div>
           </div>
@@ -1373,7 +1420,7 @@ function ChristmasContent() {
                         src={sheet.file}
                         alt={sheet.title}
                         loading="lazy"
-                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                        className="w-full h-full object-contain transition-transform duration-500 group-hover:scale-110"
                       />
                     </div>
 
@@ -1529,7 +1576,7 @@ function ChristmasContent() {
                     className="w-full sm:w-auto px-8 py-4 rounded-2xl bg-gradient-to-r from-red-600 to-red-700 text-amber-100 text-xl font-bold shadow-lg hover:shadow-red-500/50 transition-all duration-300 transform hover:scale-105 flex items-center justify-center gap-3 border-2 border-amber-400/40"
                   >
                     <Download className="w-6 h-6 text-amber-300" />
-                    Add Teacher License — $4.99
+                    Add Teacher License, $4.99
                   </button>
                 </div>
               </div>
@@ -1603,7 +1650,7 @@ function ChristmasContent() {
             </h2>
             <p className="text-lg text-white/80 leading-relaxed mb-8">
               ChristmasFun.store is a small independent shop creating original printable
-              Christmas designs — Santa letters, stationery, wall art, greeting cards, and
+              Christmas designs: Santa letters, stationery, wall art, greeting cards, and
               more. Every design is made in-house, delivered instantly by email, and prints
               beautifully at home on standard paper.
             </p>
@@ -1625,8 +1672,8 @@ function ChristmasContent() {
               Questions about an order or a design? Write to{' '}
               <a href="mailto:ChristmasMagicDesigns@juldd.com" className="text-amber-300 hover:underline font-medium">
                 ChristmasMagicDesigns@juldd.com
-              </a>{' '}
-              — a real person reads every message.
+              </a>.{' '}
+              A real person reads every message.
             </p>
           </div>
         </section>
@@ -2002,6 +2049,59 @@ function ChristmasContent() {
             <p className="text-white/60 text-center">
               © 2026 JULDD. All rights reserved. Made with love for magical holidays.
             </p>
+            <div className="flex flex-wrap justify-center gap-x-6 gap-y-2">
+              <a href="#home" className="text-white/60 hover:text-white transition-colors">
+                Home
+              </a>
+              <a href="#designs" className="text-white/60 hover:text-white transition-colors">
+                Santa Letters
+              </a>
+              <a href="#christmas-notes" className="text-white/60 hover:text-white transition-colors">
+                Christmas Notes
+              </a>
+              <a href="#adult-coloring" className="text-white/60 hover:text-white transition-colors">
+                Free Coloring
+              </a>
+              <a href="#teachers" className="text-white/60 hover:text-white transition-colors">
+                Teachers
+              </a>
+              <a href="#bundle" className="text-white/60 hover:text-white transition-colors">
+                Bundle
+              </a>
+              <a href="#gothmas" className="text-white/60 hover:text-white transition-colors">
+                Gothmas
+              </a>
+              <a href="#nutcrackercore" className="text-white/60 hover:text-white transition-colors">
+                Nutcrackercore
+              </a>
+              <a href="#personalized" className="text-white/60 hover:text-white transition-colors">
+                Personalized
+              </a>
+              <a href="#memory-night" className="text-white/60 hover:text-white transition-colors">
+                Memory Night
+              </a>
+              <a href="#faq" className="text-white/60 hover:text-white transition-colors">
+                FAQ
+              </a>
+            </div>
+            <div className="flex gap-6">
+              <a
+                href="https://www.pinterest.com/christmasfunstore/"
+                target="_blank"
+                rel="noreferrer"
+                className="text-white/60 hover:text-white transition-colors"
+              >
+                Pinterest
+              </a>
+              <a
+                href="https://www.instagram.com/christmasfun.store"
+                target="_blank"
+                rel="noreferrer"
+                className="text-white/60 hover:text-white transition-colors"
+              >
+                Instagram
+              </a>
+            </div>
             <div className="flex gap-6">
               <a href="/privacy" className="text-white/60 hover:text-white transition-colors">
                 Privacy Policy

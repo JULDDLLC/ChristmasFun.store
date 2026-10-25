@@ -62,7 +62,7 @@ export default function Terms() {
                   <li>Digital downloads are delivered instantly upon payment confirmation</li>
                   <li>Files are provided in PDF format optimized for 8.5" x 11" printing</li>
                   <li>You are responsible for downloading and saving your files</li>
-                  <li>Download links do not expire — save your files after downloading</li>
+                  <li>Download links do not expire. Save your files after downloading</li>
                 </ul>
               </section>
 
