@@ -37,6 +37,7 @@ const PRODUCT_DOWNLOAD_MAP: Record<string, string> = {
   'personalized_year_review': 'https://christmasfun.store/download/personalized-year-review',
   'personalized_pet': 'https://christmasfun.store/download/personalized-pet',
   'personalized_collection': 'https://christmasfun.store/download/personalized-collection',
+  'memory_night_kit': 'https://christmasfun.store/download/memory-night-kit',
 };
 
 function getDownloadLinksFromProducts(products: Array<{ product_id: string }>): string[] {

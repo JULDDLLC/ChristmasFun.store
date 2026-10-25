@@ -1,0 +1,33 @@
+{
+  "projectId": "61173979",
+  "functions": {
+    "christmas-checkout": {
+      "hasChanged": false,
+      "hash": "fd595ccf17dcec9ac5586df6f42f8c55124ef0b8b4b0d562c58c35238ae2da25"
+    },
+    "christmas-multi-checkout": {
+      "hasChanged": false,
+      "hash": "1406de762d68860640d4c4ddb753d315c0d653da1b09f9889e0b3eb01669ff48"
+    },
+    "download-file": {
+      "hasChanged": false,
+      "hash": "cec025548382b7d42b2c832a647599ec96d7844ef5c130b14fd128959060b0e2"
+    },
+    "send-freebie-coloring": {
+      "hasChanged": false,
+      "hash": "75412f01857d4f5d10e4cc13adce8424fbcb88157c05258775cf27ffd3ce4fe8"
+    },
+    "send-order-email": {
+      "hasChanged": false,
+      "hash": "cfd7aacfa07cca760d7d7931612d19b9175644b492775ba6607d62f2b3e21081"
+    },
+    "stripe-checkout": {
+      "hasChanged": false,
+      "hash": "2275c90cdc95c3d1e28c0c24761c3e70a192424cda5aa1b5186f30f63b2a964b"
+    },
+    "stripe-webhook": {
+      "hasChanged": false,
+      "hash": "b95b56b0c174a823aa05ce49e29b47aa814e49cb3757391f685eecab841302aa"
+    }
+  }
+}
