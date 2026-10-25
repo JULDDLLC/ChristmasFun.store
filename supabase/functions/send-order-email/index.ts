@@ -40,6 +40,13 @@ const PRODUCT_DOWNLOAD_MAP: Record<string, string> = {
   'memory_night_kit': 'https://christmasfun.store/download/memory-night-kit',
 };
 
+// Customer facing display names for download links whose URL slug does not
+// match the product's full name. Keyed by the exact download URL.
+const DOWNLOAD_LINK_LABELS: Record<string, string> = {
+  'https://christmasfun.store/download/memory-night-kit': 'Christmas Memory Night Kit',
+  'https://christmasfun.store/download/all-24-bundle': 'Christmas Classics Bundle',
+};
+
 function getDownloadLinksFromProducts(products: Array<{ product_id: string }>): string[] {
   const links: string[] = [];
   for (const p of products) {
@@ -160,7 +167,7 @@ Deno.serve(async (req: Request) => {
 
     const itemButtonsHtml = downloadLinks
       .map((link, idx) => {
-        const label = prettyFilenameFromUrl(link);
+        const label = DOWNLOAD_LINK_LABELS[link] ?? prettyFilenameFromUrl(link);
         return `
           <tr>
             <td style="padding:10px 0;">

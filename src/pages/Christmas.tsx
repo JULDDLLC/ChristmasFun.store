@@ -628,11 +628,12 @@ function ChristmasContent() {
       description: 'Invitations with fill-in fields, tent place cards, a bunting banner that spells NUTCRACKER, food and drink labels, and thank-you cards.',
       images: [
         'https://drive.google.com/thumbnail?id=1qf4aHo6kazYBHqS67FlbF3yPjeGe6VhS&sz=w1200',
-        'https://drive.google.com/thumbnail?id=15mtJlzAXF3MDoE8m81886es3F4nSzbMd&sz=w1200',
-        'https://drive.google.com/thumbnail?id=1vBJZa5ZU2r59HkmzV8Ib2KM8WnnR3iUX&sz=w1200',
-        'https://drive.google.com/thumbnail?id=1NNaEMULZzSCw-C-nRJIP2cbl-ZGOGZwV&sz=w1200',
-        'https://drive.google.com/thumbnail?id=1PWpIZ_o6T33xloq2ZJhRuqokB4sbf2ac&sz=w1200',
-        'https://drive.google.com/thumbnail?id=1RSoKci_sCHb3_wJokb3fsi2wiNBDcqVN&sz=w1200',
+        'https://drive.google.com/thumbnail?id=1oVS1GbxG_upV-ofVYigvvxv0MoStwxSn&sz=w1200',
+        'https://drive.google.com/thumbnail?id=1n5TJk5Ldko7RyT11V0lqXDE4T8vn8zlA&sz=w1200',
+        'https://drive.google.com/thumbnail?id=1ulyWMFcboOzH69OAW8yOdovlSDfTrSSi&sz=w1200',
+        'https://drive.google.com/thumbnail?id=1ZfOrQVm-yzLGxOD1ABe16j8sNBAlJ4RH&sz=w1200',
+        'https://drive.google.com/thumbnail?id=1mrEX9o0UBDCIO9TFnqUYC4WDOpClw-yR&sz=w1200',
+        'https://drive.google.com/thumbnail?id=1Ekj7-iUIQiAa5gZBQoa--BvmBPgejcG1&sz=w1200',
       ],
       price: 4.99,
       priceId: 'price_1UPncCBsr66TjEhQUmAoiOba',
@@ -676,7 +677,7 @@ function ChristmasContent() {
         'https://drive.google.com/thumbnail?id=1jLm3CHM_fVMeBU5mw-SdkAg5u0YOQ0Bb&sz=w1200',
         'https://drive.google.com/thumbnail?id=1j2BqPZ87PolBHBDbB3CR8vr0Q6G6iujz&sz=w1200',
         'https://drive.google.com/thumbnail?id=1yU4pRKZuQRAER5PUEWnRFLOnS9iteOlr&sz=w1200',
-        'https://drive.google.com/thumbnail?id=1qf4aHo6kazYBHqS67FlbF3yPjeGe6VhS&sz=w1200',
+        'https://drive.google.com/thumbnail?id=1ulyWMFcboOzH69OAW8yOdovlSDfTrSSi&sz=w1200',
         'https://drive.google.com/thumbnail?id=1b0gcki67aIL61wbP8csPggeEdhIUm07J&sz=w1200',
         'https://drive.google.com/thumbnail?id=1JDGrIGdvs8BHfz-5dxjixvvPoqN7s0gx&sz=w1200',
       ],
@@ -820,7 +821,7 @@ function ChristmasContent() {
     {
       question: 'What format are the designs in?',
       answer:
-        'Free coloring sheets are provided as high-resolution PDF files. Santa Letters and Christmas Notes are PNG files. All designs are optimized for printing on standard 8.5" x 11" paper.',
+        'Free coloring sheets are provided as high-resolution JPG files. Santa Letters and Christmas Notes are PNG files. All designs are optimized for printing on standard 8.5" x 11" paper.',
     },
     {
       question: 'How do I personalize an editable design?',
@@ -2027,7 +2028,18 @@ function ChristmasContent() {
                   </button>
                   {expandedFaq === index && (
                     <div className="px-8 pb-6">
-                      <p className="text-white/70 leading-relaxed">{faq.answer}</p>
+                      <p className="text-white/70 leading-relaxed">
+                        {faq.answer.split('ChristmasMagicDesigns@juldd.com').map((part, i, arr) => (
+                          <span key={i}>
+                            {part}
+                            {i < arr.length - 1 && (
+                              <a href="mailto:ChristmasMagicDesigns@juldd.com" className="text-amber-400 hover:underline">
+                                ChristmasMagicDesigns@juldd.com
+                              </a>
+                            )}
+                          </span>
+                        ))}
+                      </p>
                     </div>
                   )}
                 </div>

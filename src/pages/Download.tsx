@@ -4,7 +4,7 @@ import { Download as DownloadIcon, Loader2, AlertCircle, Home, FileDown } from '
 
 // Design number -> delivery file for single Santa Letter purchases.
 // The delivery email links /download/santa-letter?design=N so each buyer gets the exact design they chose.
-const SANTA_LETTER_DESIGNS: Record<number, { label: string; url: string }> = {
+const SANTA_LETTER_DESIGNS: Record<number, { label: string; url: string; filename?: string }> = {
   1: { label: 'Design 1 - Vintage Storybook Santa', url: 'https://cdn1.site-media.eu/images/0/21587768/design1-Z3wu6c1nLAh3ACrbe46Gmg.png' },
   2: { label: 'Design 2 - Christmas Eve Heartside', url: 'https://cdn1.site-media.eu/images/0/21587759/design2-Xs-oos-r7fL_Gn4-yusolg.png' },
   3: { label: 'Design 3 - Snowy Cutie Santa', url: 'https://cdn1.site-media.eu/images/0/21587758/design3-rpLHL3OeUCdrIqzMr7wNYA.png' },
@@ -19,12 +19,12 @@ const SANTA_LETTER_DESIGNS: Record<number, { label: string; url: string }> = {
   12: { label: 'Design 12 - Comic Bold Glitter', url: 'https://cdn1.site-media.eu/images/0/21587761/design12-mVBhwMJJ1BEl0y8ocesZlQ.png' },
   13: { label: 'Design 13 - Roblox Inspired', url: 'https://cdn1.site-media.eu/images/0/21587363/DearSantaLetter7-hENBo0gX6c_LqXxJD56whQ.png' },
   14: { label: 'Design 14 - Traditional Glitter', url: 'https://cdn1.site-media.eu/images/0/21587399/DearSantaLetter3-PmrmOxSHQkpwG_jKh2M2vQ.png' },
-  15: { label: "Design 15 - Baby's First Christmas", url: 'https://drive.usercontent.google.com/download?id=1p3V8Nig-5vCpIlSWTdxEnbOT06GNYwtI&export=download&confirm=t' },
-  16: { label: 'Design 16 - Reindeer Games', url: 'https://drive.usercontent.google.com/download?id=1T4vmXr7kWTmSU7HyhJbE9a0r5MkHVDmD&export=download&confirm=t' },
-  17: { label: 'Design 17 - Julius & Gemma Christmas', url: 'https://drive.usercontent.google.com/download?id=1JIG8Mngh3tnFxR5vSUfrOxvK1t0JQkzB&export=download&confirm=t' },
-  18: { label: "Design 18 - Santa's Workshop", url: 'https://drive.usercontent.google.com/download?id=18m6YOCIXmn9eRKmDtZupmmfdKq_oqhV6&export=download&confirm=t' },
-  19: { label: 'Design 19 - North Pole Post Office', url: 'https://drive.usercontent.google.com/download?id=1XvyWZjitTDb2fMQgXW8xOwVhGM1RI-hb&export=download&confirm=t' },
-  20: { label: 'Design 20 - The Nice List', url: 'https://drive.usercontent.google.com/download?id=1PFUKgPVDhONlaUxsf8GROeyrZxTjtdPZ&export=download&confirm=t' },
+  15: { label: "Design 15 - Baby's First Christmas", url: 'https://drive.usercontent.google.com/download?id=1p3V8Nig-5vCpIlSWTdxEnbOT06GNYwtI&export=download&confirm=t', filename: 'Design_15_Babys_First_Christmas.png' },
+  16: { label: 'Design 16 - Reindeer Games', url: 'https://drive.usercontent.google.com/download?id=1T4vmXr7kWTmSU7HyhJbE9a0r5MkHVDmD&export=download&confirm=t', filename: 'Design_16_Reindeer_Games.png' },
+  17: { label: 'Design 17 - Julius & Gemma Christmas', url: 'https://drive.usercontent.google.com/download?id=1JIG8Mngh3tnFxR5vSUfrOxvK1t0JQkzB&export=download&confirm=t', filename: 'Design_17_Julius_Gemma_Christmas.png' },
+  18: { label: "Design 18 - Santa's Workshop", url: 'https://drive.usercontent.google.com/download?id=18m6YOCIXmn9eRKmDtZupmmfdKq_oqhV6&export=download&confirm=t', filename: 'Design_18_Santas_Workshop.png' },
+  19: { label: 'Design 19 - North Pole Post Office', url: 'https://drive.usercontent.google.com/download?id=1XvyWZjitTDb2fMQgXW8xOwVhGM1RI-hb&export=download&confirm=t', filename: 'Design_19_North_Pole_Post_Office.png' },
+  20: { label: 'Design 20 - The Nice List', url: 'https://drive.usercontent.google.com/download?id=1PFUKgPVDhONlaUxsf8GROeyrZxTjtdPZ&export=download&confirm=t', filename: 'Design_20_The_Nice_List.png' },
 };
 
 const PRODUCT_FILES: Record<string, { name: string; files: { label: string; url: string; filename?: string }[] }> = {
@@ -43,10 +43,10 @@ const PRODUCT_FILES: Record<string, { name: string; files: { label: string; url:
   'notes-bundle': {
     name: 'Christmas Notes Bundle',
     files: [
-      { label: 'Vintage Christmas Notes Lined', url: 'https://cdn1.site-media.eu/images/0/21587536/ChristmasNotes-RFAy0MOttbNqrOGEc3EkCg.png' },
-      { label: "Santa's Workshop Notes Lined", url: 'https://cdn1.site-media.eu/images/0/21587693/ChristmasNotes3-lined-J0xhPIRuUzj56rqkQCSn0A.png' },
-      { label: "Santa's Workshop Notes", url: 'https://cdn1.site-media.eu/images/0/21587575/ChristmasNotes3-KfzspG5RqPBYZ-u3jxt5tQ.png' },
-      { label: 'Vintage Christmas Notes', url: 'https://cdn1.site-media.eu/images/0/21587542/ChristmasNotes-blank-FeUDnrdQLKzZkZEYLgmt-A.png' },
+      { label: 'Christmas Note 1 - Vintage Lined', url: 'https://cdn1.site-media.eu/images/0/21587536/ChristmasNotes-RFAy0MOttbNqrOGEc3EkCg.png' },
+      { label: "Christmas Note 2 - Workshop Lined", url: 'https://cdn1.site-media.eu/images/0/21587693/ChristmasNotes3-lined-J0xhPIRuUzj56rqkQCSn0A.png' },
+      { label: "Christmas Note 3 - Workshop Blank", url: 'https://cdn1.site-media.eu/images/0/21587575/ChristmasNotes3-KfzspG5RqPBYZ-u3jxt5tQ.png' },
+      { label: 'Christmas Note 4 - Vintage Blank', url: 'https://cdn1.site-media.eu/images/0/21587542/ChristmasNotes-blank-FeUDnrdQLKzZkZEYLgmt-A.png' },
     ],
   },
   'all-18-bundle': {
@@ -66,12 +66,12 @@ const PRODUCT_FILES: Record<string, { name: string; files: { label: string; url:
       { label: 'Design 12 - Comic Bold Glitter', url: 'https://cdn1.site-media.eu/images/0/21587761/design12-mVBhwMJJ1BEl0y8ocesZlQ.png' },
       { label: 'Design 13 - Roblox Inspired', url: 'https://cdn1.site-media.eu/images/0/21587363/DearSantaLetter7-hENBo0gX6c_LqXxJD56whQ.png' },
       { label: 'Design 14 - Traditional Glitter', url: 'https://cdn1.site-media.eu/images/0/21587399/DearSantaLetter3-PmrmOxSHQkpwG_jKh2M2vQ.png' },
-      { label: "Design 15 - Baby's First Christmas", url: 'https://drive.usercontent.google.com/download?id=1p3V8Nig-5vCpIlSWTdxEnbOT06GNYwtI&export=download&confirm=t' },
-      { label: 'Design 16 - Reindeer Games', url: 'https://drive.usercontent.google.com/download?id=1T4vmXr7kWTmSU7HyhJbE9a0r5MkHVDmD&export=download&confirm=t' },
-      { label: 'Design 17 - Julius & Gemma Christmas', url: 'https://drive.usercontent.google.com/download?id=1JIG8Mngh3tnFxR5vSUfrOxvK1t0JQkzB&export=download&confirm=t' },
-      { label: "Design 18 - Santa's Workshop", url: 'https://drive.usercontent.google.com/download?id=18m6YOCIXmn9eRKmDtZupmmfdKq_oqhV6&export=download&confirm=t' },
-      { label: 'Design 19 - North Pole Post Office', url: 'https://drive.usercontent.google.com/download?id=1XvyWZjitTDb2fMQgXW8xOwVhGM1RI-hb&export=download&confirm=t' },
-      { label: 'Design 20 - The Nice List', url: 'https://drive.usercontent.google.com/download?id=1PFUKgPVDhONlaUxsf8GROeyrZxTjtdPZ&export=download&confirm=t' },
+      { label: "Design 15 - Baby's First Christmas", url: 'https://drive.usercontent.google.com/download?id=1p3V8Nig-5vCpIlSWTdxEnbOT06GNYwtI&export=download&confirm=t', filename: 'Design_15_Babys_First_Christmas.png' },
+      { label: 'Design 16 - Reindeer Games', url: 'https://drive.usercontent.google.com/download?id=1T4vmXr7kWTmSU7HyhJbE9a0r5MkHVDmD&export=download&confirm=t', filename: 'Design_16_Reindeer_Games.png' },
+      { label: 'Design 17 - Julius & Gemma Christmas', url: 'https://drive.usercontent.google.com/download?id=1JIG8Mngh3tnFxR5vSUfrOxvK1t0JQkzB&export=download&confirm=t', filename: 'Design_17_Julius_Gemma_Christmas.png' },
+      { label: "Design 18 - Santa's Workshop", url: 'https://drive.usercontent.google.com/download?id=18m6YOCIXmn9eRKmDtZupmmfdKq_oqhV6&export=download&confirm=t', filename: 'Design_18_Santas_Workshop.png' },
+      { label: 'Design 19 - North Pole Post Office', url: 'https://drive.usercontent.google.com/download?id=1XvyWZjitTDb2fMQgXW8xOwVhGM1RI-hb&export=download&confirm=t', filename: 'Design_19_North_Pole_Post_Office.png' },
+      { label: 'Design 20 - The Nice List', url: 'https://drive.usercontent.google.com/download?id=1PFUKgPVDhONlaUxsf8GROeyrZxTjtdPZ&export=download&confirm=t', filename: 'Design_20_The_Nice_List.png' },
       { label: 'Christmas Note 1 - Vintage Lined', url: 'https://cdn1.site-media.eu/images/0/21587536/ChristmasNotes-RFAy0MOttbNqrOGEc3EkCg.png' },
       { label: 'Christmas Note 2 - Workshop Lined', url: 'https://cdn1.site-media.eu/images/0/21587693/ChristmasNotes3-lined-J0xhPIRuUzj56rqkQCSn0A.png' },
       { label: 'Christmas Note 3 - Workshop Blank', url: 'https://cdn1.site-media.eu/images/0/21587575/ChristmasNotes3-KfzspG5RqPBYZ-u3jxt5tQ.png' },
@@ -81,9 +81,9 @@ const PRODUCT_FILES: Record<string, { name: string; files: { label: string; url:
   'teacher-license': {
     name: 'Teacher License Bundle',
     files: [
-      { label: 'Teacher License Certificate', url: 'https://drive.usercontent.google.com/download?id=1MQHqg4IIky2j76Ek_QQIrjsh8XBrmht7&export=download&confirm=t' },
-      { label: 'All 20 Santa Letters (ZIP)', url: 'https://drive.usercontent.google.com/download?id=1JfbO-XueNfgCxRpuMEGbP_Yqu4yOBQZy&export=download&confirm=t' },
-      { label: 'All 4 Christmas Notes (ZIP)', url: 'https://drive.usercontent.google.com/download?id=1Jd0BQ44nMipVxyE0Ol8JwdHyRUUWtf0b&export=download&confirm=t' },
+      { label: 'Teacher License Certificate', url: 'https://drive.usercontent.google.com/download?id=1MQHqg4IIky2j76Ek_QQIrjsh8XBrmht7&export=download&confirm=t', filename: 'Teacher_License_Certificate.pdf' },
+      { label: 'All 20 Santa Letters (ZIP)', url: 'https://drive.usercontent.google.com/download?id=1JfbO-XueNfgCxRpuMEGbP_Yqu4yOBQZy&export=download&confirm=t', filename: 'All_20_Santa_Letters.zip' },
+      { label: 'All 4 Christmas Notes (ZIP)', url: 'https://drive.usercontent.google.com/download?id=1Jd0BQ44nMipVxyE0Ol8JwdHyRUUWtf0b&export=download&confirm=t', filename: 'All_4_Christmas_Notes.zip' },
     ],
   },
   'free-coloring': {
@@ -104,124 +104,124 @@ const PRODUCT_FILES: Record<string, { name: string; files: { label: string; url:
   'gothmas-ornaments': {
     name: 'Gothmas Ornament Design Bundle',
     files: [
-      { label: 'Ornament Bundle - All 12 Designs (ZIP)', url: 'https://drive.usercontent.google.com/download?id=1aWTGythNTTfSV0FRSAzZMYvfDj08psSC&export=download&confirm=t' },
+      { label: 'Ornament Bundle - All 12 Designs (ZIP)', url: 'https://drive.usercontent.google.com/download?id=1aWTGythNTTfSV0FRSAzZMYvfDj08psSC&export=download&confirm=t', filename: 'Ornament_Bundle_All_12_Designs.zip' },
     ],
   },
   'gothmas-wall-art': {
     name: 'Gothic Winter Wall Art Set of 3',
     files: [
-      { label: 'Wall Art Set - 3 Prints in 3 Sizes (ZIP)', url: 'https://drive.usercontent.google.com/download?id=18gpGToDyGOpoQDME47DzFDsr-yMWs-Cq&export=download&confirm=t' },
+      { label: 'Wall Art Set - 3 Prints in 3 Sizes (ZIP)', url: 'https://drive.usercontent.google.com/download?id=18gpGToDyGOpoQDME47DzFDsr-yMWs-Cq&export=download&confirm=t', filename: 'Wall_Art_Set_3_Prints_in_3_Sizes.zip' },
     ],
   },
   'gothmas-cards': {
     name: 'Gothmas Greeting Cards - Set of 6',
     files: [
-      { label: 'Greeting Cards - Print PDF + Card Fronts (ZIP)', url: 'https://drive.usercontent.google.com/download?id=1aetP27-cVha99vzvkX1zAtfHv29qG373&export=download&confirm=t' },
+      { label: 'Greeting Cards - Print PDF + Card Fronts (ZIP)', url: 'https://drive.usercontent.google.com/download?id=1aetP27-cVha99vzvkX1zAtfHv29qG373&export=download&confirm=t', filename: 'Greeting_Cards_Print_PDF_Card_Fronts.zip' },
     ],
   },
   'gothmas-tags-wrap': {
     name: 'Raven and Rose Gift Tags and Wrap Sheets',
     files: [
-      { label: 'Gift Tags + Wrap Sheets (ZIP)', url: 'https://drive.usercontent.google.com/download?id=1-ckWD7FuhuUVlpD_mTrLGXzcYkHJSKAE&export=download&confirm=t' },
+      { label: 'Gift Tags + Wrap Sheets (ZIP)', url: 'https://drive.usercontent.google.com/download?id=1-ckWD7FuhuUVlpD_mTrLGXzcYkHJSKAE&export=download&confirm=t', filename: 'Gift_Tags_Wrap_Sheets.zip' },
     ],
   },
   'gothmas-countdown': {
     name: 'Gothmas Countdown - 25 Advent Calendar Cards',
     files: [
-      { label: 'Countdown Cards - Both Sizes (ZIP)', url: 'https://drive.usercontent.google.com/download?id=1VfJmLLEfN_RT1iKdtW5J0OdPHsSM75Tm&export=download&confirm=t' },
+      { label: 'Countdown Cards - Both Sizes (ZIP)', url: 'https://drive.usercontent.google.com/download?id=1VfJmLLEfN_RT1iKdtW5J0OdPHsSM75Tm&export=download&confirm=t', filename: 'Countdown_Cards_Both_Sizes.zip' },
     ],
   },
   'gothmas-collection': {
     name: 'Gothmas Collection - All 5 Sets',
     files: [
-      { label: 'Complete Collection - Everything (ZIP)', url: 'https://drive.usercontent.google.com/download?id=1hI1oZ_hEaZ9y6DEn3ZHEhKfDT-hkT0Dv&export=download&confirm=t' },
-      { label: 'Ornament Bundle (ZIP)', url: 'https://drive.usercontent.google.com/download?id=1aWTGythNTTfSV0FRSAzZMYvfDj08psSC&export=download&confirm=t' },
-      { label: 'Wall Art Set (ZIP)', url: 'https://drive.usercontent.google.com/download?id=18gpGToDyGOpoQDME47DzFDsr-yMWs-Cq&export=download&confirm=t' },
-      { label: 'Greeting Cards (ZIP)', url: 'https://drive.usercontent.google.com/download?id=1aetP27-cVha99vzvkX1zAtfHv29qG373&export=download&confirm=t' },
-      { label: 'Gift Tags and Wrap (ZIP)', url: 'https://drive.usercontent.google.com/download?id=1-ckWD7FuhuUVlpD_mTrLGXzcYkHJSKAE&export=download&confirm=t' },
-      { label: 'Countdown Cards (ZIP)', url: 'https://drive.usercontent.google.com/download?id=1VfJmLLEfN_RT1iKdtW5J0OdPHsSM75Tm&export=download&confirm=t' },
+      { label: 'Complete Collection - Everything (ZIP)', url: 'https://drive.usercontent.google.com/download?id=1hI1oZ_hEaZ9y6DEn3ZHEhKfDT-hkT0Dv&export=download&confirm=t', filename: 'Complete_Collection_Everything.zip' },
+      { label: 'Ornament Bundle (ZIP)', url: 'https://drive.usercontent.google.com/download?id=1aWTGythNTTfSV0FRSAzZMYvfDj08psSC&export=download&confirm=t', filename: 'Ornament_Bundle.zip' },
+      { label: 'Wall Art Set (ZIP)', url: 'https://drive.usercontent.google.com/download?id=18gpGToDyGOpoQDME47DzFDsr-yMWs-Cq&export=download&confirm=t', filename: 'Wall_Art_Set.zip' },
+      { label: 'Greeting Cards (ZIP)', url: 'https://drive.usercontent.google.com/download?id=1aetP27-cVha99vzvkX1zAtfHv29qG373&export=download&confirm=t', filename: 'Greeting_Cards.zip' },
+      { label: 'Gift Tags and Wrap (ZIP)', url: 'https://drive.usercontent.google.com/download?id=1-ckWD7FuhuUVlpD_mTrLGXzcYkHJSKAE&export=download&confirm=t', filename: 'Gift_Tags_and_Wrap.zip' },
+      { label: 'Countdown Cards (ZIP)', url: 'https://drive.usercontent.google.com/download?id=1VfJmLLEfN_RT1iKdtW5J0OdPHsSM75Tm&export=download&confirm=t', filename: 'Countdown_Cards.zip' },
     ],
   },
   'nutcracker-wall-art': {
     name: 'Nutcracker Wall Art Bundle - Set of 8',
     files: [
-      { label: 'Wall Art Bundle - 8 Prints in 3 Sizes (ZIP)', url: 'https://drive.usercontent.google.com/download?id=12lOyeyKb6Uqyl7ESCcc3dvJRBZQYucIs&export=download&confirm=t' },
+      { label: 'Wall Art Bundle - 8 Prints in 3 Sizes (ZIP)', url: 'https://drive.usercontent.google.com/download?id=12lOyeyKb6Uqyl7ESCcc3dvJRBZQYucIs&export=download&confirm=t', filename: 'Wall_Art_Bundle_8_Prints_in_3_Sizes.zip' },
     ],
   },
   'nutcracker-coloring': {
     name: 'Color-Your-Own Nutcracker Wrap & Poster',
     files: [
-      { label: 'Coloring Wrap & Poster - All Scales (ZIP)', url: 'https://drive.usercontent.google.com/download?id=1F3OfBojKcOO73trjKS4D98bhPG6XhTWz&export=download&confirm=t' },
+      { label: 'Coloring Wrap & Poster - All Scales (ZIP)', url: 'https://drive.usercontent.google.com/download?id=1F3OfBojKcOO73trjKS4D98bhPG6XhTWz&export=download&confirm=t', filename: 'Coloring_Wrap_Poster_All_Scales.zip' },
     ],
   },
   'nutcracker-party': {
     name: 'Nutcracker Party Printable Kit',
     files: [
-      { label: 'Party Kit - Invitations, Place Cards, Banner, Labels, Thank-You Cards (ZIP)', url: 'https://drive.usercontent.google.com/download?id=15PTiK8ywytjxl45lF-0BXTMO9bP4sAtH&export=download&confirm=t' },
+      { label: 'Party Kit - Invitations, Place Cards, Banner, Labels, Thank-You Cards (ZIP)', url: 'https://drive.usercontent.google.com/download?id=15PTiK8ywytjxl45lF-0BXTMO9bP4sAtH&export=download&confirm=t', filename: 'Party_Kit_Invitations_Place_Cards_Banner_Labels_Thank_You_Cards.zip' },
     ],
   },
   'nutcracker-ornament': {
     name: 'Personalized Nutcracker Ornament',
     files: [
-      { label: 'Personalized Ornament - 3 Colorways, Editable + Print (ZIP)', url: 'https://drive.usercontent.google.com/download?id=1z1o7OhH6-9HCNBh7FxrDnz2zRE07YWaR&export=download&confirm=t' },
+      { label: 'Personalized Ornament - 3 Colorways, Editable + Print (ZIP)', url: 'https://drive.usercontent.google.com/download?id=1z1o7OhH6-9HCNBh7FxrDnz2zRE07YWaR&export=download&confirm=t', filename: 'Personalized_Ornament_3_Colorways_Editable_Print.zip' },
     ],
   },
   'nutcracker-cocoa': {
     name: 'Sugar Plum Cocoa Bar & Recipe Cards',
     files: [
-      { label: 'Cocoa Bar Set - Sign, Labels, Recipe Cards (ZIP)', url: 'https://drive.usercontent.google.com/download?id=1aL_WJXhWOcXZH52yq0PSissYkjjgvurp&export=download&confirm=t' },
+      { label: 'Cocoa Bar Set - Sign, Labels, Recipe Cards (ZIP)', url: 'https://drive.usercontent.google.com/download?id=1aL_WJXhWOcXZH52yq0PSissYkjjgvurp&export=download&confirm=t', filename: 'Cocoa_Bar_Set_Sign_Labels_Recipe_Cards.zip' },
     ],
   },
   'nutcracker-collection': {
     name: 'Nutcrackercore - The Full Collection',
     files: [
-      { label: 'Complete Collection - Everything (ZIP)', url: 'https://drive.usercontent.google.com/download?id=1KBgmrFLrH4lPX0Jt1umtGyZpHAFFZcHX&export=download&confirm=t' },
-      { label: 'Wall Art Bundle (ZIP)', url: 'https://drive.usercontent.google.com/download?id=12lOyeyKb6Uqyl7ESCcc3dvJRBZQYucIs&export=download&confirm=t' },
-      { label: 'Coloring Wrap & Poster (ZIP)', url: 'https://drive.usercontent.google.com/download?id=1F3OfBojKcOO73trjKS4D98bhPG6XhTWz&export=download&confirm=t' },
-      { label: 'Party Printable Kit (ZIP)', url: 'https://drive.usercontent.google.com/download?id=15PTiK8ywytjxl45lF-0BXTMO9bP4sAtH&export=download&confirm=t' },
-      { label: 'Personalized Ornament (ZIP)', url: 'https://drive.usercontent.google.com/download?id=1z1o7OhH6-9HCNBh7FxrDnz2zRE07YWaR&export=download&confirm=t' },
-      { label: 'Cocoa Bar Set (ZIP)', url: 'https://drive.usercontent.google.com/download?id=1aL_WJXhWOcXZH52yq0PSissYkjjgvurp&export=download&confirm=t' },
+      { label: 'Complete Collection - Everything (ZIP)', url: 'https://drive.usercontent.google.com/download?id=1KBgmrFLrH4lPX0Jt1umtGyZpHAFFZcHX&export=download&confirm=t', filename: 'Complete_Collection_Everything.zip' },
+      { label: 'Wall Art Bundle (ZIP)', url: 'https://drive.usercontent.google.com/download?id=12lOyeyKb6Uqyl7ESCcc3dvJRBZQYucIs&export=download&confirm=t', filename: 'Wall_Art_Bundle.zip' },
+      { label: 'Coloring Wrap & Poster (ZIP)', url: 'https://drive.usercontent.google.com/download?id=1F3OfBojKcOO73trjKS4D98bhPG6XhTWz&export=download&confirm=t', filename: 'Coloring_Wrap_Poster.zip' },
+      { label: 'Party Printable Kit (ZIP)', url: 'https://drive.usercontent.google.com/download?id=15PTiK8ywytjxl45lF-0BXTMO9bP4sAtH&export=download&confirm=t', filename: 'Party_Printable_Kit.zip' },
+      { label: 'Personalized Ornament (ZIP)', url: 'https://drive.usercontent.google.com/download?id=1z1o7OhH6-9HCNBh7FxrDnz2zRE07YWaR&export=download&confirm=t', filename: 'Personalized_Ornament.zip' },
+      { label: 'Cocoa Bar Set (ZIP)', url: 'https://drive.usercontent.google.com/download?id=1aL_WJXhWOcXZH52yq0PSissYkjjgvurp&export=download&confirm=t', filename: 'Cocoa_Bar_Set.zip' },
     ],
   },
   'personalized-engaged': {
     name: 'Our First Christmas Engaged - Editable Ornament',
     files: [
-      { label: 'Engaged Ornament - Editable + Print PDFs and PNG (ZIP)', url: 'https://drive.usercontent.google.com/download?id=1NnDyDQ0AYhdGp6Ch_ozloQB-ho58l_TT&export=download&confirm=t' },
+      { label: 'Engaged Ornament - Editable + Print PDFs and PNG (ZIP)', url: 'https://drive.usercontent.google.com/download?id=1NnDyDQ0AYhdGp6Ch_ozloQB-ho58l_TT&export=download&confirm=t', filename: 'Engaged_Ornament_Editable_Print_PDFs_and_PNG.zip' },
     ],
   },
   'personalized-baby': {
     name: "Baby's First Christmas 2026 - Editable Photo Ornament",
     files: [
-      { label: 'Photo Ornament - 3 Colorways, Editable + Print PDFs, PNGs, Instructions (ZIP)', url: 'https://drive.usercontent.google.com/download?id=1_C5clcmpEfUUOdFtNe9aH_HkzH-MXp8f&export=download&confirm=t' },
+      { label: 'Photo Ornament - 3 Colorways, Editable + Print PDFs, PNGs, Instructions (ZIP)', url: 'https://drive.usercontent.google.com/download?id=1_C5clcmpEfUUOdFtNe9aH_HkzH-MXp8f&export=download&confirm=t', filename: 'Photo_Ornament_3_Colorways_Editable_Print_PDFs_PNGs_Instructions.zip' },
     ],
   },
   'personalized-gingerbread': {
     name: 'Gingerbread Name Ornaments and Stocking Tags - Editable Set',
     files: [
-      { label: 'Gingerbread Tags - Editable, Blank and Print Sheets + Tag and Figure PNGs (ZIP)', url: 'https://drive.usercontent.google.com/download?id=1JZxxu1xJ5ddk_sPh07_YD-rdWdFWdr4J&export=download&confirm=t' },
+      { label: 'Gingerbread Tags - Editable, Blank and Print Sheets + Tag and Figure PNGs (ZIP)', url: 'https://drive.usercontent.google.com/download?id=1JZxxu1xJ5ddk_sPh07_YD-rdWdFWdr4J&export=download&confirm=t', filename: 'Gingerbread_Tags_Editable_Blank_and_Print_Sheets_Tag_and_Figure_PNGs.zip' },
     ],
   },
   'personalized-year-review': {
     name: 'The 2026 Year in Review - Keepsake Ornament Card',
     files: [
-      { label: 'Year in Review Card - Editable + Print PDFs and PNG (ZIP)', url: 'https://drive.usercontent.google.com/download?id=1mfy27dMMqzucXKiUtjEvp4aFQQyHpMlv&export=download&confirm=t' },
+      { label: 'Year in Review Card - Editable + Print PDFs and PNG (ZIP)', url: 'https://drive.usercontent.google.com/download?id=1mfy27dMMqzucXKiUtjEvp4aFQQyHpMlv&export=download&confirm=t', filename: 'Year_in_Review_Card_Editable_Print_PDFs_and_PNG.zip' },
     ],
   },
   'personalized-pet': {
     name: "Pet's First Christmas - Editable Photo Ornament",
     files: [
-      { label: 'Pet Photo Ornaments - Puppy and Kitten Editable + Print PDFs, PNGs, Instructions (ZIP)', url: 'https://drive.usercontent.google.com/download?id=1Z-TeNOVBLXMHWHqIGL_GGCr7ZKmOHlSb&export=download&confirm=t' },
+      { label: 'Pet Photo Ornaments - Puppy and Kitten Editable + Print PDFs, PNGs, Instructions (ZIP)', url: 'https://drive.usercontent.google.com/download?id=1Z-TeNOVBLXMHWHqIGL_GGCr7ZKmOHlSb&export=download&confirm=t', filename: 'Pet_Photo_Ornaments_Puppy_and_Kitten_Editable_Print_PDFs_PNGs_Instructions.zip' },
     ],
   },
   'personalized-collection': {
     name: 'Personalized Ornaments - The Full Collection',
     files: [
-      { label: 'Complete Collection - Everything (ZIP)', url: 'https://drive.usercontent.google.com/download?id=1J_YNvqfzrwmOD5izAx2r2ow-u2Xl7k9Z&export=download&confirm=t' },
-      { label: 'Engaged Ornament (ZIP)', url: 'https://drive.usercontent.google.com/download?id=1NnDyDQ0AYhdGp6Ch_ozloQB-ho58l_TT&export=download&confirm=t' },
-      { label: "Baby's First Christmas (ZIP)", url: 'https://drive.usercontent.google.com/download?id=1_C5clcmpEfUUOdFtNe9aH_HkzH-MXp8f&export=download&confirm=t' },
-      { label: 'Gingerbread Tags (ZIP)', url: 'https://drive.usercontent.google.com/download?id=1JZxxu1xJ5ddk_sPh07_YD-rdWdFWdr4J&export=download&confirm=t' },
-      { label: 'Year in Review (ZIP)', url: 'https://drive.usercontent.google.com/download?id=1mfy27dMMqzucXKiUtjEvp4aFQQyHpMlv&export=download&confirm=t' },
-      { label: "Pet's First Christmas (ZIP)", url: 'https://drive.usercontent.google.com/download?id=1Z-TeNOVBLXMHWHqIGL_GGCr7ZKmOHlSb&export=download&confirm=t' },
+      { label: 'Complete Collection - Everything (ZIP)', url: 'https://drive.usercontent.google.com/download?id=1J_YNvqfzrwmOD5izAx2r2ow-u2Xl7k9Z&export=download&confirm=t', filename: 'Complete_Collection_Everything.zip' },
+      { label: 'Engaged Ornament (ZIP)', url: 'https://drive.usercontent.google.com/download?id=1NnDyDQ0AYhdGp6Ch_ozloQB-ho58l_TT&export=download&confirm=t', filename: 'Engaged_Ornament.zip' },
+      { label: "Baby's First Christmas (ZIP)", url: 'https://drive.usercontent.google.com/download?id=1_C5clcmpEfUUOdFtNe9aH_HkzH-MXp8f&export=download&confirm=t', filename: 'Babys_First_Christmas.zip' },
+      { label: 'Gingerbread Tags (ZIP)', url: 'https://drive.usercontent.google.com/download?id=1JZxxu1xJ5ddk_sPh07_YD-rdWdFWdr4J&export=download&confirm=t', filename: 'Gingerbread_Tags.zip' },
+      { label: 'Year in Review (ZIP)', url: 'https://drive.usercontent.google.com/download?id=1mfy27dMMqzucXKiUtjEvp4aFQQyHpMlv&export=download&confirm=t', filename: 'Year_in_Review.zip' },
+      { label: "Pet's First Christmas (ZIP)", url: 'https://drive.usercontent.google.com/download?id=1Z-TeNOVBLXMHWHqIGL_GGCr7ZKmOHlSb&export=download&confirm=t', filename: 'Pets_First_Christmas.zip' },
     ],
   },
   'memory-night-kit': {
@@ -235,6 +235,12 @@ const PRODUCT_FILES: Record<string, { name: string; files: { label: string; url:
 // Alias so new delivery emails can link /download/all-24-bundle;
 // old /download/all-18-bundle links keep working.
 PRODUCT_FILES['all-24-bundle'] = PRODUCT_FILES['all-18-bundle'];
+
+function defaultFilename(label: string, url: string): string {
+  const base = label.replace(/\s+\((ZIP|43 page PDF)\)\s*$/, '').replace(/'/g, '').replace(/[^A-Za-z0-9]+/g, '_').replace(/^_+|_+$/g, '');
+  const m = url.match(/\.(png|jpe?g|pdf)(?:$|\?)/i);
+  return `${base}.${m ? m[1].toLowerCase().replace('jpeg', 'jpg') : 'png'}`;
+}
 
 export default function Download() {
   const { productId } = useParams<{ productId: string }>();
@@ -252,7 +258,7 @@ export default function Download() {
           const n = parseInt(searchParams.get('design') || '1', 10);
           const chosen = SANTA_LETTER_DESIGNS[n];
           if (chosen) {
-            entry = { name: `Santa Letter - ${chosen.label}`, files: [{ label: chosen.label, url: chosen.url }] };
+            entry = { name: `Santa Letter - ${chosen.label}`, files: [{ label: chosen.label, url: chosen.url, filename: chosen.filename ?? defaultFilename(chosen.label, chosen.url) }] };
           }
         }
         setProduct(entry);
@@ -345,7 +351,7 @@ export default function Download() {
                   <span className="text-white font-medium">{file.label}</span>
                 </div>
                 <button
-                  onClick={() => handleDownload(file.url, file.filename ?? `${file.label.replace(/\s+/g, '_')}.png`)}
+                  onClick={() => handleDownload(file.url, file.filename ?? defaultFilename(file.label, file.url))}
                   className="px-4 py-2 rounded-lg bg-gradient-to-r from-green-500 to-emerald-600 text-white font-semibold text-sm hover:from-green-600 hover:to-emerald-700 transition-all flex items-center gap-2"
                 >
                   <DownloadIcon className="w-4 h-4" />
