@@ -482,7 +482,7 @@ function ChristmasContent() {
       id: 'gothmas_ornaments',
       type: 'gothmas_ornaments',
       name: 'Ornament Design Bundle - Set of 12',
-      description: 'Print at home, cut to a circle, and add to a blank ornament (flat wood or ceramic blanks, or inside clear fillable ornaments). Twelve dark celestial designs: crescent moons, a raven, black roses, and a black cat with a gold bow.',
+      description: 'Supplied as full square art with each ornament pictured whole, cap and ring included, ready to place inside your own round template or frame, or display in a blank ornament (flat wood or ceramic blanks, or inside clear fillable ornaments). Twelve dark celestial designs: crescent moons, a raven, black roses, and a black cat with a gold bow.',
       images: [
         'https://drive.google.com/thumbnail?id=1QG1V39MOXJFIo7hPzS7fpREjd-2W8Pvv&sz=w1200',
         'https://drive.google.com/thumbnail?id=1iNNBrxzqcYMu6EplWg0EBxpvS41tOvjg&sz=w1200',
@@ -558,6 +558,7 @@ function ChristmasContent() {
         'https://drive.google.com/thumbnail?id=1zp9A5rpWaf0-2sb3xXmesuimOSFC9LRV&sz=w1200',
         'https://drive.google.com/thumbnail?id=1troDpVgZplkgw8MHqymCzQJWaYRZHmc5&sz=w1200',
         'https://drive.google.com/thumbnail?id=1dC7m9rDI_B_t0XTV3x1KjsyDZHKz4Un8&sz=w1200',
+        'https://drive.google.com/thumbnail?id=1dg2BDvNBs-eL1Pm4guqxhlXxq-sTBD4o&sz=w1200',
       ],
       price: 4.99,
       priceId: 'price_1UPbfvBsr66TjEhQ4fda2F6C',
@@ -1118,16 +1119,15 @@ function ChristmasContent() {
 
               <h1 className="text-5xl md:text-6xl font-serif text-white leading-tight tracking-tight">
                 <span className="block">
-                  Santa Letters &amp; Christmas Notes
+                  Santa Letters &amp; Christmas Printables
                 </span>
                 <span className="block mt-4 text-4xl md:text-5xl text-amber-200 drop-shadow-[0_0_30px_rgba(218,165,32,0.5)]">
-                  Printable Stationery &amp; Coloring Sheets
+                  Stationery, Party Kits, Decor &amp; Keepsakes
                 </span>
               </h1>
 
               <p className="text-lg md:text-xl text-amber-100/80 max-w-2xl mx-auto leading-relaxed tracking-wide">
-  Includes 20 Santa Letters · 4 Christmas Notes 
-                · 10 Bonus Christmas Coloring Pages
+  Includes 20 Santa Letters · 4 Christmas Notes · 10 Free Coloring Pages · Plus Gothmas, Nutcrackercore, Personalized Ornaments &amp; the Memory Night Kit
 </p>
 
               <div className="flex flex-col sm:flex-row items-center justify-center gap-6 mt-12">
