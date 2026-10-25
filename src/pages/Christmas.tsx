@@ -416,27 +416,27 @@ function ChristmasContent() {
   const adultColoringSheets = [
     {
       title: 'Intricate Mandala Wreath',
-      file: 'https://cdn1.site-media.eu/images/0/21587522/coloringsheet-IntricateMandalaChristmasWreath-N0MesPRJvpIQqMoOqSjpLA.jpg',
+      file: 'https://drive.google.com/thumbnail?id=1Dj3yMCCdxLm1L8NKcvgfdLz_MAL68yx_&sz=w1200',
       description: 'Detailed mandala patterns in festive wreath',
     },
     {
       title: 'Ornamental Tree',
-      file: 'https://cdn1.site-media.eu/images/0/21587521/coloringsheet-OrnamentalChristmasTreeWithFiligreePatterns-iK1VBjuqWCToeWeFUV82TQ.jpg',
+      file: 'https://drive.google.com/thumbnail?id=1_DYDx1Hcs7QdBlACVlEW45CrJ7VN18Uv&sz=w1200',
       description: 'Filigree patterns and ornate details',
     },
     {
       title: 'Victorian Street Scene',
-      file: 'https://cdn1.site-media.eu/images/0/21587716/coloringsheet-VictorianChristmasStreetScene-uFxaHo7iSJBtVTTmNiphMQ.jpg',
+      file: 'https://drive.google.com/thumbnail?id=1EHbXpg0BOrAcFCfOZUYLdVuDiA-5-7pv&sz=w1200',
       description: 'Classic Victorian Christmas setting',
     },
     {
       title: "Santa's Workshop",
-      file: 'https://cdn1.site-media.eu/images/0/21587507/coloringpages-SantasWorkshopHyper-DetailedLineArt-HXMJtPgkf0CVY6dm6DZDdw.jpg',
+      file: 'https://drive.google.com/thumbnail?id=1dkZFmSYbopTos8EdbpebtNhhS1wlxD8s&sz=w1200',
       description: 'Hyper-detailed workshop scene',
     },
     {
       title: 'Gingerbread Cityscape',
-      file: 'https://cdn1.site-media.eu/images/0/21587494/coloringpages-GingerbreadCityscape-Sikuj3H5mHfruzhOqXPrOg.jpg',
+      file: 'https://drive.google.com/thumbnail?id=1bYSedrIKozrBl4zHWaeoB4jWphg7G1Gq&sz=w1200',
       description: 'Whimsical gingerbread city',
     },
   ];

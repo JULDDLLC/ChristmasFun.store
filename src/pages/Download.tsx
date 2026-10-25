@@ -89,11 +89,11 @@ const PRODUCT_FILES: Record<string, { name: string; files: { label: string; url:
   'free-coloring': {
     name: 'Free Coloring Sheets',
     files: [
-      { label: 'Intricate Mandala Wreath', url: 'https://cdn1.site-media.eu/images/0/21587522/coloringsheet-IntricateMandalaChristmasWreath-N0MesPRJvpIQqMoOqSjpLA.jpg' },
-      { label: 'Ornamental Tree', url: 'https://cdn1.site-media.eu/images/0/21587521/coloringsheet-OrnamentalChristmasTreeWithFiligreePatterns-iK1VBjuqWCToeWeFUV82TQ.jpg' },
-      { label: 'Victorian Street Scene', url: 'https://cdn1.site-media.eu/images/0/21587716/coloringsheet-VictorianChristmasStreetScene-uFxaHo7iSJBtVTTmNiphMQ.jpg' },
-      { label: "Santa's Workshop", url: 'https://cdn1.site-media.eu/images/0/21587507/coloringpages-SantasWorkshopHyper-DetailedLineArt-HXMJtPgkf0CVY6dm6DZDdw.jpg' },
-      { label: 'Gingerbread Cityscape', url: 'https://cdn1.site-media.eu/images/0/21587494/coloringpages-GingerbreadCityscape-Sikuj3H5mHfruzhOqXPrOg.jpg' },
+      { label: 'Intricate Mandala Wreath', url: 'https://drive.usercontent.google.com/download?id=1Dj3yMCCdxLm1L8NKcvgfdLz_MAL68yx_&export=download&confirm=t', filename: 'Intricate_Mandala_Wreath.jpg' },
+      { label: 'Ornamental Tree', url: 'https://drive.usercontent.google.com/download?id=1_DYDx1Hcs7QdBlACVlEW45CrJ7VN18Uv&export=download&confirm=t', filename: 'Ornamental_Tree.jpg' },
+      { label: 'Victorian Street Scene', url: 'https://drive.usercontent.google.com/download?id=1EHbXpg0BOrAcFCfOZUYLdVuDiA-5-7pv&export=download&confirm=t', filename: 'Victorian_Street_Scene.jpg' },
+      { label: "Santa's Workshop", url: 'https://drive.usercontent.google.com/download?id=1dkZFmSYbopTos8EdbpebtNhhS1wlxD8s&export=download&confirm=t', filename: 'Santas_Workshop.jpg' },
+      { label: 'Gingerbread Cityscape', url: 'https://drive.usercontent.google.com/download?id=1bYSedrIKozrBl4zHWaeoB4jWphg7G1Gq&export=download&confirm=t', filename: 'Gingerbread_Cityscape.jpg' },
       { label: 'Festive Patterns (Kids)', url: 'https://cdn1.site-media.eu/images/0/21587509/coloringsheet2-f9nybkb9Ilb3N2Tjv0ChRw.jpg' },
       { label: 'Holiday Fun (Kids)', url: 'https://cdn1.site-media.eu/images/0/21587515/coloringsheet5-K_VmLl_kgh-1P-4C0WD-tA.jpg' },
       { label: 'Winter Wonderland (Kids)', url: 'https://cdn1.site-media.eu/images/0/21587506/coloringsheet6-QccnrzfbkCEPUmckBjmE9A.jpg' },
