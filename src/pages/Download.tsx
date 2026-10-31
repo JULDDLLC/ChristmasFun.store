@@ -233,7 +233,7 @@ const PRODUCT_FILES: Record<string, { name: string; files: { label: string; url:
   'elf-kit': {
     name: 'The 24 Day Elf Kit',
     files: [
-      { label: 'The 24 Day Elf Kit (ZIP, 73 pages in 10 PDFs)', url: 'https://drive.usercontent.google.com/download?id=1zSOZZ30qUS8gwrGnsvzNIvN9F1DnSwsk&export=download&confirm=t', filename: '24-Day-Elf-Kit.zip' },
+      { label: 'The 24 Day Elf Kit (ZIP, 78 pages in 11 PDFs)', url: 'https://drive.usercontent.google.com/download?id=1zSOZZ30qUS8gwrGnsvzNIvN9F1DnSwsk&export=download&confirm=t', filename: '24-Day-Elf-Kit.zip' },
     ],
   },
 };

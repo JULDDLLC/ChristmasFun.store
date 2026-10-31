@@ -821,22 +821,27 @@ function ChristmasContent() {
     images: string[];
     price: number;
     priceId: string;
+    listPrice?: number;
+    launchNote?: string;
   }> = [
     {
       id: 'elf_kit',
       type: 'elf_kit',
       name: 'The 24 Day Elf Kit',
-      description: '73 pages of elf magic, planned for you: boy and girl elf arrival and goodbye letters, an Elf Adoption Certificate and a Christmas Eve Final Report, 24 daily elf notes (report cards, jokes and missions, kindness cards), 36 handwritten mini cards including Night Off excuses for forgotten nights and Secret Missions for older kids, a fillable Elf Passport, the Official Nice O Meter, a wish list letter to Santa, a 14 page games pack with 4 unique bingo boards, props and signs, Magic Dust labels, a printable sheet of 12 embossed North Pole seals, 2 coloring pages of the elves, and a parent guide with a 24 night staging calendar (starred 30 second nights included), a letter from Santa to the parents, the Keeping the Magic guide, and the Santa\'s Helper Invitation that brings tweens and teens into the magic. 38 fillable fields type right in the PDF.',
+      description: '78 pages of elf magic, planned for you. Type your elf\'s name once and it signs every daily note, tiny card, and envelope for you. Boy and girl elf arrival and goodbye letters, an Elf Adoption Certificate and a Christmas Eve Final Report, 24 daily elf notes (report cards, jokes and missions, kindness cards), 42 handwritten tiny cards in a rich North Pole design, including Night Off excuses for forgotten nights and Secret Missions for older kids, printable envelopes sized to fit them, a fillable Elf Passport, the Official Nice O Meter, a wish list letter to Santa, a 14 page games pack with 4 unique bingo boards, props and signs, Magic Dust labels, a printable sheet of 12 North Pole wax seals, 2 coloring pages of the elves, and a parent guide with a 24 night staging calendar (starred 30 second nights included), a letter from Santa to the parents, the Keeping the Magic guide, and the Santa\'s Helper Invitation that brings tweens and teens into the magic. 39 fillable fields type right in the PDF.',
       images: [
         'https://drive.google.com/thumbnail?id=1oylV1KY_6CQHLtjhyYKmiaj987FjEc7_&sz=w1200',
         'https://drive.google.com/thumbnail?id=1Q8TDHzCH4iY_VxAh8Eze8mZ0vXCuPC9u&sz=w1200',
         'https://drive.google.com/thumbnail?id=1sfjO3ionZuuh9aMuGivd49ZmlH-DzzFr&sz=w1200',
+        'https://drive.google.com/thumbnail?id=1HN2apcbxsT0B9ceqaWC_NpyBLZpetElx&sz=w1200',
         'https://drive.google.com/thumbnail?id=1k-f8zGW0xcNh2zkozXwlAKcJVh981lHE&sz=w1200',
         'https://drive.google.com/thumbnail?id=1zkeZjwikwj_zzgcaCTOAJIvqRFH1bPtg&sz=w1200',
         'https://drive.google.com/thumbnail?id=1aih76O4IkBVwE7-BX8sHQIEtYumoXL2w&sz=w1200',
       ],
-      price: 9.99,
-      priceId: 'price_1UUZROBsr66TjEhQpbSjSgQ0',
+      price: 7.99,
+      priceId: 'price_1UWfd3Bsr66TjEhQRFIzmTcX',
+      listPrice: 9.99,
+      launchNote: 'Launch price through December 1, then $9.99',
     },
   ];
 
@@ -1663,7 +1668,10 @@ function ChristmasContent() {
                 <p className="text-xl text-white/80 mb-4">
                   20 Santa Letters + 4 Christmas Notes
                 </p>
-                <div className="text-7xl font-bold text-amber-300 mb-8">Only $9.99</div>
+                <div className="text-7xl font-bold text-amber-300 mb-3">Only $9.99</div>
+                <p className="text-xl text-amber-200 mb-8">
+                  20 letters plus 4 notes for $9.99, under 50 cents a design
+                </p>
 
                 <div className="space-y-4 mb-10">
                   <div className="flex items-center justify-center gap-3 text-lg text-white/90">
@@ -1715,8 +1723,9 @@ function ChristmasContent() {
             <p className="text-lg md:text-xl text-white/80 max-w-2xl mx-auto leading-relaxed">
               The whole month of elf magic in one premium printable kit, with a boy elf and a girl
               elf so every family finds theirs. A staging calendar with a fresh scene and a
-              believability detail for every night, handwritten mini cards from your elf, games,
-              props, North Pole seals, and a Keeping the Magic guide for the questions smart kids ask.
+              believability detail for every night, handwritten tiny cards from your elf with
+              printable envelopes to tuck them into, games, props, North Pole seals, and a
+              Keeping the Magic guide for the questions smart kids ask.
             </p>
           </div>
 
@@ -1736,7 +1745,19 @@ function ChristmasContent() {
                     </div>
                     <h3 className="text-xl font-serif text-white mb-2">{product.name}</h3>
                     <p className="text-sm text-white/70 mb-3">{product.description}</p>
-                    <p className="text-lg font-bold text-white mb-3">${product.price.toFixed(2)}</p>
+                    <p className="text-lg font-bold text-white mb-1">
+                      ${product.price.toFixed(2)}
+                      {product.listPrice ? (
+                        <span className="ml-2 text-base font-medium text-white/50 line-through">
+                          ${product.listPrice.toFixed(2)}
+                        </span>
+                      ) : null}
+                    </p>
+                    {product.launchNote ? (
+                      <p className="text-sm font-semibold text-amber-300 mb-3">{product.launchNote}</p>
+                    ) : (
+                      <div className="mb-3" />
+                    )}
                     <button
                       onClick={() => {
                         addToCart({
