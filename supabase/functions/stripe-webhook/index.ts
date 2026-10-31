@@ -51,6 +51,7 @@ const PRICE_ID_TO_PRODUCT = new Map<string, { product_id: string; label: string 
   ["price_1UPo4KBsr66TjEhQQTrj8HzZ", { product_id: "personalized_pet", label: "Pet's First Christmas - Editable Photo Ornament" }],
   ["price_1UPo4MBsr66TjEhQMIEzjICq", { product_id: "personalized_collection", label: "Personalized Ornaments - The Full Collection" }],
   ["price_1UUU19Bsr66TjEhQPV367Jqt", { product_id: "memory_night_kit", label: "Christmas Memory Night Kit" }],
+  ["price_1UWh1yBsr66TjEhQU4nJQFiX", { product_id: "memory_night_kit", label: "Christmas Memory Night Kit" }],
   ["price_1UUZROBsr66TjEhQpbSjSgQ0", { product_id: "elf_kit", label: "The 24 Day Elf Kit" }],
   ["price_1UWfd3Bsr66TjEhQRFIzmTcX", { product_id: "elf_kit", label: "The 24 Day Elf Kit" }],
 ]);
