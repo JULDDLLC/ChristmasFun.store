@@ -255,11 +255,11 @@ export const STRIPE_PRODUCTS: StripeProduct[] = [
   },
   {
     id: 'prod_VVV1rS10JJCyHY',
-    priceId: 'price_1UUU19Bsr66TjEhQPV367Jqt',
+    priceId: 'price_1UWh1yBsr66TjEhQU4nJQFiX',
     name: 'Christmas Memory Night Kit',
     description:
       'Everything you need to host the Christmas night your family talks about all year, planned for you in one printable kit. Inside the 43 page PDF: a host guide that runs the whole evening for you, ready in 20 minutes of simple printing; 6 coordinated games for every age at the table, from toddlers to great grandparents; 36 conversation cards in three levels, including prompts that finally get Grandma and Grandpa\'s stories told; a 2026 family keepsake activity to fill in, save, and reopen next Christmas; a 24 item photo scavenger hunt that gets everyone up, laughing, and actually taking the photos; 8 large print recipe cards of tested Christmas classics, each with Kids Can and Grown Ups steps so cooking together is part of the night; plus a Finishing Touches section with 24 From Santa gift tags, a gift list and budget tracker, a My Letter to Santa page, and a Nice List Certificate. Personalize the host name and family name right in the PDF before you print. Instant download, print at home, use it again every year.',
-    price: 14.99,
+    price: 11.99,
     currency: 'usd',
     mode: 'payment',
   },

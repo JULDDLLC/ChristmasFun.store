@@ -790,6 +790,8 @@ function ChristmasContent() {
     images: string[];
     price: number;
     priceId: string;
+    listPrice?: number;
+    launchNote?: string;
   }> = [
     {
       id: 'memory_night_kit',
@@ -807,8 +809,10 @@ function ChristmasContent() {
         'https://drive.google.com/thumbnail?id=1Vsa6PJTwqazKR_X_XDfDQ447_LZC0VYu&sz=w1200',
         'https://drive.google.com/thumbnail?id=1qknD9aoodS8xMPKEAzFvAp3g1tXIQNHE&sz=w1200',
       ],
-      price: 14.99,
-      priceId: 'price_1UUU19Bsr66TjEhQPV367Jqt',
+      price: 11.99,
+      priceId: 'price_1UWh1yBsr66TjEhQU4nJQFiX',
+      listPrice: 14.99,
+      launchNote: 'Launch price through December 1, then $14.99',
     },
   ];
 
@@ -1837,7 +1841,19 @@ function ChristmasContent() {
                     </div>
                     <h3 className="text-xl font-serif text-white mb-2">{product.name}</h3>
                     <p className="text-sm text-white/70 mb-3">{product.description}</p>
-                    <p className="text-lg font-bold text-white mb-3">${product.price.toFixed(2)}</p>
+                    <p className="text-lg font-bold text-white mb-1">
+                      ${product.price.toFixed(2)}
+                      {product.listPrice ? (
+                        <span className="ml-2 text-base font-medium text-white/50 line-through">
+                          ${product.listPrice.toFixed(2)}
+                        </span>
+                      ) : null}
+                    </p>
+                    {product.launchNote ? (
+                      <p className="text-sm font-semibold text-amber-300 mb-3">{product.launchNote}</p>
+                    ) : (
+                      <div className="mb-3" />
+                    )}
                     <button
                       onClick={() => {
                         addToCart({
