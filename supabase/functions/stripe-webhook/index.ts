@@ -25,6 +25,7 @@ function okText(msg = "ok") {
 
 // This mapping is only used as a last-resort fallback if metadata is missing.
 // Your system SHOULD include metadata, but we cannot rely on that right now.
+// Redeployed Oct 31, 2026: map includes the Elf Kit and Memory Night launch prices.
 const PRICE_ID_TO_PRODUCT = new Map<string, { product_id: string; label: string }>([
   ["price_1ScHCUBsr66TjEhQI5HBQqtU", { product_id: "santa_letter_single", label: "Santa Letter (Single)" }],
   ["price_1ScGfNBsr66TjEhQxdfKXMcn", { product_id: "christmas_note_single", label: "Christmas Note (Single)" }],
