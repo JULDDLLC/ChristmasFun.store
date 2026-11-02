@@ -57,6 +57,7 @@ const PRICE_ID_BY_TYPE: Record<string, string> = {
   personalized_pet: "price_1UPo4KBsr66TjEhQQTrj8HzZ",
   personalized_collection: "price_1UPo4MBsr66TjEhQMIEzjICq",
   memory_night_kit: "price_1UWh1yBsr66TjEhQU4nJQFiX",
+  heirloom_planner: "price_1UXNCPBsr66TjEhQGtBDZ4pd",
 };
 
 function json(body: unknown, status = 200) {

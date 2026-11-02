@@ -23,6 +23,8 @@ export function ChristmasCartDrawer({ isOpen, onClose, customerEmail }: Props) {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const [upsellDismissed, setUpsellDismissed] = useState(false);
+  const [memoryUpsellDismissed, setMemoryUpsellDismissed] = useState(false);
+  const [plannerUpsellDismissed, setPlannerUpsellDismissed] = useState(false);
 
   const computedTotal = useMemo(() => {
     if (typeof total === "number") return total;
@@ -114,6 +116,43 @@ export function ChristmasCartDrawer({ isOpen, onClose, customerEmail }: Props) {
   );
   const showKitUpsell = hasMemoryNightKit && !hasClassicsBundle && !upsellDismissed;
 
+  const hasHeirloomPlanner = cartList.some((i: any) => i.type === 'heirloom_planner');
+  const hasElfKit = cartList.some((i: any) => i.type === 'elf_kit');
+  // Cross sells between the premium kits. Shown only when the Classics Bundle
+  // upsell above is not on screen, so buyers never see two offers stacked.
+  const showMemoryUpsell =
+    hasHeirloomPlanner && !hasMemoryNightKit && !showKitUpsell && !memoryUpsellDismissed;
+  const showPlannerUpsell =
+    (hasMemoryNightKit || hasElfKit) && !hasHeirloomPlanner && !showKitUpsell && !plannerUpsellDismissed;
+
+  const addMemoryNightKit = () => {
+    addToCart?.({
+      id: 'memory_night_kit',
+      type: 'memory_night_kit',
+      name: 'Christmas Memory Night Kit',
+      description:
+        'Everything you need to host the Christmas night your family talks about all year, planned for you in one printable kit.',
+      image:
+        'https://drive.google.com/thumbnail?id=1DUnC97EtWOJU8zj_sSVOBqjKYXZlTf9a&sz=w1200',
+      price: 11.99,
+      priceId: 'price_1UWh1yBsr66TjEhQU4nJQFiX',
+    });
+  };
+
+  const addHeirloomPlanner = () => {
+    addToCart?.({
+      id: 'heirloom_planner',
+      type: 'heirloom_planner',
+      name: 'The Christmas Heirloom Planner & Gift Budget Tracker',
+      description:
+        'A 67 page heirloom planner with calendars, gift trackers, fillable budget forms, and an Excel gift budget tracker that does the math.',
+      image:
+        'https://drive.google.com/thumbnail?id=1tx7Syor8Z-sIAgFvTmfxDfv7i0EtH9D8&sz=w1200',
+      price: 9.99,
+      priceId: 'price_1UXNCPBsr66TjEhQGtBDZ4pd',
+    });
+  };
+
   const addClassicsBundle = () => {
     addToCart?.({
       id: 'all_18_bundle',
@@ -187,6 +226,58 @@ export function ChristmasCartDrawer({ isOpen, onClose, customerEmail }: Props) {
               className="w-full mt-3 rounded-xl bg-gradient-to-r from-green-600 to-emerald-700 text-white font-semibold py-2.5 border border-amber-400/30"
             >
               Add the Classics Bundle - $9.99
+            </button>
+          </div>
+        ) : null}
+
+        {showMemoryUpsell ? (
+          <div className="mb-4 rounded-2xl bg-green-950/60 border border-amber-400/40 p-4">
+            <div className="flex items-start justify-between gap-3">
+              <div className="text-amber-200 font-semibold text-sm">Make it a night to remember</div>
+              <button
+                onClick={() => setMemoryUpsellDismissed(true)}
+                className="text-white/50 hover:text-white text-sm px-1 leading-none"
+                title="Dismiss"
+              >
+                ✕
+              </button>
+            </div>
+            <p className="text-white/75 text-sm mt-1 leading-relaxed">
+              You have the planning handled. Add the Christmas Memory Night Kit for the night
+              itself: games for every age, conversation cards that get the stories told, and a
+              family keepsake to reopen next Christmas, for $11.99.
+            </p>
+            <button
+              onClick={addMemoryNightKit}
+              className="w-full mt-3 rounded-xl bg-gradient-to-r from-green-600 to-emerald-700 text-white font-semibold py-2.5 border border-amber-400/30"
+            >
+              Add the Memory Night Kit - $11.99
+            </button>
+          </div>
+        ) : null}
+
+        {showPlannerUpsell ? (
+          <div className="mb-4 rounded-2xl bg-green-950/60 border border-amber-400/40 p-4">
+            <div className="flex items-start justify-between gap-3">
+              <div className="text-amber-200 font-semibold text-sm">Get the whole season organized</div>
+              <button
+                onClick={() => setPlannerUpsellDismissed(true)}
+                className="text-white/50 hover:text-white text-sm px-1 leading-none"
+                title="Dismiss"
+              >
+                ✕
+              </button>
+            </div>
+            <p className="text-white/75 text-sm mt-1 leading-relaxed">
+              Add The Christmas Heirloom Planner &amp; Gift Budget Tracker: a 67 page planner with
+              2026 calendars, gift trackers, fillable budget forms, and an Excel tracker that does
+              the math, for $9.99.
+            </p>
+            <button
+              onClick={addHeirloomPlanner}
+              className="w-full mt-3 rounded-xl bg-gradient-to-r from-green-600 to-emerald-700 text-white font-semibold py-2.5 border border-amber-400/30"
+            >
+              Add the Heirloom Planner - $9.99
             </button>
           </div>
         ) : null}

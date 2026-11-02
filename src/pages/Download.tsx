@@ -27,7 +27,7 @@ const SANTA_LETTER_DESIGNS: Record<number, { label: string; url: string; filenam
   20: { label: 'Design 20 - The Nice List', url: 'https://drive.usercontent.google.com/download?id=1PFUKgPVDhONlaUxsf8GROeyrZxTjtdPZ&export=download&confirm=t', filename: 'Design_20_The_Nice_List.png' },
 };
 
-const PRODUCT_FILES: Record<string, { name: string; files: { label: string; url: string; filename?: string }[] }> = {
+const PRODUCT_FILES: Record<string, { name: string; note?: string; files: { label: string; url: string; filename?: string }[] }> = {
   'santa-letter': {
     name: 'Santa Letter',
     files: [
@@ -236,6 +236,16 @@ const PRODUCT_FILES: Record<string, { name: string; files: { label: string; url:
       { label: 'The 24 Day Elf Kit (ZIP, 78 pages in 11 PDFs)', url: 'https://drive.usercontent.google.com/download?id=1zSOZZ30qUS8gwrGnsvzNIvN9F1DnSwsk&export=download&confirm=t', filename: '24-Day-Elf-Kit.zip' },
     ],
   },
+  'christmas-heirloom-planner': {
+    name: 'The Christmas Heirloom Planner & Gift Budget Tracker',
+    note: 'Your planner comes in four parts. Download all four parts for the complete planner: the planner book, the fillable gift and budget forms, the auto date calendar, and the extras pack.',
+    files: [
+      { label: 'Part 1, The Planner, 67 Pages', url: 'https://drive.usercontent.google.com/download?id=1Voqrl5k7PKBQV9oYOEJjr6ALftaFlQ8Y&export=download&confirm=t', filename: '01_Heirloom_Planner.zip' },
+      { label: 'Part 2, Fillable Gift and Budget Forms', url: 'https://drive.usercontent.google.com/download?id=1X-jo7XhtBIEe4QFIDI8m6YDHbpU77hKZ&export=download&confirm=t', filename: '02_Heirloom_Fillable_Forms.zip' },
+      { label: 'Part 3, Auto Date Calendar', url: 'https://drive.usercontent.google.com/download?id=1ulYAzseJ7oCrU3W3Umu_ZH839U7m6S7e&export=download&confirm=t', filename: '03_Heirloom_Auto_Calendar.zip' },
+      { label: 'Part 4, Extras: 2026 Calendars, Excel Tracker and Cover', url: 'https://drive.usercontent.google.com/download?id=1PZCK0AXmN0x6I8lyuNLx3y2zFOJHjDET&export=download&confirm=t', filename: '04_Heirloom_Extras.zip' },
+    ],
+  },
 };
 
 // Alias so new delivery emails can link /download/all-24-bundle;
@@ -252,7 +262,7 @@ export default function Download() {
   const { productId } = useParams<{ productId: string }>();
   const [searchParams] = useSearchParams();
   const [loading, setLoading] = useState(true);
-  const [product, setProduct] = useState<{ name: string; files: { label: string; url: string; filename?: string }[] } | null>(null);
+  const [product, setProduct] = useState<{ name: string; note?: string; files: { label: string; url: string; filename?: string }[] } | null>(null);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -333,6 +343,9 @@ export default function Download() {
           </div>
           <h1 className="text-3xl md:text-4xl font-bold text-white mb-2">Your Downloads</h1>
           <p className="text-xl text-amber-300 font-medium">{product.name}</p>
+          {product.note ? (
+            <p className="text-white/75 mt-3 max-w-xl mx-auto leading-relaxed">{product.note}</p>
+          ) : null}
         </div>
 
         <div className="bg-white/10 backdrop-blur-xl rounded-3xl border border-white/20 p-6 md:p-8">

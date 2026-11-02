@@ -39,6 +39,7 @@ const PRODUCT_DOWNLOAD_MAP: Record<string, string> = {
   'personalized_collection': 'https://christmasfun.store/download/personalized-collection',
   'memory_night_kit': 'https://christmasfun.store/download/memory-night-kit',
   'elf_kit': 'https://christmasfun.store/download/elf-kit',
+  'heirloom_planner': 'https://christmasfun.store/download/christmas-heirloom-planner',
 };
 
 // Customer facing display names for download links whose URL slug does not
@@ -46,6 +47,7 @@ const PRODUCT_DOWNLOAD_MAP: Record<string, string> = {
 const DOWNLOAD_LINK_LABELS: Record<string, string> = {
   'https://christmasfun.store/download/memory-night-kit': 'Christmas Memory Night Kit',
   'https://christmasfun.store/download/elf-kit': 'The 24 Day Elf Kit',
+  'https://christmasfun.store/download/christmas-heirloom-planner': 'The Christmas Heirloom Planner & Gift Budget Tracker',
   'https://christmasfun.store/download/all-24-bundle': 'Christmas Classics Bundle',
 };
 
