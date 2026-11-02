@@ -1252,7 +1252,7 @@ function ChristmasContent() {
                   <div className="absolute inset-0 bg-gradient-to-r from-transparent via-amber-300/30 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
                   <div className="relative flex items-center gap-3">
                     <Gift className="w-6 h-6 text-amber-300" />
-                    <span className="text-amber-100">Get the Full Bundle, $9.99</span>
+                    <span className="text-amber-100">Get the Classics Bundle, $9.99</span>
                   </div>
                 </button>
 
