@@ -1,3 +1,4 @@
+// redeploy Nov 2 2026
 /// <reference types="npm:@types/node" />
 
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
