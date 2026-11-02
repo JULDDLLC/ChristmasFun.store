@@ -6,6 +6,18 @@ html {
   scroll-padding-top: 96px;
 }
 
+@media (min-width: 768px) {
+  html {
+    scroll-padding-top: 188px;
+  }
+}
+
+@media (min-width: 1280px) {
+  html {
+    scroll-padding-top: 156px;
+  }
+}
+
 .snowflakes {
   position: fixed;
   top: 0;
