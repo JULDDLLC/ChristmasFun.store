@@ -1,3 +1,4 @@
+// attribution ship Nov 2
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import Stripe from "npm:stripe@14.21.0";
 
