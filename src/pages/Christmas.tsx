@@ -15,6 +15,7 @@ import {
   Star,
   Plus,
   Check,
+  BookOpen,
 } from 'lucide-react';
 import { BackgroundMusic } from '../components/BackgroundMusic';
 import { PremiumSnowfall } from '../components/PremiumSnowfall';
@@ -245,6 +246,7 @@ function ChristmasContent() {
   const [showEmailNotification, setShowEmailNotification] = useState(false);
   const [emailInputShake, setEmailInputShake] = useState(false);
   const [isCartOpen, setIsCartOpen] = useState(false);
+  const [showAllDesigns, setShowAllDesigns] = useState(false);
 
   const { addToCart, isInCart } = useChristmasCart();
 
@@ -1225,7 +1227,7 @@ function ChristmasContent() {
               </h1>
 
               <p className="text-lg md:text-xl text-amber-100/80 max-w-2xl mx-auto leading-relaxed tracking-wide">
-  Includes 20 Santa Letters · 4 Christmas Notes · 10 Free Coloring Pages · Plus Gothmas, Nutcrackercore, Personalized Ornaments, the Memory Night Kit &amp; the 24 Day Elf Kit
+  Includes 20 Santa Letters · 4 Christmas Notes · 10 Free Coloring Pages · Plus Gothmas, Nutcrackercore, Personalized Ornaments, the Memory Night Kit &amp; the 24 Day Elf Kit &amp; the Christmas Heirloom Planner
 </p>
 
               <div className="flex flex-col sm:flex-row items-center justify-center gap-6 mt-12">
@@ -1271,7 +1273,7 @@ function ChristmasContent() {
         {/* NEW FOR 2026 COLLECTIONS BANNER */}
         <section className="container mx-auto px-6 pt-16 relative z-10">
           <p className="text-center text-amber-300 font-semibold uppercase tracking-[0.25em] text-sm mb-6">
-            New for 2026: Four New Collections
+            New for 2026 Collections
           </p>
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
             <a
@@ -1346,6 +1348,20 @@ function ChristmasContent() {
                 Shop Gothmas
               </span>
             </a>
+            <a
+              href="#heirloom-planner"
+              className="block rounded-3xl border border-amber-400/30 bg-gradient-to-br from-amber-950/80 via-amber-900/50 to-slate-900/80 backdrop-blur-xl px-7 py-7 shadow-2xl shadow-amber-950/50 hover:border-amber-300/60 transition-colors"
+            >
+              <BookOpen className="w-9 h-9 text-amber-300 mb-4" />
+              <h3 className="text-2xl font-serif text-white mb-2">The Christmas Heirloom Planner</h3>
+              <p className="text-amber-100/70 text-sm leading-relaxed mb-5">
+                A 67 page heirloom planner for the whole season: gift lists, a budget tracker
+                that does the math, menus, calendars, and keepsake pages.
+              </p>
+              <span className="inline-block px-6 py-3 rounded-2xl bg-amber-600/80 text-white font-semibold shadow-lg shadow-amber-900/50">
+                Shop the Planner
+              </span>
+            </a>
           </div>
         </section>
 
@@ -1359,7 +1375,7 @@ function ChristmasContent() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-            {designs.map((design, index) => (
+            {(showAllDesigns ? designs : designs.slice(0, 6)).map((design, index) => (
               <DesignCard
                 key={index}
                 number={index + 1}
@@ -1380,6 +1396,15 @@ function ChristmasContent() {
                 isInCart={isInCart(`santa_letter_${index + 1}`)}
               />
             ))}
+          </div>
+
+          <div className="text-center mt-12">
+            <button
+              onClick={() => setShowAllDesigns((prev) => !prev)}
+              className="px-10 py-4 rounded-2xl bg-white/10 backdrop-blur-xl border-2 border-amber-400/30 text-amber-100 text-lg font-semibold hover:bg-amber-900/30 transition-all duration-300 transform hover:scale-105"
+            >
+              {showAllDesigns ? 'Show fewer designs' : 'See all 20 designs'}
+            </button>
           </div>
         </section>
 
@@ -1477,174 +1502,6 @@ function ChristmasContent() {
               >
                 <div className="relative flex items-center gap-2">Get All 4 Notes, $2.99</div>
               </button>
-            </div>
-          </div>
-        </section>
-
-        {/* FREE COLORING */}
-        <section id="adult-coloring" className="container mx-auto px-6 py-24">
-          <div className="text-center mb-16">
-            <div className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-white/10 backdrop-blur-xl border border-amber-400/30 text-amber-300 font-medium mb-6">
-              <Sparkles className="w-5 h-5" />
-              Free Coloring Downloads
-            </div>
-            <h2 className="text-5xl md:text-6xl font-serif text-white mb-6">
-              Free Coloring Collection
-            </h2>
-            <p className="text-xl text-white/70 max-w-2xl mx-auto mb-8">
-              10 beautiful coloring sheets - 5 intricate designs for adults and 5 fun designs for
-              kids
-            </p>
-
-            <div className="flex items-center justify-center gap-4 mb-12">
-              <button
-                onClick={() => setColoringTab('adult')}
-                className={`px-8 py-3 rounded-xl font-semibold transition-all duration-300 ${
-                  coloringTab === 'adult'
-                    ? 'bg-gradient-to-r from-red-600 to-red-700 text-amber-100 border-2 border-amber-400/40 shadow-lg'
-                    : 'bg-white/10 text-white/70 border border-white/20 hover:bg-white/20'
-                }`}
-              >
-                Adult Designs (5)
-              </button>
-              <button
-                onClick={() => setColoringTab('kids')}
-                className={`px-8 py-3 rounded-xl font-semibold transition-all duration-300 ${
-                  coloringTab === 'kids'
-                    ? 'bg-gradient-to-r from-red-600 to-red-700 text-amber-100 border-2 border-amber-400/40 shadow-lg'
-                    : 'bg-white/10 text-white/70 border border-white/20 hover:bg-white/20'
-                }`}
-              >
-                Kids Designs (5)
-              </button>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6 mb-12">
-            {(coloringTab === 'adult' ? adultColoringSheets : kidsColoringSheets).map(
-              (sheet, index) => (
-                <div
-                  key={index}
-                  className="group relative overflow-hidden rounded-2xl bg-white/10 backdrop-blur-xl border border-white/20 shadow-xl transition-all duration-500 hover:scale-105 hover:shadow-amber-500/30"
-                >
-                  <div className="absolute inset-0 bg-gradient-to-br from-amber-500/20 via-transparent to-amber-600/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-
-                  <div className="relative p-4">
-                    <div className="aspect-[3/4] bg-gradient-to-br from-white/5 to-white/10 rounded-xl mb-3 flex items-center justify-center overflow-hidden">
-                      <img
-                        src={sheet.file}
-                        alt={sheet.title}
-                        loading="lazy"
-                        className="w-full h-full object-contain transition-transform duration-500 group-hover:scale-110"
-                      />
-                    </div>
-
-                    <div className="space-y-1">
-                      <h3 className="text-sm font-serif text-white">{sheet.title}</h3>
-                      <p className="text-xs text-white/70">{sheet.description}</p>
-                    </div>
-                  </div>
-                </div>
-              ),
-            )}
-          </div>
-
-          <div className="max-w-4xl mx-auto">
-            <div className="relative overflow-hidden rounded-3xl bg-white/10 backdrop-blur-xl border-2 border-white/20 p-12 shadow-2xl text-center">
-              <div className="absolute inset-0 bg-gradient-to-br from-white/5 via-transparent to-amber-500/10 animate-pulse" />
-
-              <div className="relative z-10">
-                <h3 className="text-3xl md:text-4xl font-serif text-white mb-3">
-                  Get All Free Coloring Sheets
-                </h3>
-                <p className="text-lg text-white/80 mb-6">
-                  10 beautiful designs - 5 kids sheets + 5 intricate adult sheets
-                </p>
-
-                <div className="max-w-lg mx-auto mb-8">
-                  <input
-                    id="coloring-email"
-                    name="email"
-                    type="email"
-                    placeholder="Enter your email for instant access"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    className="w-full px-6 py-4 rounded-2xl bg-white/10 backdrop-blur-xl border border-white/20 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-amber-400 transition-all mb-4"
-                  />
-                </div>
-
-                {freebieMessage && (
-                  <div
-                    className={`mb-6 p-4 rounded-xl ${
-                      freebieMessage.includes('Success')
-                        ? 'bg-green-900/40 border border-green-500/50 text-green-200'
-                        : 'bg-red-900/40 border border-red-500/50 text-red-200'
-                    }`}
-                  >
-                    {freebieMessage}
-                  </div>
-                )}
-
-                <button
-                  onClick={async () => {
-                    if (!email) {
-                      setFreebieMessage('Please enter your email address');
-                      return;
-                    }
-
-                    setIsSubmittingFreebie(true);
-                    setFreebieMessage(null);
-
-                    try {
-                      const response = await fetch(
-                        `${SUPABASE_URL}/functions/v1/send-freebie-coloring`,
-                        {
-                          method: 'POST',
-                          headers: {
-                            'Content-Type': 'application/json',
-                            Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
-                            apikey: SUPABASE_ANON_KEY,
-                          },
-                          body: JSON.stringify({ email }),
-                        },
-                      );
-
-                      const data = await response.json();
-
-                      if (!response.ok) {
-                        setFreebieMessage(data.error || 'An error occurred');
-                      } else {
-                        setFreebieMessage(
-                          'Success! Check your email for download links to all 10 coloring sheets!',
-                        );
-                        setEmail('');
-                      }
-                    } catch (error) {
-                      console.error('Freebie submission error:', error);
-                      setFreebieMessage('An error occurred. Please try again.');
-                    } finally {
-                      setIsSubmittingFreebie(false);
-                    }
-                  }}
-                  disabled={isSubmittingFreebie}
-                  className="group relative px-10 py-4 rounded-2xl bg-gradient-to-r from-red-600 to-red-700 text-amber-100 text-xl font-bold shadow-2xl hover:shadow-red-500/50 transition-all duration-300 transform hover:scale-105 overflow-hidden disabled:opacity-50 disabled:cursor-not-allowed border-2 border-amber-400/40"
-                >
-                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-amber-300/30 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
-                  <div className="relative flex items-center gap-2">
-                    {isSubmittingFreebie ? (
-                      <>
-                        <div className="w-5 h-5 border-4 border-amber-300 border-t-transparent rounded-full animate-spin" />
-                        Sending...
-                      </>
-                    ) : (
-                      <>
-                        <Download className="w-5 h-5 text-amber-300" />
-                        Get Free Coloring Sheets
-                      </>
-                    )}
-                  </div>
-                </button>
-              </div>
             </div>
           </div>
         </section>
@@ -2275,6 +2132,174 @@ function ChristmasContent() {
           </div>
         </section>
 
+
+        {/* FREE COLORING */}
+        <section id="adult-coloring" className="container mx-auto px-6 py-24">
+          <div className="text-center mb-16">
+            <div className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-white/10 backdrop-blur-xl border border-amber-400/30 text-amber-300 font-medium mb-6">
+              <Sparkles className="w-5 h-5" />
+              Free Coloring Downloads
+            </div>
+            <h2 className="text-5xl md:text-6xl font-serif text-white mb-6">
+              Free Coloring Collection
+            </h2>
+            <p className="text-xl text-white/70 max-w-2xl mx-auto mb-8">
+              10 beautiful coloring sheets - 5 intricate designs for adults and 5 fun designs for
+              kids
+            </p>
+
+            <div className="flex items-center justify-center gap-4 mb-12">
+              <button
+                onClick={() => setColoringTab('adult')}
+                className={`px-8 py-3 rounded-xl font-semibold transition-all duration-300 ${
+                  coloringTab === 'adult'
+                    ? 'bg-gradient-to-r from-red-600 to-red-700 text-amber-100 border-2 border-amber-400/40 shadow-lg'
+                    : 'bg-white/10 text-white/70 border border-white/20 hover:bg-white/20'
+                }`}
+              >
+                Adult Designs (5)
+              </button>
+              <button
+                onClick={() => setColoringTab('kids')}
+                className={`px-8 py-3 rounded-xl font-semibold transition-all duration-300 ${
+                  coloringTab === 'kids'
+                    ? 'bg-gradient-to-r from-red-600 to-red-700 text-amber-100 border-2 border-amber-400/40 shadow-lg'
+                    : 'bg-white/10 text-white/70 border border-white/20 hover:bg-white/20'
+                }`}
+              >
+                Kids Designs (5)
+              </button>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6 mb-12">
+            {(coloringTab === 'adult' ? adultColoringSheets : kidsColoringSheets).map(
+              (sheet, index) => (
+                <div
+                  key={index}
+                  className="group relative overflow-hidden rounded-2xl bg-white/10 backdrop-blur-xl border border-white/20 shadow-xl transition-all duration-500 hover:scale-105 hover:shadow-amber-500/30"
+                >
+                  <div className="absolute inset-0 bg-gradient-to-br from-amber-500/20 via-transparent to-amber-600/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+
+                  <div className="relative p-4">
+                    <div className="aspect-[3/4] bg-gradient-to-br from-white/5 to-white/10 rounded-xl mb-3 flex items-center justify-center overflow-hidden">
+                      <img
+                        src={sheet.file}
+                        alt={sheet.title}
+                        loading="lazy"
+                        className="w-full h-full object-contain transition-transform duration-500 group-hover:scale-110"
+                      />
+                    </div>
+
+                    <div className="space-y-1">
+                      <h3 className="text-sm font-serif text-white">{sheet.title}</h3>
+                      <p className="text-xs text-white/70">{sheet.description}</p>
+                    </div>
+                  </div>
+                </div>
+              ),
+            )}
+          </div>
+
+          <div className="max-w-4xl mx-auto">
+            <div className="relative overflow-hidden rounded-3xl bg-white/10 backdrop-blur-xl border-2 border-white/20 p-12 shadow-2xl text-center">
+              <div className="absolute inset-0 bg-gradient-to-br from-white/5 via-transparent to-amber-500/10 animate-pulse" />
+
+              <div className="relative z-10">
+                <h3 className="text-3xl md:text-4xl font-serif text-white mb-3">
+                  Get All Free Coloring Sheets
+                </h3>
+                <p className="text-lg text-white/80 mb-6">
+                  10 beautiful designs - 5 kids sheets + 5 intricate adult sheets
+                </p>
+
+                <div className="max-w-lg mx-auto mb-8">
+                  <input
+                    id="coloring-email"
+                    name="email"
+                    type="email"
+                    placeholder="Enter your email for instant access"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className="w-full px-6 py-4 rounded-2xl bg-white/10 backdrop-blur-xl border border-white/20 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-amber-400 transition-all mb-4"
+                  />
+                </div>
+
+                {freebieMessage && (
+                  <div
+                    className={`mb-6 p-4 rounded-xl ${
+                      freebieMessage.includes('Success')
+                        ? 'bg-green-900/40 border border-green-500/50 text-green-200'
+                        : 'bg-red-900/40 border border-red-500/50 text-red-200'
+                    }`}
+                  >
+                    {freebieMessage}
+                  </div>
+                )}
+
+                <button
+                  onClick={async () => {
+                    if (!email) {
+                      setFreebieMessage('Please enter your email address');
+                      return;
+                    }
+
+                    setIsSubmittingFreebie(true);
+                    setFreebieMessage(null);
+
+                    try {
+                      const response = await fetch(
+                        `${SUPABASE_URL}/functions/v1/send-freebie-coloring`,
+                        {
+                          method: 'POST',
+                          headers: {
+                            'Content-Type': 'application/json',
+                            Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+                            apikey: SUPABASE_ANON_KEY,
+                          },
+                          body: JSON.stringify({ email }),
+                        },
+                      );
+
+                      const data = await response.json();
+
+                      if (!response.ok) {
+                        setFreebieMessage(data.error || 'An error occurred');
+                      } else {
+                        setFreebieMessage(
+                          'Success! Check your email for download links to all 10 coloring sheets!',
+                        );
+                        setEmail('');
+                      }
+                    } catch (error) {
+                      console.error('Freebie submission error:', error);
+                      setFreebieMessage('An error occurred. Please try again.');
+                    } finally {
+                      setIsSubmittingFreebie(false);
+                    }
+                  }}
+                  disabled={isSubmittingFreebie}
+                  className="group relative px-10 py-4 rounded-2xl bg-gradient-to-r from-red-600 to-red-700 text-amber-100 text-xl font-bold shadow-2xl hover:shadow-red-500/50 transition-all duration-300 transform hover:scale-105 overflow-hidden disabled:opacity-50 disabled:cursor-not-allowed border-2 border-amber-400/40"
+                >
+                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-amber-300/30 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
+                  <div className="relative flex items-center gap-2">
+                    {isSubmittingFreebie ? (
+                      <>
+                        <div className="w-5 h-5 border-4 border-amber-300 border-t-transparent rounded-full animate-spin" />
+                        Sending...
+                      </>
+                    ) : (
+                      <>
+                        <Download className="w-5 h-5 text-amber-300" />
+                        Get Free Coloring Sheets
+                      </>
+                    )}
+                  </div>
+                </button>
+              </div>
+            </div>
+          </div>
+        </section>
 
         {/* NUTCRACKERCORE COLLECTION */}
         <section id="about" className="container mx-auto px-6 py-24">
