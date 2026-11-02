@@ -22,6 +22,7 @@ import { PremiumSnowfall } from '../components/PremiumSnowfall';
 import { ChristmasCartProvider, useChristmasCart } from '../contexts/ChristmasCartContext';
 import { ChristmasCartButton } from '../components/ChristmasCartButton';
 import { ChristmasCartDrawer } from '../components/ChristmasCartDrawer';
+import { captureAttribution, getAttribution } from '../lib/attribution';
 
 const GothmasGallery = ({ images, name }: { images: string[]; name: string }) => {
   const [index, setIndex] = useState(0);
@@ -941,6 +942,8 @@ function ChristmasContent() {
       localStorage.setItem('christmas_customer_email', currentEmail);
     }
 
+    captureAttribution();
+
     try {
       const response = await fetch(`${SUPABASE_URL}/functions/v1/christmas-checkout`, {
         method: 'POST',
@@ -951,6 +954,7 @@ function ChristmasContent() {
           productId,
           email: currentEmail,
           designNumber,
+          attribution: getAttribution() ?? undefined,
         }),
       });
 

@@ -1,6 +1,7 @@
 import React, { useMemo, useState } from "react";
 import { createPortal } from "react-dom";
 import { useChristmasCart } from "../contexts/ChristmasCartContext";
+import { captureAttribution, getAttribution } from "../lib/attribution";
 
 type Props = {
   isOpen: boolean;
@@ -54,6 +55,7 @@ export function ChristmasCartDrawer({ isOpen, onClose, customerEmail }: Props) {
     setBusy(true);
 
     try {
+      captureAttribution();
       const cartItems = items.map((item: any) => ({
         type: item.type || 'santa_letter',
         designNumber: item.designNumber,
@@ -75,6 +77,7 @@ export function ChristmasCartDrawer({ isOpen, onClose, customerEmail }: Props) {
           cartItems,
           successUrl: `${window.location.origin}/thank-you`,
           cancelUrl: window.location.href,
+          attribution: getAttribution() ?? undefined,
         }),
       });
 
