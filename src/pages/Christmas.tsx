@@ -995,102 +995,102 @@ function ChristmasContent() {
       <PremiumSnowfall />
 
       <header className="fixed top-0 left-0 right-0 z-[100] backdrop-blur-xl bg-white/10 border-b border-white/20 shadow-lg">
-        <nav className="container mx-auto px-6 py-4">
+        <nav className="container mx-auto px-6 py-3">
           <div className="flex items-center justify-between gap-6">
             <div className="flex items-center gap-3 flex-none">
               <img src="https://drive.google.com/thumbnail?id=1DPlx__vUHjFZ4zh3CTp-HWC-FX1dNtjQ&sz=w1200" alt="ChristmasFun.store" className="h-12 w-auto" />
             </div>
 
-            <div className="hidden md:flex flex-1 min-w-0 items-center gap-8 overflow-x-auto whitespace-nowrap [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-              <a
-                href="#home"
-                className="flex-none text-white/90 hover:text-amber-300 transition-colors font-medium"
-              >
-                Home
-              </a>
-              <a
-                href="#designs"
-                className="flex-none text-white/90 hover:text-amber-300 transition-colors font-medium"
-              >
-                Santa Letters
-              </a>
-              <a
-                href="#christmas-notes"
-                className="flex-none text-white/90 hover:text-amber-300 transition-colors font-medium"
-              >
-                Christmas Notes
-              </a>
-              <a
-                href="#adult-coloring"
-                className="flex-none text-white/90 hover:text-amber-300 transition-colors font-medium"
-              >
-                Free Coloring
-              </a>
-              <a
-                href="#teachers"
-                className="flex-none text-white/90 hover:text-amber-300 transition-colors font-medium"
-              >
-                Teachers
-              </a>
-              <a
-                href="#bundle"
-                className="flex-none text-white/90 hover:text-amber-300 transition-colors font-medium"
-              >
-                Bundle
-              </a>
-              <a
-                href="#elf-kit"
-                className="flex-none text-red-200 hover:text-white transition-colors font-semibold border border-red-400/50 rounded-full px-4 py-1.5 bg-red-500/20 hover:bg-red-500/40"
-              >
-                Elf Kit
-                <span className="ml-1.5 rounded-full bg-amber-400 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-red-950">New</span>
-              </a>
-              <a
-                href="#memory-night"
-                className="flex-none text-green-200 hover:text-white transition-colors font-semibold border border-green-400/50 rounded-full px-4 py-1.5 bg-green-500/20 hover:bg-green-500/40"
-              >
-                Memory Night
-                <span className="ml-1.5 rounded-full bg-amber-400 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-green-950">New</span>
-              </a>
-              <a
-                href="#heirloom-planner"
-                className="flex-none text-amber-200 hover:text-white transition-colors font-semibold border border-amber-400/50 rounded-full px-4 py-1.5 bg-amber-500/20 hover:bg-amber-500/40"
-              >
-                Heirloom Planner
-                <span className="ml-1.5 rounded-full bg-amber-400 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-amber-950">New</span>
-              </a>
-              <a
-                href="#nutcrackercore"
-                className="flex-none text-red-200 hover:text-white transition-colors font-semibold border border-red-400/50 rounded-full px-4 py-1.5 bg-red-500/20 hover:bg-red-500/40"
-              >
-                Nutcrackercore
-                <span className="ml-1.5 rounded-full bg-amber-400 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-red-950">New</span>
-              </a>
-              <a
-                href="#personalized"
-                className="flex-none text-emerald-200 hover:text-white transition-colors font-semibold border border-emerald-400/50 rounded-full px-4 py-1.5 bg-emerald-500/20 hover:bg-emerald-500/40"
-              >
-                Personalized
-                <span className="ml-1.5 rounded-full bg-amber-400 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-emerald-950">New</span>
-              </a>
-              <a
-                href="#gothmas"
-                className="flex-none text-purple-200 hover:text-white transition-colors font-semibold border border-purple-400/50 rounded-full px-4 py-1.5 bg-purple-500/20 hover:bg-purple-500/40"
-              >
-                Gothmas
-                <span className="ml-1.5 rounded-full bg-amber-400 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-purple-950">New</span>
-              </a>
-              <a
-                href="#faq"
-                className="flex-none text-white/90 hover:text-amber-300 transition-colors font-medium"
-              >
-                FAQ
-              </a>
-            </div>
-
             <div className="flex items-center gap-4 flex-none">
               <ChristmasCartButton onClick={() => setIsCartOpen(true)} />
             </div>
+          </div>
+
+          <div className="hidden md:flex flex-wrap items-center justify-center gap-x-4 gap-y-1 mt-2">
+            <a
+              href="#home"
+              className="flex-none whitespace-nowrap text-sm text-white/90 hover:text-amber-300 transition-colors font-medium"
+            >
+              Home
+            </a>
+            <a
+              href="#designs"
+              className="flex-none whitespace-nowrap text-sm text-white/90 hover:text-amber-300 transition-colors font-medium"
+            >
+              Santa Letters
+            </a>
+            <a
+              href="#christmas-notes"
+              className="flex-none whitespace-nowrap text-sm text-white/90 hover:text-amber-300 transition-colors font-medium"
+            >
+              Christmas Notes
+            </a>
+            <a
+              href="#adult-coloring"
+              className="flex-none whitespace-nowrap text-sm text-white/90 hover:text-amber-300 transition-colors font-medium"
+            >
+              Free Coloring
+            </a>
+            <a
+              href="#teachers"
+              className="flex-none whitespace-nowrap text-sm text-white/90 hover:text-amber-300 transition-colors font-medium"
+            >
+              Teachers
+            </a>
+            <a
+              href="#bundle"
+              className="flex-none whitespace-nowrap text-sm text-white/90 hover:text-amber-300 transition-colors font-medium"
+            >
+              Bundle
+            </a>
+            <a
+              href="#elf-kit"
+              className="flex-none whitespace-nowrap text-xs text-red-200 hover:text-white transition-colors font-semibold border border-red-400/50 rounded-full px-3 py-1 bg-red-500/20 hover:bg-red-500/40"
+            >
+              Elf Kit
+              <span className="ml-1.5 rounded-full bg-amber-400 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-red-950">New</span>
+            </a>
+            <a
+              href="#memory-night"
+              className="flex-none whitespace-nowrap text-xs text-green-200 hover:text-white transition-colors font-semibold border border-green-400/50 rounded-full px-3 py-1 bg-green-500/20 hover:bg-green-500/40"
+            >
+              Memory Night
+              <span className="ml-1.5 rounded-full bg-amber-400 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-green-950">New</span>
+            </a>
+            <a
+              href="#heirloom-planner"
+              className="flex-none whitespace-nowrap text-xs text-amber-200 hover:text-white transition-colors font-semibold border border-amber-400/50 rounded-full px-3 py-1 bg-amber-500/20 hover:bg-amber-500/40"
+            >
+              Heirloom Planner
+              <span className="ml-1.5 rounded-full bg-amber-400 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-amber-950">New</span>
+            </a>
+            <a
+              href="#nutcrackercore"
+              className="flex-none whitespace-nowrap text-xs text-red-200 hover:text-white transition-colors font-semibold border border-red-400/50 rounded-full px-3 py-1 bg-red-500/20 hover:bg-red-500/40"
+            >
+              Nutcrackercore
+              <span className="ml-1.5 rounded-full bg-amber-400 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-red-950">New</span>
+            </a>
+            <a
+              href="#personalized"
+              className="flex-none whitespace-nowrap text-xs text-emerald-200 hover:text-white transition-colors font-semibold border border-emerald-400/50 rounded-full px-3 py-1 bg-emerald-500/20 hover:bg-emerald-500/40"
+            >
+              Personalized
+              <span className="ml-1.5 rounded-full bg-amber-400 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-emerald-950">New</span>
+            </a>
+            <a
+              href="#gothmas"
+              className="flex-none whitespace-nowrap text-xs text-purple-200 hover:text-white transition-colors font-semibold border border-purple-400/50 rounded-full px-3 py-1 bg-purple-500/20 hover:bg-purple-500/40"
+            >
+              Gothmas
+              <span className="ml-1.5 rounded-full bg-amber-400 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-purple-950">New</span>
+            </a>
+            <a
+              href="#faq"
+              className="flex-none whitespace-nowrap text-sm text-white/90 hover:text-amber-300 transition-colors font-medium"
+            >
+              FAQ
+            </a>
           </div>
 
           <div className="md:hidden mt-3 overflow-x-auto whitespace-nowrap">
@@ -1190,9 +1190,9 @@ function ChristmasContent() {
         customerEmail={email}
       />
 
-      <main className="relative z-10 pt-20">
+      <main className="relative z-10 pt-20 md:pt-[180px] xl:pt-[148px]">
         {showEmailNotification && (
-          <div className="fixed top-24 left-1/2 transform -translate-x-1/2 z-[200] animate-slideDown">
+          <div className="fixed top-24 md:top-[188px] xl:top-[156px] left-1/2 transform -translate-x-1/2 z-[200] animate-slideDown">
             <div className="bg-gradient-to-r from-amber-500/95 to-amber-600/95 backdrop-blur-xl border-2 border-amber-400 rounded-2xl px-8 py-4 shadow-2xl shadow-amber-500/50">
               <div className="flex items-center gap-3">
                 <div className="w-2 h-2 rounded-full bg-white animate-pulse" />
@@ -1508,46 +1508,46 @@ function ChristmasContent() {
 
         {/* TEACHERS */}
         <section id="teachers" className="container mx-auto px-6 py-24">
-          <div className="max-w-4xl mx-auto">
-            <div className="relative overflow-hidden rounded-3xl bg-white/10 backdrop-blur-xl border-2 border-white/20 p-12 shadow-2xl">
+          <div className="max-w-2xl mx-auto">
+            <div className="relative overflow-hidden rounded-3xl bg-white/10 backdrop-blur-xl border-2 border-white/20 p-8 shadow-2xl">
               <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full blur-3xl" />
               <div className="absolute bottom-0 left-0 w-64 h-64 bg-amber-600/10 rounded-full blur-3xl" />
 
               <div className="relative z-10">
-                <div className="flex items-center gap-4 mb-6">
-                  <div className="p-4 rounded-2xl bg-amber-500/20">
-                    <GraduationCap className="w-12 h-12 text-amber-300" />
+                <div className="flex items-center gap-3 mb-5">
+                  <div className="p-3 rounded-2xl bg-amber-500/20">
+                    <GraduationCap className="w-9 h-9 text-amber-300" />
                   </div>
-                  <h2 className="text-4xl md:text-5xl font-serif text-white">
+                  <h2 className="text-3xl md:text-4xl font-serif text-white">
                     Teachers Love These!
                   </h2>
                 </div>
 
-                <div className="space-y-6 mb-8">
-                  <div className="flex items-start gap-4">
+                <div className="grid sm:grid-cols-2 gap-x-8 gap-y-4 mb-6">
+                  <div className="flex items-start gap-3">
                     <div className="mt-1 w-2 h-2 rounded-full bg-amber-400" />
-                    <p className="text-xl text-white/90">Perfect for creative writing prompts</p>
+                    <p className="text-lg text-white/90">Perfect for creative writing prompts</p>
                   </div>
-                  <div className="flex items-start gap-4">
+                  <div className="flex items-start gap-3">
                     <div className="mt-1 w-2 h-2 rounded-full bg-amber-400" />
-                    <p className="text-xl text-white/90">Beautiful classroom bulletin boards</p>
+                    <p className="text-lg text-white/90">Beautiful classroom bulletin boards</p>
                   </div>
-                  <div className="flex items-start gap-4">
+                  <div className="flex items-start gap-3">
                     <div className="mt-1 w-2 h-2 rounded-full bg-amber-400" />
-                    <p className="text-xl text-white/90">Engaging holiday learning packets</p>
+                    <p className="text-lg text-white/90">Engaging holiday learning packets</p>
                   </div>
-                  <div className="flex items-start gap-4">
+                  <div className="flex items-start gap-3">
                     <div className="mt-1 w-2 h-2 rounded-full bg-amber-400" />
-                    <p className="text-xl text-white/90">Unlimited printing with license</p>
+                    <p className="text-lg text-white/90">Unlimited printing with license</p>
                   </div>
                 </div>
 
                 <div className="flex justify-center">
                   <button
                     onClick={() => handleCheckout('teacher_license_499')}
-                    className="w-full sm:w-auto px-8 py-4 rounded-2xl bg-gradient-to-r from-red-600 to-red-700 text-amber-100 text-xl font-bold shadow-lg hover:shadow-red-500/50 transition-all duration-300 transform hover:scale-105 flex items-center justify-center gap-3 border-2 border-amber-400/40"
+                    className="w-full sm:w-auto px-6 py-3 rounded-2xl bg-gradient-to-r from-red-600 to-red-700 text-amber-100 text-lg font-bold shadow-lg hover:shadow-red-500/50 transition-all duration-300 transform hover:scale-105 flex items-center justify-center gap-3 border-2 border-amber-400/40"
                   >
-                    <Download className="w-6 h-6 text-amber-300" />
+                    <Download className="w-5 h-5 text-amber-300" />
                     Add Teacher License, $4.99
                   </button>
                 </div>
@@ -1558,42 +1558,42 @@ function ChristmasContent() {
 
         {/* BUNDLE */}
         <section id="bundle" className="container mx-auto px-6 py-24">
-          <div className="max-w-4xl mx-auto">
-            <div className="relative overflow-hidden rounded-3xl bg-white/10 backdrop-blur-xl border-2 border-white/20 p-12 shadow-2xl">
+          <div className="max-w-2xl mx-auto">
+            <div className="relative overflow-hidden rounded-3xl bg-white/10 backdrop-blur-xl border-2 border-white/20 p-8 shadow-2xl">
               <div className="absolute inset-0 bg-gradient-to-br from-white/5 via-transparent to-amber-500/10 animate-pulse" />
 
               <div className="relative z-10 text-center">
-                <div className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-amber-500/20 border border-amber-400/50 text-amber-300 font-bold mb-6">
+                <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-amber-500/20 border border-amber-400/50 text-amber-300 text-sm font-bold mb-5">
                   <Star className="w-5 h-5 fill-amber-300" />
                   BEST VALUE
                   <Star className="w-5 h-5 fill-amber-300" />
                 </div>
 
-                <h2 className="text-5xl md:text-6xl font-serif text-white mb-4">
+                <h2 className="text-4xl md:text-5xl font-serif text-white mb-4">
                   The Christmas Classics Bundle
                 </h2>
-                <p className="text-xl text-white/80 mb-4">
+                <p className="text-lg text-white/80 mb-4">
                   20 Santa Letters + 4 Christmas Notes
                 </p>
-                <div className="text-7xl font-bold text-amber-300 mb-3">Only $9.99</div>
-                <p className="text-xl text-amber-200 mb-8">
+                <div className="text-5xl font-bold text-amber-300 mb-3">Only $9.99</div>
+                <p className="text-lg text-amber-200 mb-6">
                   20 letters plus 4 notes for $9.99, under 50 cents a design
                 </p>
 
-                <div className="space-y-4 mb-10">
-                  <div className="flex items-center justify-center gap-3 text-lg text-white/90">
+                <div className="space-y-3 mb-8">
+                  <div className="flex items-center justify-center gap-3 text-base text-white/90">
                     <div className="w-2 h-2 rounded-full bg-amber-400" />
                     Instant download - no waiting
                   </div>
-                  <div className="flex items-center justify-center gap-3 text-lg text-white/90">
+                  <div className="flex items-center justify-center gap-3 text-base text-white/90">
                     <div className="w-2 h-2 rounded-full bg-amber-400" />
                     Unlimited personal prints
                   </div>
-                  <div className="flex items-center justify-center gap-3 text-lg text-white/90">
+                  <div className="flex items-center justify-center gap-3 text-base text-white/90">
                     <div className="w-2 h-2 rounded-full bg-amber-400" />
                     Create lasting holiday keepsakes
                   </div>
-                  <div className="flex items-center justify-center gap-3 text-lg text-white/90">
+                  <div className="flex items-center justify-center gap-3 text-base text-white/90">
                     <div className="w-2 h-2 rounded-full bg-amber-400" />
                     Save Over $7 When You Bundle!
                   </div>
@@ -1601,11 +1601,11 @@ function ChristmasContent() {
 
                 <button
                   onClick={() => handleCheckout('bundle_14_999')}
-                  className="group relative px-12 py-6 rounded-2xl bg-gradient-to-r from-red-600 via-red-700 to-red-800 text-amber-100 text-2xl font-bold shadow-2xl hover:shadow-red-500/50 transition-all duration-300 transform hover:scale-105 overflow-hidden border-2 border-amber-400/40"
+                  className="group relative px-8 py-4 rounded-2xl bg-gradient-to-r from-red-600 via-red-700 to-red-800 text-amber-100 text-xl font-bold shadow-2xl hover:shadow-red-500/50 transition-all duration-300 transform hover:scale-105 overflow-hidden border-2 border-amber-400/40"
                 >
                   <div className="absolute inset-0 bg-gradient-to-r from-transparent via-amber-300/30 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
                   <div className="relative flex items-center gap-3">
-                    <ShoppingCart className="w-7 h-7 text-amber-300" />
+                    <ShoppingCart className="w-6 h-6 text-amber-300" />
                     Buy Bundle Now
                   </div>
                 </button>
