@@ -35,6 +35,8 @@ notes/
 prompts/
 private/
 *.txt
+!public/llms.txt
+!public/robots.txt
 deploy.sh
 
 # Bolt-specific metadata (keeps repo clean)
