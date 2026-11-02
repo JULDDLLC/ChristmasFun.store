@@ -43,6 +43,16 @@ Deno.serve(async (req: Request) => {
 
     const body = await req.json();
 
+    // Campaign attribution (optional): stamp the Stripe session with the
+    // campaign that brought this buyer, when the storefront sent one.
+    const cleanUtm = (v: unknown) => String(v ?? "").replace(/[^a-zA-Z0-9_\-.]/g, "").slice(0, 100);
+    const utmMeta: Record<string, string> = {};
+    const attr = body.attribution && typeof body.attribution === "object" ? body.attribution : {};
+    for (const k of ["utm_source", "utm_medium", "utm_campaign"]) {
+      const v = cleanUtm((attr as Record<string, unknown>)[k]);
+      if (v) utmMeta[k] = v;
+    }
+
     const email = (body.email || body.customerEmail || "").trim().toLowerCase();
     if (!email || !email.includes("@")) {
       return json({ error: "Invalid email" }, 400);
@@ -78,6 +88,7 @@ Deno.serve(async (req: Request) => {
         product_id: productId || priceId,
         design_number: String(body.designNumber || body.design_number || ''),
         source: "christmasfun.store",
+        ...utmMeta,
       },
     });
 

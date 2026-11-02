@@ -30,6 +30,11 @@ type RequestBody = {
   successUrl?: string;
   cancelUrl?: string;
   promoCode?: string;            // optional, we just enable promo codes in Stripe
+  attribution?: {                // optional campaign tags from the storefront
+    utm_source?: string;
+    utm_medium?: string;
+    utm_campaign?: string;
+  };
 };
 
 const PRICE_ID_BY_TYPE: Record<string, string> = {
@@ -146,6 +151,16 @@ Deno.serve(async (req: Request) => {
       .map((item) => String(Number(item.designNumber)));
     const designNumbers = Array.from(new Set(letterDesigns)).join(',');
 
+    // Campaign attribution (optional): stamp the Stripe session with the
+    // campaign that brought this buyer, when the storefront sent one.
+    const cleanUtm = (v: unknown) => String(v ?? "").replace(/[^a-zA-Z0-9_\-.]/g, "").slice(0, 100);
+    const utmMeta: Record<string, string> = {};
+    const attr = body.attribution && typeof body.attribution === "object" ? body.attribution : {};
+    for (const k of ["utm_source", "utm_medium", "utm_campaign"]) {
+      const v = cleanUtm((attr as Record<string, unknown>)[k]);
+      if (v) utmMeta[k] = v;
+    }
+
     const session = await stripe.checkout.sessions.create({
       mode: "payment",
       customer_email: email,
@@ -157,6 +172,7 @@ Deno.serve(async (req: Request) => {
         source: "christmasfun.store",
         design_numbers: designNumbers,
         cart_json: JSON.stringify(cartItems).slice(0, 490),
+        ...utmMeta,
       },
     });
 
