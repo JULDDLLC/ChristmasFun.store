@@ -1,4 +1,5 @@
 /// <reference types="npm:@types/node" />
+// redeploy Nov 2 2026
 
 import Stripe from "npm:stripe@14.21.0";
 
