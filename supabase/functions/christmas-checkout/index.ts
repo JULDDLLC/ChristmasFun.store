@@ -1,4 +1,5 @@
 // attribution ship Nov 2
+// attribution redeploy Nov 2 second touch
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import Stripe from "npm:stripe@14.21.0";
 
