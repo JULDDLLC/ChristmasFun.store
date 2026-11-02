@@ -1275,7 +1275,7 @@ function ChristmasContent() {
           <p className="text-center text-amber-300 font-semibold uppercase tracking-[0.25em] text-sm mb-6">
             New for 2026 Collections
           </p>
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
             <a
               href="#elf-kit"
               className="block rounded-3xl border border-red-400/30 bg-gradient-to-br from-red-950/80 via-rose-900/50 to-slate-900/80 backdrop-blur-xl px-7 py-7 shadow-2xl shadow-red-950/50 hover:border-red-300/60 transition-colors"
@@ -1375,7 +1375,7 @@ function ChristmasContent() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-            {(showAllDesigns ? designs : designs.slice(0, 6)).map((design, index) => (
+            {(showAllDesigns ? designs : designs.slice(0, 4)).map((design, index) => (
               <DesignCard
                 key={index}
                 number={index + 1}
