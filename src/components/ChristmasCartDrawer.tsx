@@ -1,4 +1,5 @@
 import React, { useMemo, useState } from "react";
+import { createPortal } from "react-dom";
 import { useChristmasCart } from "../contexts/ChristmasCartContext";
 
 type Props = {
@@ -169,11 +170,12 @@ export function ChristmasCartDrawer({ isOpen, onClose, customerEmail }: Props) {
 
   if (!isOpen) return null;
 
-  return (
+  return createPortal(
     <div className="fixed inset-0 z-[200]">
       <div className="absolute inset-0 bg-black/60" onClick={onClose} />
 
-      <div className="absolute right-0 top-0 h-full w-full max-w-md bg-slate-950 border-l border-white/10 p-6 overflow-y-auto">
+      <div className="absolute right-0 top-0 h-full max-h-dvh w-[min(100%,28rem)] bg-slate-950 border-l border-white/10 p-6 flex flex-col overflow-hidden">
+        <div className="shrink-0">
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-white text-xl font-semibold">Your Cart</h3>
           <button
@@ -296,8 +298,9 @@ export function ChristmasCartDrawer({ isOpen, onClose, customerEmail }: Props) {
         >
           Clear Cart
         </button>
+        </div>
 
-        <div className="mt-6 space-y-3">
+        <div className="mt-6 space-y-3 flex-1 min-h-0 overflow-y-auto">
           {(Array.isArray(items) ? items : []).map((item: any) => (
             <div
               key={item.id}
@@ -313,7 +316,7 @@ export function ChristmasCartDrawer({ isOpen, onClose, customerEmail }: Props) {
                 <div className="w-16 h-20 rounded-xl bg-white/10 border border-white/10" />
               )}
 
-              <div className="flex-1">
+              <div className="flex-1 min-w-0">
                 <div className="text-white font-semibold text-sm">{item.name}</div>
                 {item.description ? (
                   <div className="text-white/60 text-xs mt-1">{item.description}</div>
@@ -338,7 +341,8 @@ export function ChristmasCartDrawer({ isOpen, onClose, customerEmail }: Props) {
           <div className="text-white/60 text-sm mt-6">Your cart is empty.</div>
         ) : null}
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }
 

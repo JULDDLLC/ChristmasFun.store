@@ -996,99 +996,99 @@ function ChristmasContent() {
 
       <header className="fixed top-0 left-0 right-0 z-[100] backdrop-blur-xl bg-white/10 border-b border-white/20 shadow-lg">
         <nav className="container mx-auto px-6 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
+          <div className="flex items-center justify-between gap-6">
+            <div className="flex items-center gap-3 flex-none">
               <img src="https://drive.google.com/thumbnail?id=1DPlx__vUHjFZ4zh3CTp-HWC-FX1dNtjQ&sz=w1200" alt="ChristmasFun.store" className="h-12 w-auto" />
             </div>
 
-            <div className="hidden md:flex items-center gap-8">
+            <div className="hidden md:flex flex-1 min-w-0 items-center gap-8 overflow-x-auto whitespace-nowrap [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
               <a
                 href="#home"
-                className="text-white/90 hover:text-amber-300 transition-colors font-medium"
+                className="flex-none text-white/90 hover:text-amber-300 transition-colors font-medium"
               >
                 Home
               </a>
               <a
                 href="#designs"
-                className="text-white/90 hover:text-amber-300 transition-colors font-medium"
+                className="flex-none text-white/90 hover:text-amber-300 transition-colors font-medium"
               >
                 Santa Letters
               </a>
               <a
                 href="#christmas-notes"
-                className="text-white/90 hover:text-amber-300 transition-colors font-medium"
+                className="flex-none text-white/90 hover:text-amber-300 transition-colors font-medium"
               >
                 Christmas Notes
               </a>
               <a
                 href="#adult-coloring"
-                className="text-white/90 hover:text-amber-300 transition-colors font-medium"
+                className="flex-none text-white/90 hover:text-amber-300 transition-colors font-medium"
               >
                 Free Coloring
               </a>
               <a
                 href="#teachers"
-                className="text-white/90 hover:text-amber-300 transition-colors font-medium"
+                className="flex-none text-white/90 hover:text-amber-300 transition-colors font-medium"
               >
                 Teachers
               </a>
               <a
                 href="#bundle"
-                className="text-white/90 hover:text-amber-300 transition-colors font-medium"
+                className="flex-none text-white/90 hover:text-amber-300 transition-colors font-medium"
               >
                 Bundle
               </a>
               <a
                 href="#elf-kit"
-                className="text-red-200 hover:text-white transition-colors font-semibold border border-red-400/50 rounded-full px-4 py-1.5 bg-red-500/20 hover:bg-red-500/40"
+                className="flex-none text-red-200 hover:text-white transition-colors font-semibold border border-red-400/50 rounded-full px-4 py-1.5 bg-red-500/20 hover:bg-red-500/40"
               >
                 Elf Kit
                 <span className="ml-1.5 rounded-full bg-amber-400 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-red-950">New</span>
               </a>
               <a
                 href="#memory-night"
-                className="text-green-200 hover:text-white transition-colors font-semibold border border-green-400/50 rounded-full px-4 py-1.5 bg-green-500/20 hover:bg-green-500/40"
+                className="flex-none text-green-200 hover:text-white transition-colors font-semibold border border-green-400/50 rounded-full px-4 py-1.5 bg-green-500/20 hover:bg-green-500/40"
               >
                 Memory Night
                 <span className="ml-1.5 rounded-full bg-amber-400 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-green-950">New</span>
               </a>
               <a
                 href="#heirloom-planner"
-                className="text-amber-200 hover:text-white transition-colors font-semibold border border-amber-400/50 rounded-full px-4 py-1.5 bg-amber-500/20 hover:bg-amber-500/40"
+                className="flex-none text-amber-200 hover:text-white transition-colors font-semibold border border-amber-400/50 rounded-full px-4 py-1.5 bg-amber-500/20 hover:bg-amber-500/40"
               >
                 Heirloom Planner
                 <span className="ml-1.5 rounded-full bg-amber-400 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-amber-950">New</span>
               </a>
               <a
                 href="#nutcrackercore"
-                className="text-red-200 hover:text-white transition-colors font-semibold border border-red-400/50 rounded-full px-4 py-1.5 bg-red-500/20 hover:bg-red-500/40"
+                className="flex-none text-red-200 hover:text-white transition-colors font-semibold border border-red-400/50 rounded-full px-4 py-1.5 bg-red-500/20 hover:bg-red-500/40"
               >
                 Nutcrackercore
                 <span className="ml-1.5 rounded-full bg-amber-400 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-red-950">New</span>
               </a>
               <a
                 href="#personalized"
-                className="text-emerald-200 hover:text-white transition-colors font-semibold border border-emerald-400/50 rounded-full px-4 py-1.5 bg-emerald-500/20 hover:bg-emerald-500/40"
+                className="flex-none text-emerald-200 hover:text-white transition-colors font-semibold border border-emerald-400/50 rounded-full px-4 py-1.5 bg-emerald-500/20 hover:bg-emerald-500/40"
               >
                 Personalized
                 <span className="ml-1.5 rounded-full bg-amber-400 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-emerald-950">New</span>
               </a>
               <a
                 href="#gothmas"
-                className="text-purple-200 hover:text-white transition-colors font-semibold border border-purple-400/50 rounded-full px-4 py-1.5 bg-purple-500/20 hover:bg-purple-500/40"
+                className="flex-none text-purple-200 hover:text-white transition-colors font-semibold border border-purple-400/50 rounded-full px-4 py-1.5 bg-purple-500/20 hover:bg-purple-500/40"
               >
                 Gothmas
                 <span className="ml-1.5 rounded-full bg-amber-400 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-purple-950">New</span>
               </a>
               <a
                 href="#faq"
-                className="text-white/90 hover:text-amber-300 transition-colors font-medium"
+                className="flex-none text-white/90 hover:text-amber-300 transition-colors font-medium"
               >
                 FAQ
               </a>
             </div>
 
-            <div className="flex items-center gap-4 shrink-0">
+            <div className="flex items-center gap-4 flex-none">
               <ChristmasCartButton onClick={() => setIsCartOpen(true)} />
             </div>
           </div>
