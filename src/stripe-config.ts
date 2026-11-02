@@ -6,6 +6,8 @@ export interface StripeProduct {
   name: string;
   description: string;
   price: number;     // Display price in USD (for UI only)
+  listPrice?: number;   // Regular price, shown struck through during a launch window
+  launchNote?: string;  // Launch pricing note shown under the price
   currency: string;
   mode: 'subscription' | 'payment'; // All of these are one-time payments
 }
@@ -270,6 +272,18 @@ export const STRIPE_PRODUCTS: StripeProduct[] = [
     description:
       '78 pages of elf magic, planned for you. Type your elf\'s name once and it signs every daily note, tiny card, and envelope. Boy and girl elf editions of the arrival and goodbye letters, an Elf Adoption Certificate and Christmas Eve Final Report, 24 daily elf notes, 42 handwritten tiny cards including Night Off excuse cards and Secret Missions for older kids, printable envelopes sized to fit the cards, a fillable Elf Passport, the Official Nice O Meter, a wish list letter to Santa, a 14 page games pack with 4 unique bingo boards, props and signs, Magic Dust labels, a printable sheet of 12 North Pole wax seals, 2 coloring pages, and a parent guide with a 24 night staging calendar, a letter from Santa to the parents, the Keeping the Magic guide, and the Santa\'s Helper Invitation for tweens and teens. 39 fillable fields type right in the PDF. Instant download, print at home on US Letter paper.',
     price: 7.99,
+    currency: 'usd',
+    mode: 'payment',
+  },
+  {
+    id: 'prod_VYUA0QxAr4JgWI',
+    priceId: 'price_1UXNCPBsr66TjEhQGtBDZ4pd',
+    name: 'The Christmas Heirloom Planner & Gift Budget Tracker',
+    description:
+      'A 67 page heirloom Christmas planner that keeps the whole season in one beautiful place, delivered as four easy downloads in one purchase: the 67 page planner book, fillable gift and budget forms you can type right in, a reusable auto calendar that fills in its own dates for any month and year, and an extras pack with dated November and December 2026 calendars plus an Excel gift budget tracker that does the math for you. Gift trackers and gift ideas pages, orders and wrapping lists, menu and baking planners, a card address list, hosting and travel pages, gift tags, family recipe cards, and keepsake memory pages to save the season. US Letter, print at home or fill in on screen. Instant download.',
+    price: 9.99,
+    listPrice: 14.99,
+    launchNote: 'Launch price through December 1, then $14.99',
     currency: 'usd',
     mode: 'payment',
   },
