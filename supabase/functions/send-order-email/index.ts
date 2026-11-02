@@ -1,4 +1,5 @@
 import 'jsr:@supabase/functions-js/edge-runtime.d.ts';
+// redeploy Nov 2 2026
 
 const RESEND_API_KEY = Deno.env.get('RESEND_API_KEY');
 
