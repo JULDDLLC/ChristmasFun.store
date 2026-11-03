@@ -508,7 +508,7 @@ function ChristmasContent() {
       id: 'gothmas_wall_art',
       type: 'gothmas_wall_art',
       name: 'Gothic Winter Wall Art - Set of 3',
-      description: 'A snow-covered gothic cathedral, a candlelit tree, and a winter raven. Print-ready in 5x7, 8x10, and 11x14.',
+      description: 'A snow-covered gothic cathedral, a candlelit Christmas tree in a paneled library, and a manor mantel with tartan stockings. Print-ready in 5x7, 8x10, and 11x14.',
       images: [
         'https://drive.google.com/thumbnail?id=1o4I_DNtXyMsODmOMXLjfswLTXATrvLmV&sz=w1200',
         'https://drive.google.com/thumbnail?id=1C79FxdiHiAP-coV48_5jdFjB0uHkRbV4&sz=w1200',

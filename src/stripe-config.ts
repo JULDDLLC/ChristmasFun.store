@@ -90,7 +90,7 @@ export const STRIPE_PRODUCTS: StripeProduct[] = [
     priceId: 'price_1UPbfkBsr66TjEhQKvjSkHYW',
     name: 'Gothic Winter - Vintage Wall Art Print Set of 3',
     description:
-      'Three printable wall art designs in an aged, old-world style: a snow-covered gothic cathedral with warm candlelit windows, a candlelit gothic tree, and a winter raven. Sized for 5x7, 8x10, and 11x14 frames, as print-ready PDF and JPG files. Instant download.',
+      'Three printable wall art designs in a classic dark academia style: a snow-covered gothic cathedral with warm candlelit windows, a candlelit Christmas tree in a paneled library, and a manor fireplace mantel with tartan stockings. Sized for 5x7, 8x10, and 11x14 frames, as print-ready PDF and JPG files. Instant download.',
     price: 2.99,
     currency: 'usd',
     mode: 'payment',
