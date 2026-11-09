@@ -259,6 +259,31 @@ function ChristmasContent() {
     }
   }, []);
 
+  // Scroll to a deep link (#elf-kit, #memory-night, etc.) on direct load.
+  // The browser's native anchor scroll fires before images and fonts finish
+  // laying the page out, so it lands at the top instead of the product.
+  // Re-apply the scroll a few times until the layout settles.
+  useEffect(() => {
+    const hash = window.location.hash;
+    if (!hash) return;
+    const targetId = hash.slice(1);
+    const scrollToTarget = () => {
+      const el = document.getElementById(targetId);
+      if (el) {
+        el.scrollIntoView({ behavior: 'auto', block: 'start' });
+        return true;
+      }
+      return false;
+    };
+    if (scrollToTarget()) {
+      const timers = [200, 500, 1000, 2000].map((ms) =>
+        window.setTimeout(scrollToTarget, ms),
+      );
+      return () => timers.forEach((t) => window.clearTimeout(t));
+    }
+    return undefined;
+  }, []);
+
   // Save email to localStorage when it changes
   useEffect(() => {
     if (email && email.includes('@')) {
