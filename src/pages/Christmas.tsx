@@ -266,7 +266,10 @@ function ChristmasContent() {
   useEffect(() => {
     const hash = window.location.hash;
     if (!hash) return;
-    const targetId = hash.slice(1);
+    const rawId = hash.slice(1);
+    // Short aliases people type or share: #planner means the Heirloom Planner.
+    const aliases: Record<string, string> = { planner: 'heirloom-planner' };
+    const targetId = aliases[rawId] ?? rawId;
     const scrollToTarget = () => {
       const el = document.getElementById(targetId);
       if (el) {
@@ -1571,14 +1574,94 @@ function ChristmasContent() {
                   </div>
                 </div>
 
+                <p className="text-lg text-amber-100/90 mb-6">
+                  One license covers all 48 designs: the 24 Christmas Classics, 20 Santa
+                  Letters, and 4 Christmas Notes, with unlimited printing for one classroom.
+                </p>
+
                 <div className="flex justify-center">
                   <button
-                    onClick={() => handleCheckout('teacher_license_499')}
-                    className="w-full sm:w-auto px-6 py-3 rounded-2xl bg-gradient-to-r from-red-600 to-red-700 text-amber-100 text-lg font-bold shadow-lg hover:shadow-red-500/50 transition-all duration-300 transform hover:scale-105 flex items-center justify-center gap-3 border-2 border-amber-400/40"
+                    onClick={() => {
+                      addToCart({
+                        id: 'teacher_license',
+                        type: 'teacher_license',
+                        name: 'Teacher License',
+                        description:
+                          'Classroom license covering all 48 designs: the 24 Christmas Classics, 20 Santa Letters, and 4 Christmas Notes. Unlimited printing for one classroom.',
+                        image:
+                          'https://cdn1.site-media.eu/images/0/21587768/design1-Z3wu6c1nLAh3ACrbe46Gmg.png',
+                        price: 4.99,
+                        priceId: 'price_1ScH6KBsr66TjEhQAhED4Lsd',
+                      });
+                    }}
+                    disabled={isInCart('teacher_license')}
+                    className={`w-full sm:w-auto px-6 py-3 rounded-2xl text-amber-100 text-lg font-bold shadow-lg transition-all duration-300 flex items-center justify-center gap-3 border-2 border-amber-400/40 ${
+                      isInCart('teacher_license')
+                        ? 'bg-green-600/60 cursor-default'
+                        : 'bg-gradient-to-r from-red-600 to-red-700 hover:shadow-red-500/50 transform hover:scale-105'
+                    }`}
                   >
-                    <Download className="w-5 h-5 text-amber-300" />
-                    Add Teacher License, $4.99
+                    {isInCart('teacher_license') ? (
+                      <>
+                        <Check className="w-5 h-5 text-amber-300" />
+                        Teacher License in Cart
+                      </>
+                    ) : (
+                      <>
+                        <Plus className="w-5 h-5 text-amber-300" />
+                        Add Teacher License to Cart, $4.99
+                      </>
+                    )}
                   </button>
+                </div>
+
+                <div className="mt-8 pt-6 border-t border-white/15 text-center">
+                  <p className="text-2xl font-serif text-white mb-2">
+                    Classroom Ready Bundle, $12.99
+                  </p>
+                  <p className="text-lg text-white/85 mb-5">
+                    The Christmas Classics Bundle plus the Teacher License in one purchase.
+                    Bought separately they come to $14.98, so the bundle saves you $1.99 and
+                    covers your classroom for every design.
+                  </p>
+                  {/* Classroom Ready Bundle: Stripe price price_1UaSAMBsr66TjEhQmzmmLNbZ
+                      (product prod_VbfVsvr2ri57Vl), wired in src/stripe-config.ts and both
+                      checkout and webhook functions. See CLASSROOM-BUNDLE-IMPLEMENTATION.md. */}
+                  <div className="flex justify-center">
+                    <button
+                      onClick={() => {
+                        addToCart({
+                          id: 'classroom_ready_bundle',
+                          type: 'classroom_ready_bundle',
+                          name: 'Classroom Ready Bundle',
+                          description:
+                            'The Christmas Classics Bundle (20 Santa Letters + 4 Christmas Notes) plus the Teacher License for unlimited printing for one classroom.',
+                          image:
+                            'https://cdn1.site-media.eu/images/0/21587768/design1-Z3wu6c1nLAh3ACrbe46Gmg.png',
+                          price: 12.99,
+                          priceId: 'price_1UaSAMBsr66TjEhQmzmmLNbZ',
+                        });
+                      }}
+                      disabled={isInCart('classroom_ready_bundle')}
+                      className={`w-full sm:w-auto px-6 py-3 rounded-2xl text-amber-100 text-lg font-bold shadow-lg transition-all duration-300 flex items-center justify-center gap-3 border-2 border-amber-400/40 ${
+                        isInCart('classroom_ready_bundle')
+                          ? 'bg-green-600/60 cursor-default'
+                          : 'bg-gradient-to-r from-red-600 to-red-700 hover:shadow-red-500/50 transform hover:scale-105'
+                      }`}
+                    >
+                      {isInCart('classroom_ready_bundle') ? (
+                        <>
+                          <Check className="w-5 h-5 text-amber-300" />
+                          Classroom Ready Bundle in Cart
+                        </>
+                      ) : (
+                        <>
+                          <Plus className="w-5 h-5 text-amber-300" />
+                          Add the Bundle to Cart, $12.99
+                        </>
+                      )}
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>

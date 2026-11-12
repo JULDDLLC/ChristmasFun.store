@@ -70,8 +70,24 @@ export const STRIPE_PRODUCTS: StripeProduct[] = [
     priceId: 'price_1ScH6KBsr66TjEhQAhED4Lsd',
     name: 'Teacher License',
     description:
-      'One-time classroom license for unlimited classroom printing of all 24 Christmas Classics designs (20 Santa Letters + 4 Christmas Notes).',
+      'One-time classroom license for unlimited printing for one classroom of all 48 designs: the 24 Christmas Classics, 20 Santa Letters, and 4 Christmas Notes.',
     price: 4.99,
+    currency: 'usd',
+    mode: 'payment',
+  },
+  {
+    // TODO (Julie, before launch): the Classroom Ready Bundle does not exist in
+    // Stripe yet. Create the product and its $12.99 price in the Stripe Dashboard,
+    // then replace both REPLACE placeholders below with the real prod_ and price_
+    // IDs. The same price placeholder appears in src/pages/Christmas.tsx and in
+    // the christmas-checkout, christmas-multi-checkout, and stripe-webhook
+    // functions. See CLASSROOM-BUNDLE-IMPLEMENTATION.md for the full order.
+    id: 'prod_VbfVsvr2ri57Vl',
+    priceId: 'price_1UaSAMBsr66TjEhQmzmmLNbZ',
+    name: 'Classroom Ready Bundle',
+    description:
+      'The Christmas Classics Bundle (20 Santa Letters + 4 Christmas Notes) plus the Teacher License, in one purchase. The license covers all 48 designs with unlimited printing for one classroom.',
+    price: 12.99,
     currency: 'usd',
     mode: 'payment',
   },

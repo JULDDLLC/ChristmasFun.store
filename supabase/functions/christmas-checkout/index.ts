@@ -16,6 +16,10 @@ const PRODUCT_TO_PRICE: Record<string, string> = {
   'christmas_notes_bundle': 'price_1ScH30Bsr66TjEhQhwLwFAME',
   'teacher_license_499': 'price_1ScH6KBsr66TjEhQAhED4Lsd',
   'teacher_license': 'price_1ScH6KBsr66TjEhQAhED4Lsd',
+  // TODO (Julie, before launch): replace with the real Classroom Ready Bundle
+  // price ID once the product exists in Stripe. See CLASSROOM-BUNDLE-IMPLEMENTATION.md.
+  'classroom_ready_bundle_1299': 'price_1UaSAMBsr66TjEhQmzmmLNbZ',
+  'classroom_ready_bundle': 'price_1UaSAMBsr66TjEhQmzmmLNbZ',
   'santa_letter': 'price_1ScHCUBsr66TjEhQI5HBQqtU',
   'christmas_note': 'price_1ScGfNBsr66TjEhQxdfKXMcn',
   'free_coloring': 'price_1SctvEBsr66TjEhQ5XQ8NUxl',

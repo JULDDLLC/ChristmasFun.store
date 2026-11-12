@@ -52,9 +52,28 @@ const DOWNLOAD_LINK_LABELS: Record<string, string> = {
   'https://christmasfun.store/download/all-24-bundle': 'Christmas Classics Bundle',
 };
 
+// Products that deliver more than one download. The Classroom Ready Bundle is
+// the Classics Bundle plus the Teacher License, so its delivery email must
+// carry both download links.
+const PRODUCT_DOWNLOAD_EXPANSIONS: Record<string, string[]> = {
+  'classroom_ready_bundle': [
+    'https://christmasfun.store/download/all-24-bundle',
+    'https://christmasfun.store/download/teacher-license',
+  ],
+};
+
 function getDownloadLinksFromProducts(products: Array<{ product_id: string }>): string[] {
   const links: string[] = [];
   for (const p of products) {
+    const expanded = PRODUCT_DOWNLOAD_EXPANSIONS[p.product_id];
+    if (expanded) {
+      for (const link of expanded) {
+        if (!links.includes(link)) {
+          links.push(link);
+        }
+      }
+      continue;
+    }
     const link = PRODUCT_DOWNLOAD_MAP[p.product_id];
     if (link && !links.includes(link)) {
       links.push(link);

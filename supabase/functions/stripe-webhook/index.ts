@@ -33,6 +33,11 @@ const PRICE_ID_TO_PRODUCT = new Map<string, { product_id: string; label: string 
   ["price_1ScH30Bsr66TjEhQhwLwFAME", { product_id: "christmas_notes_bundle", label: "Christmas Notes Bundle" }],
   ["price_1ScGjvBsr66TjEhQ4cRtPYm1", { product_id: "all_18_bundle", label: "Christmas Classics Bundle" }],
   ["price_1ScH6KBsr66TjEhQAhED4Lsd", { product_id: "teacher_license", label: "Teacher License" }],
+  // TODO (Julie, before launch): replace the placeholder below with the real
+  // Classroom Ready Bundle price ID once the product exists in Stripe, then
+  // redeploy this function from Bolt (Server Functions) or bundle buyers will
+  // get no delivery email. See CLASSROOM-BUNDLE-IMPLEMENTATION.md.
+  ["price_1UaSAMBsr66TjEhQmzmmLNbZ", { product_id: "classroom_ready_bundle", label: "Classroom Ready Bundle" }],
   ["price_1SctvEBsr66TjEhQ5XQ8NUxl", { product_id: "free_coloring", label: "Free Coloring Sheets" }],
   ["price_1UPbfPBsr66TjEhQAgZ52nsc", { product_id: "gothmas_ornaments", label: "Gothmas Ornament Design Bundle" }],
   ["price_1UPbfkBsr66TjEhQKvjSkHYW", { product_id: "gothmas_wall_art", label: "Gothic Winter Wall Art Set of 3" }],
