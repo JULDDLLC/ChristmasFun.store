@@ -252,6 +252,14 @@ const PRODUCT_FILES: Record<string, { name: string; note?: string; files: { labe
 // old /download/all-18-bundle links keep working.
 PRODUCT_FILES['all-24-bundle'] = PRODUCT_FILES['all-18-bundle'];
 
+PRODUCT_FILES['grandparents-countdown'] = {
+  name: "Grandparents' Christmas Countdown",
+  note: 'Your countdown comes as one ZIP with all five parts: the Start Here guide, the illustrated cards (double sided), the single sided edition with the Christmas Eve keepsake, the envelopes with date seals, and the gift note.',
+  files: [
+    { label: "Grandparents' Christmas Countdown, Complete Kit (ZIP)", url: 'https://drive.usercontent.google.com/download?id=18W9Bj0c0D2Ksg-9hTRF5d0LVigk3x6_8&export=download&confirm=t', filename: 'Grandparents-Christmas-Countdown.zip' },
+  ],
+};
+
 function defaultFilename(label: string, url: string): string {
   const base = label.replace(/\s+\((ZIP|43 page PDF)\)\s*$/, '').replace(/'/g, '').replace(/[^A-Za-z0-9]+/g, '_').replace(/^_+|_+$/g, '');
   const m = url.match(/\.(png|jpe?g|pdf)(?:$|\?)/i);

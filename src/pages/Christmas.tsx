@@ -848,6 +848,30 @@ function ChristmasContent() {
   ];
 
 
+  const grandparentsCountdownProducts: Array<{
+    id: string;
+    type: 'grandparents_countdown';
+    name: string;
+    description: string;
+    images: string[];
+    price: number;
+    priceId: string;
+  }> = [
+    {
+      id: 'grandparents_countdown',
+      type: 'grandparents_countdown',
+      name: "Grandparents' Christmas Countdown",
+      description: 'Inside the ZIP: Start Here guide, 24 illustrated cards (double sided edition), single sided countdown with the Christmas Eve keepsake, printable envelopes and 24 date seals, and the gift note.',
+      images: [
+        'https://drive.google.com/thumbnail?id=1EXEKSeFi8pcb6lkruPMFWTWCCXLFIR9E&sz=w1200',
+        'https://drive.google.com/thumbnail?id=1tzi_y60i7biKRade4VuWJc8dn5qntx0G&sz=w1200',
+      ],
+      price: 6.99,
+      priceId: 'price_1UamVqBsr66TjEhQ6QrQCvX6',
+    },
+  ];
+
+
   const elfKitProducts: Array<{
     id: string;
     type: 'elf_kit';
@@ -1090,6 +1114,13 @@ function ChristmasContent() {
               <span className="ml-1.5 rounded-full bg-amber-400 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-green-950">New</span>
             </a>
             <a
+              href="#grandparents-countdown"
+              className="flex-none whitespace-nowrap text-xs text-rose-200 hover:text-white transition-colors font-semibold border border-rose-400/50 rounded-full px-3 py-1 bg-rose-500/20 hover:bg-rose-500/40"
+            >
+              Grandparents' Countdown
+              <span className="ml-1.5 rounded-full bg-amber-400 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-rose-950">New</span>
+            </a>
+            <a
               href="#heirloom-planner"
               className="flex-none whitespace-nowrap text-xs text-amber-200 hover:text-white transition-colors font-semibold border border-amber-400/50 rounded-full px-3 py-1 bg-amber-500/20 hover:bg-amber-500/40"
             >
@@ -1176,6 +1207,13 @@ function ChristmasContent() {
               >
                 Memory Night
                 <span className="ml-1.5 rounded-full bg-amber-400 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-green-950">New</span>
+              </a>
+              <a
+                href="#grandparents-countdown"
+                className="inline-flex items-center shrink-0 text-rose-200 font-semibold border border-rose-400/50 rounded-full px-3 py-1.5 bg-rose-500/20"
+              >
+                Grandparents' Countdown
+                <span className="ml-1.5 rounded-full bg-amber-400 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-rose-950">New</span>
               </a>
               <a
                 href="#heirloom-planner"
@@ -1909,6 +1947,104 @@ function ChristmasContent() {
           <div className="text-center mt-12">
             <p className="text-xl text-green-100/90">
               One kit, one unforgettable night - an instant download you can print tonight and use again every year.
+            </p>
+          </div>
+        </section>
+
+
+        <section id="grandparents-countdown" className="container mx-auto px-6 py-24">
+          <div className="text-center mb-16">
+            <p className="text-amber-300 font-semibold uppercase tracking-[0.25em] text-sm mb-4">
+              New for 2026
+            </p>
+            <div className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-gradient-to-r from-green-700/30 to-amber-600/30 backdrop-blur-xl border border-green-300/40 text-green-100 font-medium mb-6">
+              <Star className="w-5 h-5 text-amber-200" />
+              Grandparents' Christmas Countdown
+            </div>
+            <h2 className="text-5xl md:text-6xl font-serif text-white mb-6">
+              Grandparents' Christmas Countdown
+            </h2>
+            <p className="text-2xl md:text-3xl font-serif italic text-amber-200 mb-6">
+              24 Days of Traditions, Stories, and Little Moments Together
+            </p>
+            <p className="text-lg md:text-xl text-white/80 max-w-2xl mx-auto leading-relaxed">
+              24 illustrated cards, one for each day from December 1 to Christmas Eve. Every card
+              carries a story prompt, a small activity, and an if you're apart version, so it works
+              across the table or from miles away, by call, voice note, or mail. Print the illustrated
+              cards double sided, or use the single sided edition if that is easier. Envelopes and
+              December date seals are included for grandparents who want to mail the days ahead, plus
+              a gift note and a Christmas Eve keepsake page to save.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {grandparentsCountdownProducts.map((product) => {
+              const inCart = isInCart(product.id);
+
+              return (
+                <div
+                  key={product.id}
+                  className="group relative overflow-hidden rounded-3xl bg-white/10 backdrop-blur-xl border border-white/20 shadow-2xl transition-all duration-500 hover:scale-105 hover:shadow-amber-500/30 lg:col-start-2"
+                >
+                  <div className="absolute inset-0 bg-gradient-to-br from-amber-500/20 via-transparent to-green-600/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                  <div className="relative p-6">
+                    <div className="aspect-[4/3] bg-gradient-to-br from-white/5 to-white/10 rounded-2xl mb-4 flex items-center justify-center overflow-hidden">
+                      <GothmasGallery images={product.images} name={product.name} />
+                    </div>
+                    <h3 className="text-xl font-serif text-white mb-2">{product.name}</h3>
+                    <p className="text-sm text-white/70 mb-3">{product.description}</p>
+                    <p className="text-lg font-bold text-white mb-1">
+                      ${product.price.toFixed(2)}
+                    </p>
+                    <p className="text-sm font-semibold text-amber-300 mb-3">Starts December 1. Print today and be ready.</p>
+                    <button
+                      onClick={() => {
+                        addToCart({
+                          id: product.id,
+                          type: product.type,
+                          name: product.name,
+                          description: product.description,
+                          image: product.images[0],
+                          price: product.price,
+                          priceId: product.priceId,
+                        });
+                      }}
+                      disabled={inCart}
+                      className={`w-full py-2 px-4 rounded-xl font-semibold transition-all duration-300 border border-amber-300/30 flex items-center justify-center gap-2 ${
+                        inCart
+                          ? 'bg-green-600/50 text-white cursor-default'
+                          : 'bg-gradient-to-r from-green-700 to-green-900 text-green-50 hover:from-green-800 hover:to-emerald-950'
+                      }`}
+                    >
+                      {inCart ? (
+                        <>
+                          <Check className="w-4 h-4" />
+                          In Cart
+                        </>
+                      ) : (
+                        <>
+                          <Plus className="w-4 h-4" />
+                          Add to Cart
+                        </>
+                      )}
+                    </button>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          <div className="text-center mt-12">
+            <p className="text-xl text-green-100/90">
+              Want a taste first?{' '}
+              <a
+                href="https://drive.usercontent.google.com/download?id=18tmtZLFJljVS5tI5vHl8tIfavp2jqvgU&amp;export=download&amp;confirm=t"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-semibold underline decoration-amber-300 underline-offset-4 hover:text-amber-200"
+              >
+                Download the free 3 card sampler.
+              </a>
             </p>
           </div>
         </section>

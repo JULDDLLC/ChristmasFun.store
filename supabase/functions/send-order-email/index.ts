@@ -39,6 +39,7 @@ const PRODUCT_DOWNLOAD_MAP: Record<string, string> = {
   'personalized_pet': 'https://christmasfun.store/download/personalized-pet',
   'personalized_collection': 'https://christmasfun.store/download/personalized-collection',
   'memory_night_kit': 'https://christmasfun.store/download/memory-night-kit',
+  'grandparents_countdown': 'https://christmasfun.store/download/grandparents-countdown',
   'elf_kit': 'https://christmasfun.store/download/elf-kit',
   'heirloom_planner': 'https://christmasfun.store/download/christmas-heirloom-planner',
 };
@@ -47,6 +48,7 @@ const PRODUCT_DOWNLOAD_MAP: Record<string, string> = {
 // match the product's full name. Keyed by the exact download URL.
 const DOWNLOAD_LINK_LABELS: Record<string, string> = {
   'https://christmasfun.store/download/memory-night-kit': 'Christmas Memory Night Kit',
+  'https://christmasfun.store/download/grandparents-countdown': "Grandparents' Christmas Countdown",
   'https://christmasfun.store/download/elf-kit': 'The 24 Day Elf Kit',
   'https://christmasfun.store/download/christmas-heirloom-planner': 'The Christmas Heirloom Planner & Gift Budget Tracker',
   'https://christmasfun.store/download/all-24-bundle': 'Christmas Classics Bundle',
