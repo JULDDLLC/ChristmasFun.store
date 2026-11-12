@@ -44,6 +44,9 @@ const PRICE_ID_BY_TYPE: Record<string, string> = {
   christmas_notes_bundle: "price_1ScH30Bsr66TjEhQhwLwFAME",
   all_18_bundle: "price_1ScGjvBsr66TjEhQ4cRtPYm1",
   teacher_license: "price_1ScH6KBsr66TjEhQAhED4Lsd",
+  // TODO (Julie, before launch): replace with the real Classroom Ready Bundle
+  // price ID once the product exists in Stripe. See CLASSROOM-BUNDLE-IMPLEMENTATION.md.
+  classroom_ready_bundle: "price_1UaSAMBsr66TjEhQmzmmLNbZ",
   free_coloring: "price_1SctvEBsr66TjEhQ5XQ8NUxl",
   gothmas_ornaments: "price_1UPbfPBsr66TjEhQAgZ52nsc",
   gothmas_wall_art: "price_1UPbfkBsr66TjEhQKvjSkHYW",
