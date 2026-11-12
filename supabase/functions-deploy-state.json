@@ -19,7 +19,7 @@
     },
     "send-order-email": {
       "hasChanged": false,
-      "hash": "82803f1e20be04f912f988f80f1e285c170b110c244fb6d6aa441cbc2bb8668c"
+      "hash": "819e6880f962809a6fa55e533f9a18c97fae0d98659951e5b411477a64f25c73"
     },
     "stripe-checkout": {
       "hasChanged": false,
