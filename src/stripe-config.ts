@@ -303,6 +303,16 @@ export const STRIPE_PRODUCTS: StripeProduct[] = [
     currency: 'usd',
     mode: 'payment',
   },
+  {
+    id: 'prod_Vc0W1BdCbdAarF',
+    priceId: 'price_1UamVqBsr66TjEhQ6QrQCvX6',
+    name: "Grandparents' Christmas Countdown",
+    description:
+      'A printable countdown made for grandparents and grandkids: 24 illustrated cards, one for each day from December 1 to Christmas Eve, each with a story prompt, a small activity, and an if you\'re apart version, so it works across the table or from miles away, by call, voice note, or mail. Print the illustrated cards double sided, or use the single sided edition if that is easier. Envelopes and December date seals are included for grandparents who want to mail the days ahead, plus a gift note and a Christmas Eve keepsake page to save. Instant download, print at home on US Letter paper.',
+    price: 6.99,
+    currency: 'usd',
+    mode: 'payment',
+  },
 ];
 
 export const getProductById = (id: string): StripeProduct | undefined => {
