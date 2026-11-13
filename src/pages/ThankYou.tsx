@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { CheckCircle2, Home } from 'lucide-react';
+import { firePendingPurchase } from '../lib/analytics';
 
 const ThankYouPage: React.FC = () => {
   let sessionId = '';
@@ -7,6 +8,12 @@ const ThankYouPage: React.FC = () => {
     const params = new URLSearchParams(window.location.search);
     sessionId = params.get('session_id') || '';
   }
+
+  // Fire the GA4 purchase event once, using the order stashed at checkout.
+  useEffect(() => {
+    firePendingPurchase(sessionId);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const shortId =
     sessionId.length > 10 ? sessionId.slice(-10) : sessionId || 'N/A';

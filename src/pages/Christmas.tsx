@@ -23,6 +23,25 @@ import { ChristmasCartProvider, useChristmasCart } from '../contexts/ChristmasCa
 import { ChristmasCartButton } from '../components/ChristmasCartButton';
 import { ChristmasCartDrawer } from '../components/ChristmasCartDrawer';
 import { captureAttribution, getAttribution } from '../lib/attribution';
+import { savePendingOrder } from '../lib/analytics';
+import { getProductByPriceId } from '../stripe-config';
+
+// Mirrors PRODUCT_TO_PRICE in the christmas-checkout edge function, which is
+// the authority on which Stripe price each single item productId buys. Used
+// only to label the GA4 purchase event; the price itself comes from
+// stripe-config via getProductByPriceId.
+const PRODUCT_ID_TO_PRICE_ID: Record<string, string> = {
+  bundle_14_999: 'price_1ScGjvBsr66TjEhQ4cRtPYm1',
+  all_18_bundle: 'price_1ScGjvBsr66TjEhQ4cRtPYm1',
+  notes_bundle_299: 'price_1ScH30Bsr66TjEhQhwLwFAME',
+  christmas_notes_bundle: 'price_1ScH30Bsr66TjEhQhwLwFAME',
+  teacher_license_499: 'price_1ScH6KBsr66TjEhQAhED4Lsd',
+  teacher_license: 'price_1ScH6KBsr66TjEhQAhED4Lsd',
+  classroom_ready_bundle_1299: 'price_1UaSAMBsr66TjEhQmzmmLNbZ',
+  classroom_ready_bundle: 'price_1UaSAMBsr66TjEhQmzmmLNbZ',
+  santa_letter: 'price_1ScHCUBsr66TjEhQI5HBQqtU',
+  christmas_note: 'price_1ScGfNBsr66TjEhQxdfKXMcn',
+};
 
 const GothmasGallery = ({ images, name }: { images: string[]; name: string }) => {
   const [index, setIndex] = useState(0);
@@ -1030,6 +1049,25 @@ function ChristmasContent() {
       }
 
       if (data.url) {
+        // Stash the order so the ThankYou page can fire the GA4 purchase
+        // event. Only when the productId resolves to a known product with a
+        // known price; never guess a price for analytics.
+        const priceId = PRODUCT_ID_TO_PRICE_ID[productId];
+        const product = priceId ? getProductByPriceId(priceId) : undefined;
+        if (product) {
+          savePendingOrder(
+            [
+              {
+                item_id: productId,
+                item_name: product.name,
+                price: product.price,
+                quantity: 1,
+              },
+            ],
+            product.price
+          );
+        }
+
         const newWindow = window.open(data.url, '_blank');
         if (!newWindow || newWindow.closed) {
           window.location.href = data.url;
@@ -1876,6 +1914,9 @@ function ChristmasContent() {
               for you in one printable kit. Deep green, classic red, and antique gold, made for
               grandparents, grandkids, and everyone at the table.
             </p>
+            <p className="text-lg md:text-xl text-white/80 max-w-2xl mx-auto leading-relaxed mt-4">
+              43 pages in all: a host guide, 6 games, 36 conversation cards, a photo scavenger hunt, 8 recipe cards, a family keepsake, Santa gift tags, a letter from Santa, and a Nice List certificate.
+            </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -2066,6 +2107,9 @@ function ChristmasContent() {
               A 67 page heirloom planner in deep green, tartan, and brass, with dated 2026
               calendars, a reusable calendar that fills in its own dates, gift and budget pages
               that keep every dollar accounted for, and keepsake pages worth saving for good.
+            </p>
+            <p className="text-lg md:text-xl text-white/80 max-w-2xl mx-auto leading-relaxed mt-4">
+              Part 4 includes an Excel Gift Budget Tracker with live formulas that keep your totals as you shop.
             </p>
           </div>
 
