@@ -263,8 +263,12 @@ function ChristmasContent() {
   const [isSubmittingFreebie, setIsSubmittingFreebie] = useState(false);
   const [freebieMessage, setFreebieMessage] = useState<string | null>(null);
   const [coloringTab, setColoringTab] = useState<'adult' | 'kids'>('adult');
-  const [showEmailNotification, setShowEmailNotification] = useState(false);
-  const [emailInputShake, setEmailInputShake] = useState(false);
+  const [emailPrompt, setEmailPrompt] = useState<{
+    productId: string;
+    designNumber?: number;
+  } | null>(null);
+  const [promptEmail, setPromptEmail] = useState('');
+  const [promptEmailError, setPromptEmailError] = useState('');
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [showAllDesigns, setShowAllDesigns] = useState(false);
 
@@ -988,29 +992,13 @@ function ChristmasContent() {
     },
   ];
 
-  const scrollToEmailInput = () => {
-    const emailInput = document.querySelector('input[type="email"]') as HTMLInputElement | null;
-    if (emailInput) {
-      emailInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      emailInput.focus();
-
-      setEmailInputShake(true);
-      setTimeout(() => setEmailInputShake(false), 500);
-    }
-  };
-
-  const handleCheckout = async (productId: string, designNumber?: number) => {
-    const currentEmail = email || localStorage.getItem('christmas_customer_email') || '';
-
-    if (!currentEmail) {
-      setShowEmailNotification(true);
-      scrollToEmailInput();
-      setTimeout(() => setShowEmailNotification(false), 4000);
-      return;
-    }
-
-    if (currentEmail && currentEmail.includes('@')) {
-      localStorage.setItem('christmas_customer_email', currentEmail);
+  const proceedCheckout = async (
+    productId: string,
+    designNumber: number | undefined,
+    emailToUse: string
+  ) => {
+    if (emailToUse && emailToUse.includes('@')) {
+      localStorage.setItem('christmas_customer_email', emailToUse);
     }
 
     captureAttribution();
@@ -1023,7 +1011,7 @@ function ChristmasContent() {
         },
         body: JSON.stringify({
           productId,
-          email: currentEmail,
+          email: emailToUse,
           designNumber,
           attribution: getAttribution() ?? undefined,
         }),
@@ -1079,6 +1067,42 @@ function ChristmasContent() {
       console.error('Checkout error:', error);
       setFreebieMessage('An error occurred. Please try again.');
     }
+  };
+
+  const handleCheckout = async (productId: string, designNumber?: number) => {
+    const currentEmail = email || localStorage.getItem('christmas_customer_email') || '';
+
+    if (currentEmail && currentEmail.includes('@')) {
+      await proceedCheckout(productId, designNumber, currentEmail);
+      return;
+    }
+
+    // No email on file: ask for it right here, in place, instead of
+    // bouncing the visitor back to the top of the page.
+    setPromptEmail(email || '');
+    setPromptEmailError('');
+    setEmailPrompt({ productId, designNumber });
+  };
+
+  const closeEmailPrompt = () => {
+    setEmailPrompt(null);
+    setPromptEmailError('');
+  };
+
+  const handleEmailPromptContinue = async () => {
+    if (!emailPrompt) return;
+
+    const trimmed = promptEmail.trim();
+    if (!trimmed.includes('@')) {
+      setPromptEmailError('Please enter a valid email address');
+      return;
+    }
+
+    const { productId, designNumber } = emailPrompt;
+    setEmail(trimmed);
+    localStorage.setItem('christmas_customer_email', trimmed);
+    closeEmailPrompt();
+    await proceedCheckout(productId, designNumber, trimmed);
   };
 
   return (
@@ -1299,19 +1323,6 @@ function ChristmasContent() {
       />
 
       <main className="relative z-10 pt-20 md:pt-[180px] xl:pt-[148px]">
-        {showEmailNotification && (
-          <div className="fixed top-24 md:top-[188px] xl:top-[156px] left-1/2 transform -translate-x-1/2 z-[200] animate-slideDown">
-            <div className="bg-gradient-to-r from-amber-500/95 to-amber-600/95 backdrop-blur-xl border-2 border-amber-400 rounded-2xl px-8 py-4 shadow-2xl shadow-amber-500/50">
-              <div className="flex items-center gap-3">
-                <div className="w-2 h-2 rounded-full bg-white animate-pulse" />
-                <p className="text-white font-semibold text-lg">
-                  Please enter your email address to continue
-                </p>
-              </div>
-            </div>
-          </div>
-        )}
-
         {/* HERO */}
         <section id="home" className="relative overflow-hidden">
           <div className="absolute inset-0 bg-gradient-to-br from-red-900/70 via-red-800/60 to-red-950/70"></div>
@@ -1337,20 +1348,6 @@ function ChristmasContent() {
               <p className="text-lg md:text-xl text-amber-100/80 max-w-2xl mx-auto leading-relaxed tracking-wide">
   Includes 20 Santa Letters · 4 Christmas Notes · 10 Free Coloring Pages · Plus Gothmas, Nutcrackercore, Personalized Ornaments, the Memory Night Kit &amp; the 24 Day Elf Kit &amp; the Christmas Heirloom Planner, the Grandparents' Christmas Countdown &amp; the Classroom Ready Bundle
 </p>
-
-              <div className="flex flex-col sm:flex-row items-center justify-center gap-6 mt-12">
-                <input
-                  id="hero-email"
-                  name="email"
-                  type="email"
-                  placeholder="Enter your email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className={`w-full sm:w-96 px-6 py-4 rounded-2xl bg-white/10 backdrop-blur-xl border border-white/20 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-amber-400 transition-all ${
-                    emailInputShake ? 'animate-shake border-amber-400 ring-2 ring-amber-400' : ''
-                  }`}
-                />
-              </div>
 
               <div className="flex flex-col sm:flex-row items-center justify-center gap-6 mt-8">
                 <button
@@ -2764,6 +2761,62 @@ function ChristmasContent() {
           </div>
         </div>
       </footer>
+
+      {emailPrompt &&
+        createPortal(
+          <div
+            className="fixed inset-0 z-[300] flex items-center justify-center bg-black/70 backdrop-blur-sm px-4"
+            onClick={closeEmailPrompt}
+          >
+            <div
+              className="w-full max-w-md rounded-3xl bg-slate-900/95 backdrop-blur-xl border-2 border-amber-400/40 shadow-2xl shadow-amber-900/50 p-8 text-center"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <h2 className="text-2xl md:text-3xl font-serif text-white mb-3">
+                Where should we send your download?
+              </h2>
+              <p className="text-white/80 mb-6">
+                Your files arrive by email right after checkout.
+              </p>
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  handleEmailPromptContinue();
+                }}
+              >
+                <input
+                  type="email"
+                  name="email"
+                  placeholder="Enter your email"
+                  autoFocus
+                  value={promptEmail}
+                  onChange={(e) => {
+                    setPromptEmail(e.target.value);
+                    if (promptEmailError) setPromptEmailError('');
+                  }}
+                  className="w-full px-6 py-4 rounded-2xl bg-white/10 backdrop-blur-xl border border-white/20 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-amber-400 transition-all"
+                />
+                {promptEmailError && (
+                  <p className="mt-3 text-sm text-red-300">{promptEmailError}</p>
+                )}
+                <button
+                  type="submit"
+                  className="mt-6 w-full px-8 py-4 rounded-2xl bg-gradient-to-r from-red-600 via-red-700 to-red-800 text-white text-lg font-bold shadow-2xl hover:shadow-red-500/50 transition-all duration-300 border-2 border-amber-400/30"
+                >
+                  Continue to Checkout
+                </button>
+              </form>
+              <button
+                type="button"
+                onClick={closeEmailPrompt}
+                className="mt-4 text-white/60 hover:text-white text-sm underline underline-offset-4 transition-colors"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>,
+          document.body
+        )}
     </div>
   );
 }
