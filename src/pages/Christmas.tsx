@@ -1335,7 +1335,7 @@ function ChristmasContent() {
               </h1>
 
               <p className="text-lg md:text-xl text-amber-100/80 max-w-2xl mx-auto leading-relaxed tracking-wide">
-  Includes 20 Santa Letters · 4 Christmas Notes · 10 Free Coloring Pages · Plus Gothmas, Nutcrackercore, Personalized Ornaments, the Memory Night Kit &amp; the 24 Day Elf Kit &amp; the Christmas Heirloom Planner
+  Includes 20 Santa Letters · 4 Christmas Notes · 10 Free Coloring Pages · Plus Gothmas, Nutcrackercore, Personalized Ornaments, the Memory Night Kit &amp; the 24 Day Elf Kit &amp; the Christmas Heirloom Planner, the Grandparents' Christmas Countdown &amp; the Classroom Ready Bundle
 </p>
 
               <div className="flex flex-col sm:flex-row items-center justify-center gap-6 mt-12">
@@ -1915,7 +1915,7 @@ function ChristmasContent() {
               grandparents, grandkids, and everyone at the table.
             </p>
             <p className="text-lg md:text-xl text-white/80 max-w-2xl mx-auto leading-relaxed mt-4">
-              43 pages in all: a host guide, 6 games, 36 conversation cards, a photo scavenger hunt, 8 recipe cards, a family keepsake, Santa gift tags, a letter from Santa, and a Nice List certificate.
+              43 pages: host guide, 6 games, 36 conversation cards, photo scavenger hunt, 8 recipe cards, family keepsake, Santa tags, letter and Nice List certificate.
             </p>
           </div>
 
@@ -2109,7 +2109,7 @@ function ChristmasContent() {
               that keep every dollar accounted for, and keepsake pages worth saving for good.
             </p>
             <p className="text-lg md:text-xl text-white/80 max-w-2xl mx-auto leading-relaxed mt-4">
-              Part 4 includes an Excel Gift Budget Tracker with live formulas that keep your totals as you shop.
+              Includes an Excel gift and budget tracker.
             </p>
           </div>
 
