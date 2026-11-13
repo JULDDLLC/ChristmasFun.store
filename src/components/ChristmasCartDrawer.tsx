@@ -2,6 +2,7 @@ import React, { useMemo, useState } from "react";
 import { createPortal } from "react-dom";
 import { useChristmasCart } from "../contexts/ChristmasCartContext";
 import { captureAttribution, getAttribution } from "../lib/attribution";
+import { savePendingOrder } from "../lib/analytics";
 
 type Props = {
   isOpen: boolean;
@@ -98,6 +99,20 @@ export function ChristmasCartDrawer({ isOpen, onClose, customerEmail }: Props) {
         setError("Checkout failed. Missing redirect URL.");
         return;
       }
+
+      // Stash the order so the ThankYou page can fire the GA4 purchase event.
+      savePendingOrder(
+        items.map((item: any) => ({
+          item_id: String(item.type || item.id || "item"),
+          item_name: item.name || String(item.type || "Item"),
+          price: item.price || 0,
+          quantity: item.quantity || 1,
+        })),
+        items.reduce(
+          (sum: number, item: any) => sum + (item.price || 0) * (item.quantity || 1),
+          0
+        )
+      );
 
       const newWindow = window.open(data.url, '_blank');
       if (!newWindow || newWindow.closed) {
