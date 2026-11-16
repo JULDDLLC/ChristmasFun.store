@@ -1,3 +1,4 @@
+// peeking launch 2026-11-15
 // attribution ship Nov 2
 /// <reference types="npm:@types/node" />
 // redeploy Nov 2 2026
