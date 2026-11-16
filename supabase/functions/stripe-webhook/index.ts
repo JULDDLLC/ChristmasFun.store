@@ -1,5 +1,3 @@
-// deploy refresh 2026-11-12
-// ship 2026-11-11 countdown
 // ship 2026-11-11
 // redeploy Nov 2 2026
 /// <reference types="npm:@types/node" />
@@ -63,6 +61,7 @@ const PRICE_ID_TO_PRODUCT = new Map<string, { product_id: string; label: string 
   ["price_1UUU19Bsr66TjEhQPV367Jqt", { product_id: "memory_night_kit", label: "Christmas Memory Night Kit" }],
   ["price_1UWh1yBsr66TjEhQU4nJQFiX", { product_id: "memory_night_kit", label: "Christmas Memory Night Kit" }],
   ["price_1UamVqBsr66TjEhQ6QrQCvX6", { product_id: "grandparents_countdown", label: "Grandparents' Christmas Countdown" }],
+  ["price_1UcDbOBsr66TjEhQoFSFfaYF", { product_id: "peeking_christmas", label: "Peeking Christmas" }],
   ["price_1UUZROBsr66TjEhQpbSjSgQ0", { product_id: "elf_kit", label: "The 24 Day Elf Kit" }],
   ["price_1UWfd3Bsr66TjEhQRFIzmTcX", { product_id: "elf_kit", label: "The 24 Day Elf Kit" }],
   ["price_1UXNDfBsr66TjEhQHF9s0EXH", { product_id: "heirloom_planner", label: "The Christmas Heirloom Planner & Gift Budget Tracker" }],

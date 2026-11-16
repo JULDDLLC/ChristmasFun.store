@@ -67,7 +67,8 @@ const GothmasGallery = ({ images, name }: { images: string[]; name: string }) =>
   const chip = "flex items-center gap-2 rounded-full bg-zinc-900/95 border border-white/50 text-white shadow-lg transition-colors hover:bg-zinc-700";
 
   return (
-    <div className="relative w-full h-full bg-[#f3ecdd]">
+    <div className="relative w-full h-full bg-[#f3ecdd] flex flex-col">
+      <div className="relative flex-1 min-h-0">
       <img
         src={images[index]}
         alt={name}
@@ -86,7 +87,12 @@ const GothmasGallery = ({ images, name }: { images: string[]; name: string }) =>
           <span className="absolute top-2 right-2 z-10 px-2 py-0.5 rounded-full bg-black/55 text-white text-xs font-medium">
             {index + 1} / {total}
           </span>
-          <div className="absolute bottom-2 left-1/2 -translate-x-1/2 z-10 flex gap-1.5">
+        </>
+      )}
+      </div>
+      <div className="relative h-9 shrink-0 flex items-center justify-center">
+        {total > 1 && (
+          <div className="flex gap-1.5">
             {images.map((_, i) => (
               <button
                 key={i}
@@ -94,21 +100,21 @@ const GothmasGallery = ({ images, name }: { images: string[]; name: string }) =>
                 onClick={() => setIndex(i)}
                 aria-label={`View image ${i + 1}`}
                 className={`w-2 h-2 rounded-full transition-colors ${
-                  i === index ? 'bg-white' : 'bg-white/40 hover:bg-white/70'
+                  i === index ? 'bg-zinc-800' : 'bg-zinc-400/70 hover:bg-zinc-500'
                 }`}
               />
             ))}
           </div>
-        </>
-      )}
-      <button
-        type="button"
-        onClick={() => setZoom(true)}
-        aria-label="Enlarge image"
-        className="absolute bottom-2 right-2 z-10 w-8 h-8 rounded-full bg-black/50 text-white flex items-center justify-center hover:bg-black/75 transition-colors"
-      >
-        <Maximize2 className="w-4 h-4" />
-      </button>
+        )}
+        <button
+          type="button"
+          onClick={() => setZoom(true)}
+          aria-label="Enlarge image"
+          className="absolute right-2 top-1/2 -translate-y-1/2 w-7 h-7 rounded-full bg-black/50 text-white flex items-center justify-center hover:bg-black/75 transition-colors"
+        >
+          <Maximize2 className="w-4 h-4" />
+        </button>
+      </div>
       {zoom && createPortal((
         <div className="fixed inset-0 z-[120] bg-[#1d150e]/95 flex flex-col">
           <div className="flex items-center justify-between gap-3 px-4 py-3">
@@ -895,6 +901,32 @@ function ChristmasContent() {
   ];
 
 
+  const peekingChristmasProducts: Array<{
+    id: string;
+    type: 'peeking_christmas';
+    name: string;
+    description: string;
+    images: string[];
+    price: number;
+    priceId: string;
+  }> = [
+    {
+      id: 'peeking_christmas',
+      type: 'peeking_christmas',
+      name: 'Peeking Christmas',
+      description: 'Inside the ZIP: 72 character images (24 characters in left, right, and top peek poses) in white background and transparent PNG versions, 5 extra peekers including a blank sign and banner for your own words, 3 bonus scenes, card fronts for all 24 characters, the classroom door sign, and the Start Here ideas page. All images 1800 x 1800.',
+      images: [
+        'https://drive.google.com/thumbnail?id=18JWjElVLrHek5_Z7mBlsCVjqd1RZKVOt&sz=w1200',
+        'https://drive.google.com/thumbnail?id=1CuXzJttHGo9_IgVuC1I3v5ZsMiqL8KAc&sz=w1200',
+        'https://drive.google.com/thumbnail?id=1fZZm_nlK1rFuT-L5pNhaVzDpyZYPKoNZ&sz=w1200',
+        'https://drive.google.com/thumbnail?id=1o4bwlw_jhyMh9u4tkKJz4-s1J8vh8NaM&sz=w1200',
+      ],
+      price: 6.99,
+      priceId: 'price_1UcDbOBsr66TjEhQoFSFfaYF',
+    },
+  ];
+
+
   const elfKitProducts: Array<{
     id: string;
     type: 'elf_kit';
@@ -1183,6 +1215,13 @@ function ChristmasContent() {
               <span className="ml-1.5 rounded-full bg-amber-400 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-rose-950">New</span>
             </a>
             <a
+              href="#peeking-christmas"
+              className="flex-none whitespace-nowrap text-xs text-teal-200 hover:text-white transition-colors font-semibold border border-teal-400/50 rounded-full px-3 py-1 bg-teal-500/20 hover:bg-teal-500/40"
+            >
+              Peeking Christmas
+              <span className="ml-1.5 rounded-full bg-amber-400 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-teal-950">New</span>
+            </a>
+            <a
               href="#heirloom-planner"
               className="flex-none whitespace-nowrap text-xs text-amber-200 hover:text-white transition-colors font-semibold border border-amber-400/50 rounded-full px-3 py-1 bg-amber-500/20 hover:bg-amber-500/40"
             >
@@ -1278,6 +1317,13 @@ function ChristmasContent() {
                 <span className="ml-1.5 rounded-full bg-amber-400 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-rose-950">New</span>
               </a>
               <a
+                href="#peeking-christmas"
+                className="inline-flex items-center shrink-0 text-teal-200 font-semibold border border-teal-400/50 rounded-full px-3 py-1.5 bg-teal-500/20"
+              >
+                Peeking Christmas
+                <span className="ml-1.5 rounded-full bg-amber-400 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-teal-950">New</span>
+              </a>
+              <a
                 href="#heirloom-planner"
                 className="inline-flex items-center shrink-0 text-amber-200 font-semibold border border-amber-400/50 rounded-full px-3 py-1.5 bg-amber-500/20"
               >
@@ -1346,7 +1392,7 @@ function ChristmasContent() {
               </h1>
 
               <p className="text-lg md:text-xl text-amber-100/80 max-w-2xl mx-auto leading-relaxed tracking-wide">
-  Includes 20 Santa Letters · 4 Christmas Notes · 10 Free Coloring Pages · Plus Gothmas, Nutcrackercore, Personalized Ornaments, the Memory Night Kit &amp; the 24 Day Elf Kit &amp; the Christmas Heirloom Planner, the Grandparents' Christmas Countdown &amp; the Classroom Ready Bundle
+  Includes 20 Santa Letters · 4 Christmas Notes · 10 Free Coloring Pages · Plus Gothmas, Nutcrackercore, Personalized Ornaments, the Memory Night Kit &amp; the 24 Day Elf Kit &amp; the Christmas Heirloom Planner, the Grandparents' Christmas Countdown &amp; the Classroom Ready Bundle &amp; Peeking Christmas
 </p>
 
               <div className="flex flex-col sm:flex-row items-center justify-center gap-6 mt-8">
@@ -1465,6 +1511,21 @@ function ChristmasContent() {
               </p>
               <span className="inline-block px-6 py-3 rounded-2xl bg-amber-600/80 text-white font-semibold shadow-lg shadow-amber-900/50">
                 Shop the Planner
+              </span>
+            </a>
+            <a
+              href="#peeking-christmas"
+              className="block rounded-3xl border border-teal-400/30 bg-gradient-to-br from-teal-950/80 via-teal-900/50 to-slate-900/80 backdrop-blur-xl px-7 py-7 shadow-2xl shadow-teal-950/50 hover:border-teal-300/60 transition-colors"
+            >
+              <Sparkles className="w-9 h-9 text-teal-300 mb-4" />
+              <h3 className="text-2xl font-serif text-white mb-2">Peeking Christmas</h3>
+              <p className="text-teal-100/70 text-sm leading-relaxed mb-5">
+                24 playful characters peeking around doors, cards, and classroom boards, each in
+                three poses, on white backgrounds and as full size transparent PNGs, with card
+                fronts for all 24 and a classroom door sign.
+              </p>
+              <span className="inline-block px-6 py-3 rounded-2xl bg-teal-600/80 text-white font-semibold shadow-lg shadow-teal-900/50">
+                Shop Peeking Christmas
               </span>
             </a>
           </div>
@@ -2083,6 +2144,120 @@ function ChristmasContent() {
               >
                 Download the free 3 card sampler.
               </a>
+            </p>
+          </div>
+        </section>
+
+
+        <section id="peeking-christmas" className="container mx-auto px-6 py-24">
+          <div className="text-center mb-16">
+            <p className="text-amber-300 font-semibold uppercase tracking-[0.25em] text-sm mb-4">
+              New for 2026
+            </p>
+            <div className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-gradient-to-r from-teal-700/30 to-amber-600/30 backdrop-blur-xl border border-teal-300/40 text-teal-100 font-medium mb-6">
+              <Sparkles className="w-5 h-5 text-amber-200" />
+              Peeking Christmas
+            </div>
+            <h2 className="text-5xl md:text-6xl font-serif text-white mb-6">
+              Peeking Christmas
+            </h2>
+            <p className="text-2xl md:text-3xl font-serif italic text-amber-200 mb-6">
+              24 Printable Christmas Characters and Clipart
+            </p>
+            <p className="text-lg md:text-xl text-white/80 max-w-2xl mx-auto leading-relaxed">
+              Every image comes in two versions: a white background that is ready to print, and a
+              transparent PNG at full size for cards and digital projects. That transparent set is
+              what most peeking collections leave out, and it is the whole point here: no
+              background to remove, ever.
+            </p>
+            <p className="text-lg md:text-xl text-white/80 max-w-2xl mx-auto leading-relaxed mt-4">
+              Santa peeking around a classroom door. A curious kitten on a card front. A
+              gingerbread man keeping an eye on the oven. 24 playful characters, each with left,
+              right, and top peeking poses, plus five extra peekers, three bonus scenes, card
+              fronts for all 24 characters, a classroom door sign, and a Start Here ideas page.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {peekingChristmasProducts.map((product) => {
+              const inCart = isInCart(product.id);
+
+              return (
+                <div
+                  key={product.id}
+                  className="group relative overflow-hidden rounded-3xl bg-white/10 backdrop-blur-xl border border-white/20 shadow-2xl transition-all duration-500 hover:scale-105 hover:shadow-teal-500/30 lg:col-start-2"
+                >
+                  <div className="absolute inset-0 bg-gradient-to-br from-teal-500/20 via-transparent to-amber-600/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                  <div className="relative p-6">
+                    <div className="aspect-[4/3] bg-gradient-to-br from-white/5 to-white/10 rounded-2xl mb-4 flex items-center justify-center overflow-hidden">
+                      <GothmasGallery images={product.images} name={product.name} />
+                    </div>
+                    <h3 className="text-xl font-serif text-white mb-2">{product.name}</h3>
+                    <p className="text-sm text-white/70 mb-3">{product.description}</p>
+                    <p className="text-lg font-bold text-white mb-1">
+                      ${product.price.toFixed(2)}
+                    </p>
+                    <p className="text-sm font-semibold text-amber-300 mb-3">One flat price. Instant download, delivered by email.</p>
+                    <button
+                      onClick={() => {
+                        addToCart({
+                          id: product.id,
+                          type: product.type,
+                          name: product.name,
+                          description: product.description,
+                          image: product.images[0],
+                          price: product.price,
+                          priceId: product.priceId,
+                        });
+                      }}
+                      disabled={inCart}
+                      className={`w-full py-2 px-4 rounded-xl font-semibold transition-all duration-300 border border-teal-300/30 flex items-center justify-center gap-2 ${
+                        inCart
+                          ? 'bg-green-600/50 text-white cursor-default'
+                          : 'bg-gradient-to-r from-teal-700 to-teal-900 text-teal-50 hover:from-teal-800 hover:to-emerald-950'
+                      }`}
+                    >
+                      {inCart ? (
+                        <>
+                          <Check className="w-4 h-4" />
+                          In Cart
+                        </>
+                      ) : (
+                        <>
+                          <Plus className="w-4 h-4" />
+                          Add to Cart
+                        </>
+                      )}
+                    </button>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          <div className="max-w-2xl mx-auto mt-12 rounded-3xl bg-white/10 backdrop-blur-xl border border-white/20 p-6">
+            <div className="grid grid-cols-3 gap-4 text-sm md:text-base">
+              <span className="text-white/50 font-semibold"></span>
+              <span className="text-white font-semibold text-center">Peeking Christmas</span>
+              <span className="text-white/50 font-semibold text-center">Typical sets</span>
+              <span className="text-white/80">Transparent PNGs</span>
+              <span className="text-teal-200 text-center">Included at full size</span>
+              <span className="text-white/60 text-center">Not included</span>
+              <span className="text-white/80">White background images</span>
+              <span className="text-teal-200 text-center">Included, ready to print</span>
+              <span className="text-white/60 text-center">White background JPGs</span>
+            </div>
+          </div>
+
+          <div className="text-center mt-10">
+            <p className="text-lg text-teal-100/90 max-w-2xl mx-auto">
+              Includes personal use and use in one classroom. A Teacher License for wider school
+              use is sold separately.
+            </p>
+            <p className="text-white/60 mt-3">
+              Meet the characters: Santa, Mrs. Claus, Snowman, Reindeer, Polar Bear, Panda,
+              Penguin, Gingerbread Man, Kitten, Puppy, Raccoon, Hedgehog, Nutcracker, Elf Girl,
+              Elf Boy, Owl, Mouse, Giraffe, Pig, Zebra, Teddy Bear, Cow, Fox, and Bunny.
             </p>
           </div>
         </section>

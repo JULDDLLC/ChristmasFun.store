@@ -1,4 +1,3 @@
-// deploy refresh 2026-11-12
 // attribution ship Nov 2
 // attribution redeploy Nov 2 second touch
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
@@ -23,6 +22,8 @@ const PRODUCT_TO_PRICE: Record<string, string> = {
   'classroom_ready_bundle': 'price_1UaSAMBsr66TjEhQmzmmLNbZ',
   'grandparents_countdown_699': 'price_1UamVqBsr66TjEhQ6QrQCvX6',
   'grandparents_countdown': 'price_1UamVqBsr66TjEhQ6QrQCvX6',
+  'peeking_christmas_699': 'price_1UcDbOBsr66TjEhQoFSFfaYF',
+  'peeking_christmas': 'price_1UcDbOBsr66TjEhQoFSFfaYF',
   'santa_letter': 'price_1ScHCUBsr66TjEhQI5HBQqtU',
   'christmas_note': 'price_1ScGfNBsr66TjEhQxdfKXMcn',
   'free_coloring': 'price_1SctvEBsr66TjEhQ5XQ8NUxl',
