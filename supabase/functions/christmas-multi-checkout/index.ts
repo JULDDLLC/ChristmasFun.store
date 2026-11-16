@@ -1,4 +1,3 @@
-// deploy refresh 2026-11-12
 // attribution ship Nov 2
 /// <reference types="npm:@types/node" />
 // redeploy Nov 2 2026
@@ -69,6 +68,7 @@ const PRICE_ID_BY_TYPE: Record<string, string> = {
   personalized_collection: "price_1UPo4MBsr66TjEhQMIEzjICq",
   memory_night_kit: "price_1UWh1yBsr66TjEhQU4nJQFiX",
   grandparents_countdown: "price_1UamVqBsr66TjEhQ6QrQCvX6",
+  peeking_christmas: "price_1UcDbOBsr66TjEhQoFSFfaYF",
   heirloom_planner: "price_1UXNCPBsr66TjEhQGtBDZ4pd",
 };
 

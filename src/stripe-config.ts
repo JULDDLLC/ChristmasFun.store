@@ -313,6 +313,16 @@ export const STRIPE_PRODUCTS: StripeProduct[] = [
     currency: 'usd',
     mode: 'payment',
   },
+  {
+    id: 'prod_VdUaX5aXMGTXgK',
+    priceId: 'price_1UcDbOBsr66TjEhQoFSFfaYF',
+    name: 'Peeking Christmas',
+    description:
+      '24 printable Christmas characters, each in left, right, and top peek poses (72 images), plus 5 extra peekers, 3 bonus scenes, card fronts for all 24 characters, a classroom door sign, and a Start Here ideas page. Every image in two versions: a white background ready to print, and a full size transparent PNG, 1800 x 1800 pixels with clean space on every side and nothing cropped. Instant download, delivered by email. Includes personal use and use in one classroom.',
+    price: 6.99,
+    currency: 'usd',
+    mode: 'payment',
+  },
 ];
 
 export const getProductById = (id: string): StripeProduct | undefined => {

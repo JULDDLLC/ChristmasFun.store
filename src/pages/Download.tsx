@@ -260,6 +260,14 @@ PRODUCT_FILES['grandparents-countdown'] = {
   ],
 };
 
+PRODUCT_FILES['peeking-christmas'] = {
+  name: 'Peeking Christmas',
+  note: 'Your collection comes as one ZIP with everything inside: all 24 characters in white background and transparent PNG versions (1800 x 1800), the five extra peekers, the three bonus scenes, the card fronts PDF, the printable pages with the classroom door sign and Start Here ideas page, and the README with your license.',
+  files: [
+    { label: 'Peeking Christmas, Complete Collection (ZIP)', url: 'https://drive.usercontent.google.com/download?id=1bQG0nnAtRpcoq90Ox319aXXAiN1cAWdo&export=download&confirm=t', filename: 'Peeking-Christmas.zip' },
+  ],
+};
+
 function defaultFilename(label: string, url: string): string {
   const base = label.replace(/\s+\((ZIP|43 page PDF)\)\s*$/, '').replace(/'/g, '').replace(/[^A-Za-z0-9]+/g, '_').replace(/^_+|_+$/g, '');
   const m = url.match(/\.(png|jpe?g|pdf)(?:$|\?)/i);
