@@ -74,7 +74,7 @@ const GothmasGallery = ({ images, name }: { images: string[]; name: string }) =>
         alt={name}
         loading="lazy"
         onClick={() => setZoom(true)}
-        className="w-full h-full object-contain cursor-zoom-in"
+        className="absolute inset-0 w-full h-full object-contain cursor-zoom-in"
       />
       {total > 1 && (
         <>
@@ -1144,7 +1144,7 @@ function ChristmasContent() {
 
       <PremiumSnowfall />
 
-      <header className="fixed top-0 left-0 right-0 z-[100] backdrop-blur-xl bg-white/10 border-b border-white/20 shadow-lg">
+      <header className="fixed top-0 left-0 right-0 z-[100] bg-blue-950 border-b border-white/20 shadow-lg">
         <nav className="container mx-auto px-6 py-3">
           <div className="flex items-center justify-between gap-6">
             <div className="flex items-center gap-3 flex-none">
