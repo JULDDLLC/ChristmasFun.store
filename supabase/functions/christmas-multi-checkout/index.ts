@@ -48,6 +48,7 @@ const PRICE_ID_BY_TYPE: Record<string, string> = {
   // TODO (Julie, before launch): replace with the real Classroom Ready Bundle
   // price ID once the product exists in Stripe. See CLASSROOM-BUNDLE-IMPLEMENTATION.md.
   classroom_ready_bundle: "price_1UaSAMBsr66TjEhQmzmmLNbZ",
+  good_bundle: "price_1UdHBWBsr66TjEhQIADhwpY2",
   free_coloring: "price_1SctvEBsr66TjEhQ5XQ8NUxl",
   gothmas_ornaments: "price_1UPbfPBsr66TjEhQAgZ52nsc",
   gothmas_wall_art: "price_1UPbfkBsr66TjEhQKvjSkHYW",
