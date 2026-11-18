@@ -65,6 +65,12 @@ const PRODUCT_DOWNLOAD_EXPANSIONS: Record<string, string[]> = {
     'https://christmasfun.store/download/all-24-bundle',
     'https://christmasfun.store/download/teacher-license',
   ],
+  // The Good bundle is the Elf Kit plus the Classics Bundle, so its delivery
+  // email must carry both download links.
+  'good_bundle': [
+    'https://christmasfun.store/download/elf-kit',
+    'https://christmasfun.store/download/all-24-bundle',
+  ],
 };
 
 function getDownloadLinksFromProducts(products: Array<{ product_id: string }>): string[] {

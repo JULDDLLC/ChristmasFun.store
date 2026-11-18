@@ -92,6 +92,18 @@ export const STRIPE_PRODUCTS: StripeProduct[] = [
     mode: 'payment',
   },
   {
+    id: 'prod_VeaL1uDb5tjIQH',
+    priceId: 'price_1UdHBWBsr66TjEhQIADhwpY2',
+    name: 'The Santa Letters and Elf Kit Bundle',
+    description:
+      'The two things kids ask about most, in one purchase: The 24 Day Elf Kit (78 pages of elf magic, planned for you) plus the Christmas Classics Bundle (all 20 Santa Letters and all 4 Christmas Notes). Over 100 pages total. Bought separately they come to $17.98, so the bundle saves you $1.99. Instant download, delivered by email.',
+    price: 15.99,
+    listPrice: 17.99,
+    launchNote: 'Launch price through December 1, then $17.99',
+    currency: 'usd',
+    mode: 'payment',
+  },
+  {
     id: 'prod_VQSaBe1vxUfaD7',
     priceId: 'price_1UPbfPBsr66TjEhQAgZ52nsc',
     name: 'Gothmas Ornament Design Bundle - 12 Dark Holiday Designs',

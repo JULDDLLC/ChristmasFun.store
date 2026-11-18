@@ -39,6 +39,8 @@ const PRODUCT_ID_TO_PRICE_ID: Record<string, string> = {
   teacher_license: 'price_1ScH6KBsr66TjEhQAhED4Lsd',
   classroom_ready_bundle_1299: 'price_1UaSAMBsr66TjEhQmzmmLNbZ',
   classroom_ready_bundle: 'price_1UaSAMBsr66TjEhQmzmmLNbZ',
+  good_bundle_1599: 'price_1UdHBWBsr66TjEhQIADhwpY2',
+  good_bundle: 'price_1UdHBWBsr66TjEhQIADhwpY2',
   santa_letter: 'price_1ScHCUBsr66TjEhQI5HBQqtU',
   christmas_note: 'price_1ScGfNBsr66TjEhQxdfKXMcn',
 };
@@ -959,6 +961,33 @@ function ChristmasContent() {
     },
   ];
 
+
+  const goodBundleProducts: Array<{
+    id: string;
+    type: 'good_bundle';
+    name: string;
+    description: string;
+    images: string[];
+    price: number;
+    priceId: string;
+    listPrice?: number;
+    launchNote?: string;
+  }> = [
+    {
+      id: 'good_bundle',
+      type: 'good_bundle',
+      name: 'The Santa Letters and Elf Kit Bundle',
+      description: 'Over 100 pages in one purchase: The 24 Day Elf Kit (78 pages of elf magic, planned for you) plus the Christmas Classics Bundle (all 20 Santa Letters and all 4 Christmas Notes). Bought separately they come to $17.98, so the bundle saves you $1.99.',
+      images: [
+        'https://drive.google.com/thumbnail?id=1oylV1KY_6CQHLtjhyYKmiaj987FjEc7_&sz=w1200',
+      ],
+      price: 15.99,
+      priceId: 'price_1UdHBWBsr66TjEhQIADhwpY2',
+      listPrice: 17.99,
+      launchNote: 'Launch price through December 1, then $17.99',
+    },
+  ];
+
   const plannerProducts: Array<{
     id: string;
     type: 'heirloom_planner';
@@ -1194,6 +1223,12 @@ function ChristmasContent() {
               Bundle
             </a>
             <a
+              href="#family-bundle"
+              className="flex-none whitespace-nowrap text-sm text-white/90 hover:text-amber-300 transition-colors font-medium"
+            >
+              Family Bundle
+            </a>
+            <a
               href="#elf-kit"
               className="flex-none whitespace-nowrap text-xs text-red-200 hover:text-white transition-colors font-semibold border border-red-400/50 rounded-full px-3 py-1 bg-red-500/20 hover:bg-red-500/40"
             >
@@ -1296,6 +1331,12 @@ function ChristmasContent() {
                 Bundle
               </a>
               <a
+                href="#family-bundle"
+                className="inline-flex items-center shrink-0 text-white/90 font-medium border border-white/30 rounded-full px-3 py-1.5 bg-white/10"
+              >
+                Family Bundle
+              </a>
+              <a
                 href="#elf-kit"
                 className="inline-flex items-center shrink-0 text-red-200 font-semibold border border-red-400/50 rounded-full px-3 py-1.5 bg-red-500/20"
               >
@@ -1392,7 +1433,7 @@ function ChristmasContent() {
               </h1>
 
               <p className="text-lg md:text-xl text-amber-100/80 max-w-2xl mx-auto leading-relaxed tracking-wide">
-  Includes 20 Santa Letters · 4 Christmas Notes · 10 Free Coloring Pages · Plus Gothmas, Nutcrackercore, Personalized Ornaments, the Memory Night Kit &amp; the 24 Day Elf Kit &amp; the Christmas Heirloom Planner, the Grandparents' Christmas Countdown &amp; the Classroom Ready Bundle &amp; Peeking Christmas
+  Includes 20 Santa Letters · 4 Christmas Notes · 10 Free Coloring Pages · Plus Gothmas, Nutcrackercore, Personalized Ornaments, the Memory Night Kit &amp; the 24 Day Elf Kit &amp; the Christmas Heirloom Planner, the Grandparents' Christmas Countdown &amp; the Classroom Ready Bundle &amp; the Santa Letters and Elf Kit Bundle &amp; Peeking Christmas
 </p>
 
               <div className="flex flex-col sm:flex-row items-center justify-center gap-6 mt-8">
@@ -1526,6 +1567,21 @@ function ChristmasContent() {
               </p>
               <span className="inline-block px-6 py-3 rounded-2xl bg-teal-600/80 text-white font-semibold shadow-lg shadow-teal-900/50">
                 Shop Peeking Christmas
+              </span>
+            </a>
+            <a
+              href="#family-bundle"
+              className="block rounded-3xl border border-amber-400/30 bg-gradient-to-br from-amber-950/80 via-amber-900/50 to-slate-900/80 backdrop-blur-xl px-7 py-7 shadow-2xl shadow-amber-950/50 hover:border-amber-300/60 transition-colors"
+            >
+              <Gift className="w-9 h-9 text-amber-300 mb-4" />
+              <h3 className="text-2xl font-serif text-white mb-2">The Santa Letters and Elf Kit Bundle</h3>
+              <p className="text-amber-100/70 text-sm leading-relaxed mb-5">
+                Over 100 pages in one purchase: the 78 page Elf Kit plus all 20 Santa Letters
+                and all 4 Christmas Notes. $17.98 bought separately, $15.99 as the bundle
+                through December 1.
+              </p>
+              <span className="inline-block px-6 py-3 rounded-2xl bg-amber-600/80 text-white font-semibold shadow-lg shadow-amber-900/50">
+                Shop the Bundle
               </span>
             </a>
           </div>
@@ -1854,6 +1910,106 @@ function ChristmasContent() {
                     <ShoppingCart className="w-6 h-6 text-amber-300" />
                     Buy Bundle Now
                   </div>
+                </button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* FAMILY BUNDLE (GOOD) */}
+        <section id="family-bundle" className="container mx-auto px-6 py-24">
+          <div className="max-w-2xl mx-auto">
+            <div className="relative overflow-hidden rounded-3xl bg-white/10 backdrop-blur-xl border-2 border-white/20 p-8 shadow-2xl">
+              <div className="absolute inset-0 bg-gradient-to-br from-white/5 via-transparent to-amber-500/10 animate-pulse" />
+
+              <div className="relative z-10 text-center">
+                <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-amber-500/20 border border-amber-400/50 text-amber-300 text-sm font-bold mb-5">
+                  <Star className="w-5 h-5 fill-amber-300" />
+                  NEW BUNDLE
+                  <Star className="w-5 h-5 fill-amber-300" />
+                </div>
+
+                <h2 className="text-4xl md:text-5xl font-serif text-white mb-4">
+                  The Santa Letters and Elf Kit Bundle
+                </h2>
+                <p className="text-lg text-white/80 mb-4">
+                  Over 100 pages in one download: the 78 page Elf Kit plus all 20 Santa
+                  Letters and all 4 Christmas Notes
+                </p>
+
+                <div className="max-w-sm mx-auto mb-6 overflow-hidden rounded-2xl bg-gradient-to-br from-white/5 to-white/10">
+                  <img
+                    src={goodBundleProducts[0].images[0]}
+                    alt="The 24 Day Elf Kit cover, included in the Santa Letters and Elf Kit Bundle"
+                    loading="lazy"
+                    className="w-full h-full object-contain"
+                  />
+                </div>
+
+                <div className="flex items-baseline justify-center gap-3 mb-2">
+                  <span className="text-5xl font-bold text-amber-300">$15.99</span>
+                  <span className="text-xl text-white/50 line-through">$17.98</span>
+                </div>
+                <p className="text-lg text-amber-200 mb-6">
+                  Bought separately they come to $17.98, so the bundle saves you $1.99.
+                  Launch price through December 1, then $17.99.
+                </p>
+
+                <div className="space-y-3 mb-8 text-left max-w-md mx-auto">
+                  <div className="flex items-start gap-3 text-base text-white/90">
+                    <div className="mt-2 w-2 h-2 shrink-0 rounded-full bg-amber-400" />
+                    The 24 Day Elf Kit: 78 pages of elf magic planned for you, with arrival
+                    and goodbye letters, 24 daily notes, tiny cards, games, props, and a
+                    24 night staging calendar
+                  </div>
+                  <div className="flex items-start gap-3 text-base text-white/90">
+                    <div className="mt-2 w-2 h-2 shrink-0 rounded-full bg-amber-400" />
+                    All 20 Santa Letters: a letter for every child and every occasion
+                  </div>
+                  <div className="flex items-start gap-3 text-base text-white/90">
+                    <div className="mt-2 w-2 h-2 shrink-0 rounded-full bg-amber-400" />
+                    All 4 Christmas Notes for the extras, grandparents, teachers, and friends
+                  </div>
+                  <div className="flex items-start gap-3 text-base text-white/90">
+                    <div className="mt-2 w-2 h-2 shrink-0 rounded-full bg-amber-400" />
+                    Instant download, delivered by email, print at home
+                  </div>
+                </div>
+
+                {/* Good bundle: Stripe price price_1UdHBWBsr66TjEhQIADhwpY2
+                    (product prod_VeaL1uDb5tjIQH), wired in src/stripe-config.ts and
+                    both checkout and webhook functions. */}
+                <button
+                  onClick={() => {
+                    addToCart({
+                      id: 'good_bundle',
+                      type: 'good_bundle',
+                      name: 'The Santa Letters and Elf Kit Bundle',
+                      description:
+                        'The 24 Day Elf Kit (78 pages) plus the Christmas Classics Bundle (20 Santa Letters + 4 Christmas Notes). Over 100 pages total.',
+                      image: goodBundleProducts[0].images[0],
+                      price: 15.99,
+                      priceId: 'price_1UdHBWBsr66TjEhQIADhwpY2',
+                    });
+                  }}
+                  disabled={isInCart('good_bundle')}
+                  className={`w-full sm:w-auto px-8 py-4 rounded-2xl text-amber-100 text-xl font-bold shadow-2xl transition-all duration-300 flex items-center justify-center gap-3 border-2 border-amber-400/40 ${
+                    isInCart('good_bundle')
+                      ? 'bg-green-600/60 cursor-default'
+                      : 'bg-gradient-to-r from-red-600 via-red-700 to-red-800 hover:shadow-red-500/50 transform hover:scale-105'
+                  }`}
+                >
+                  {isInCart('good_bundle') ? (
+                    <>
+                      <Check className="w-6 h-6 text-amber-300" />
+                      Bundle in Cart
+                    </>
+                  ) : (
+                    <>
+                      <Plus className="w-6 h-6 text-amber-300" />
+                      Add the Bundle to Cart, $15.99
+                    </>
+                  )}
                 </button>
               </div>
             </div>
