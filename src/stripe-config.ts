@@ -104,6 +104,44 @@ export const STRIPE_PRODUCTS: StripeProduct[] = [
     mode: 'payment',
   },
   {
+    // TODO (Julie, before launch): the Better bundle (The Family Nights Bundle)
+    // does not exist in Stripe yet. Create the product and its $22.99 launch
+    // price in the Stripe Dashboard, then replace both TODO placeholders below
+    // with the real prod_ and price_ IDs. The same price placeholder appears in
+    // src/pages/Christmas.tsx and in the christmas-checkout,
+    // christmas-multi-checkout, and stripe-webhook functions. See
+    // bundles-better-best-golive.md for the full order.
+    id: 'prod_VfDJDsdpjkMxNn',
+    priceId: 'price_1UdssYBsr66TjEhQ80HgTsFm',
+    name: 'The Family Nights Bundle',
+    description:
+      'One hosted family night, the elf days, and peekers on every door: the Christmas Memory Night Kit (a full hosted evening with a host guide, 6 games, 36 conversation cards, a photo scavenger hunt, 8 recipe cards, and a family keepsake), The 24 Day Elf Kit, and Peeking Christmas in white and transparent files. Bought separately they come to $26.97, so the bundle saves you $3.98. Instant download, delivered by email.',
+    price: 22.99,
+    listPrice: 27.99,
+    launchNote: 'Launch price through December 1, then $27.99',
+    currency: 'usd',
+    mode: 'payment',
+  },
+  {
+    // TODO (Julie, before launch): the Best bundle (The Whole Season Bundle)
+    // does not exist in Stripe yet. Create the product and its $37.99 launch
+    // price in the Stripe Dashboard, then replace both TODO placeholders below
+    // with the real prod_ and price_ IDs. The same price placeholder appears in
+    // src/pages/Christmas.tsx and in the christmas-checkout,
+    // christmas-multi-checkout, and stripe-webhook functions. See
+    // bundles-better-best-golive.md for the full order.
+    id: 'prod_VfDK8Kc80VwrAT',
+    priceId: 'price_1UdstfBsr66TjEhQ15Gj2yD6',
+    name: 'The Whole Season Bundle',
+    description:
+      'The whole season in one purchase: The 24 Day Elf Kit, the Christmas Memory Night Kit, Peeking Christmas, all 20 Santa Letters and all 4 Christmas Notes, and The Christmas Heirloom Planner with its Excel gift and budget tracker. Bought separately they come to $46.95, so the bundle saves you $8.96, the largest saving in the store. Instant download, delivered by email.',
+    price: 37.99,
+    listPrice: 47.99,
+    launchNote: 'Launch price through December 1, then $47.99',
+    currency: 'usd',
+    mode: 'payment',
+  },
+  {
     id: 'prod_VQSaBe1vxUfaD7',
     priceId: 'price_1UPbfPBsr66TjEhQAgZ52nsc',
     name: 'Gothmas Ornament Design Bundle - 12 Dark Holiday Designs',

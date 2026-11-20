@@ -71,6 +71,25 @@ const PRODUCT_DOWNLOAD_EXPANSIONS: Record<string, string[]> = {
     'https://christmasfun.store/download/elf-kit',
     'https://christmasfun.store/download/all-24-bundle',
   ],
+  // The Better bundle (The Family Nights Bundle) is the Elf Kit plus the
+  // Christmas Memory Night Kit plus Peeking Christmas, so its delivery email
+  // must carry all three download links.
+  'better_bundle': [
+    'https://christmasfun.store/download/elf-kit',
+    'https://christmasfun.store/download/memory-night-kit',
+    'https://christmasfun.store/download/peeking-christmas',
+  ],
+  // The Best bundle (The Whole Season Bundle) is the Elf Kit plus the
+  // Christmas Memory Night Kit plus the Christmas Heirloom Planner plus the
+  // Classics Bundle plus Peeking Christmas, so its delivery email must carry
+  // all five download links.
+  'best_bundle': [
+    'https://christmasfun.store/download/elf-kit',
+    'https://christmasfun.store/download/memory-night-kit',
+    'https://christmasfun.store/download/christmas-heirloom-planner',
+    'https://christmasfun.store/download/all-24-bundle',
+    'https://christmasfun.store/download/peeking-christmas',
+  ],
 };
 
 function getDownloadLinksFromProducts(products: Array<{ product_id: string }>): string[] {

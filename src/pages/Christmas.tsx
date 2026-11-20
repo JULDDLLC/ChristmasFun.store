@@ -41,6 +41,12 @@ const PRODUCT_ID_TO_PRICE_ID: Record<string, string> = {
   classroom_ready_bundle: 'price_1UaSAMBsr66TjEhQmzmmLNbZ',
   good_bundle_1599: 'price_1UdHBWBsr66TjEhQIADhwpY2',
   good_bundle: 'price_1UdHBWBsr66TjEhQIADhwpY2',
+  // TODO (Julie, before launch): replace with the real Better and Best bundle
+  // price IDs once the products exist in Stripe. See bundles-better-best-golive.md.
+  better_bundle_2299: 'price_1UdssYBsr66TjEhQ80HgTsFm',
+  better_bundle: 'price_1UdssYBsr66TjEhQ80HgTsFm',
+  best_bundle_3799: 'price_1UdstfBsr66TjEhQ15Gj2yD6',
+  best_bundle: 'price_1UdstfBsr66TjEhQ15Gj2yD6',
   santa_letter: 'price_1ScHCUBsr66TjEhQI5HBQqtU',
   christmas_note: 'price_1ScGfNBsr66TjEhQxdfKXMcn',
 };
@@ -998,6 +1004,64 @@ function ChristmasContent() {
     },
   ];
 
+  // Better and Best launch price IDs (live Stripe, created Nov 20, 2026):
+  // Better $22.99 price_1UdssYBsr66TjEhQ80HgTsFm, Best $37.99
+  // price_1UdstfBsr66TjEhQ15Gj2yD6. The same IDs are wired in
+  // src/stripe-config.ts and in the christmas-checkout,
+  // christmas-multi-checkout, and stripe-webhook functions. See
+  // bundles-better-best-golive.md for the full order.
+  const betterBundleProducts: Array<{
+    id: string;
+    type: 'better_bundle';
+    name: string;
+    description: string;
+    images: string[];
+    price: number;
+    priceId: string;
+    listPrice?: number;
+    launchNote?: string;
+  }> = [
+    {
+      id: 'better_bundle',
+      type: 'better_bundle',
+      name: 'The Family Nights Bundle',
+      description: 'A hosted family night plus the everyday fun: the Christmas Memory Night Kit (43 pages, a full evening that runs itself), The 24 Day Elf Kit (78 pages), and Peeking Christmas (24 characters in white and transparent files). Bought separately they come to $26.97, so the bundle saves you $3.98.',
+      images: [
+        'https://drive.google.com/thumbnail?id=1DUnC97EtWOJU8zj_sSVOBqjKYXZlTf9a&sz=w1200',
+      ],
+      price: 22.99,
+      priceId: 'price_1UdssYBsr66TjEhQ80HgTsFm',
+      listPrice: 27.99,
+      launchNote: 'Launch price through December 1, then $27.99',
+    },
+  ];
+
+  const bestBundleProducts: Array<{
+    id: string;
+    type: 'best_bundle';
+    name: string;
+    description: string;
+    images: string[];
+    price: number;
+    priceId: string;
+    listPrice?: number;
+    launchNote?: string;
+  }> = [
+    {
+      id: 'best_bundle',
+      type: 'best_bundle',
+      name: 'The Whole Season Bundle',
+      description: 'The whole season in one purchase: The 24 Day Elf Kit, the Christmas Memory Night Kit, Peeking Christmas, all 20 Santa Letters and all 4 Christmas Notes, and The Christmas Heirloom Planner with its Excel gift and budget tracker. Bought separately they come to $46.95, so the bundle saves you $8.96.',
+      images: [
+        'https://drive.google.com/thumbnail?id=1tx7Syor8Z-sIAgFvTmfxDfv7i0EtH9D8&sz=w1200',
+      ],
+      price: 37.99,
+      priceId: 'price_1UdstfBsr66TjEhQ15Gj2yD6',
+      listPrice: 47.99,
+      launchNote: 'Launch price through December 1, then $47.99',
+    },
+  ];
+
   const plannerProducts: Array<{
     id: string;
     type: 'heirloom_planner';
@@ -1443,7 +1507,7 @@ function ChristmasContent() {
               </h1>
 
               <p className="text-lg md:text-xl text-amber-100/80 max-w-2xl mx-auto leading-relaxed tracking-wide">
-  Includes 20 Santa Letters · 4 Christmas Notes · 10 Free Coloring Pages · Plus Gothmas, Nutcrackercore, Personalized Ornaments, the Memory Night Kit &amp; the 24 Day Elf Kit &amp; the Christmas Heirloom Planner, the Grandparents' Christmas Countdown &amp; the Classroom Ready Bundle &amp; the Santa Letters and Elf Kit Bundle &amp; Peeking Christmas
+  Includes 20 Santa Letters · 4 Christmas Notes · 10 Free Coloring Pages · Plus Gothmas, Nutcrackercore, Personalized Ornaments, the Memory Night Kit &amp; the 24 Day Elf Kit &amp; the Christmas Heirloom Planner, the Grandparents' Christmas Countdown &amp; the Classroom Ready Bundle &amp; the Santa Letters and Elf Kit Bundle &amp; Peeking Christmas &amp; the Family Nights Bundle &amp; the Whole Season Bundle
 </p>
 
               <div className="flex flex-col sm:flex-row items-center justify-center gap-6 mt-8">
@@ -1589,6 +1653,36 @@ function ChristmasContent() {
                 Over 100 pages in one purchase: the 78 page Elf Kit plus all 20 Santa Letters
                 and all 4 Christmas Notes. $17.98 bought separately, $15.99 as the bundle
                 through December 1.
+              </p>
+              <span className="inline-block px-6 py-3 rounded-2xl bg-amber-600/80 text-white font-semibold shadow-lg shadow-amber-900/50">
+                Shop the Bundle
+              </span>
+            </a>
+            <a
+              href="#family-bundle-better"
+              className="block rounded-3xl border border-amber-400/30 bg-gradient-to-br from-amber-950/80 via-amber-900/50 to-slate-900/80 backdrop-blur-xl px-7 py-7 shadow-2xl shadow-amber-950/50 hover:border-amber-300/60 transition-colors"
+            >
+              <Gift className="w-9 h-9 text-amber-300 mb-4" />
+              <h3 className="text-2xl font-serif text-white mb-2">The Family Nights Bundle</h3>
+              <p className="text-amber-100/70 text-sm leading-relaxed mb-5">
+                A hosted Memory Night, the 78 page Elf Kit, and Peeking Christmas in white
+                and transparent files. $26.97 bought separately, $22.99 as the bundle
+                through December 1.
+              </p>
+              <span className="inline-block px-6 py-3 rounded-2xl bg-amber-600/80 text-white font-semibold shadow-lg shadow-amber-900/50">
+                Shop the Bundle
+              </span>
+            </a>
+            <a
+              href="#family-bundle-best"
+              className="block rounded-3xl border border-amber-400/30 bg-gradient-to-br from-amber-950/80 via-amber-900/50 to-slate-900/80 backdrop-blur-xl px-7 py-7 shadow-2xl shadow-amber-950/50 hover:border-amber-300/60 transition-colors"
+            >
+              <Gift className="w-9 h-9 text-amber-300 mb-4" />
+              <h3 className="text-2xl font-serif text-white mb-2">The Whole Season Bundle</h3>
+              <p className="text-amber-100/70 text-sm leading-relaxed mb-5">
+                Everything in one purchase: the Elf Kit, Memory Night, Peeking Christmas,
+                all the Santa Letters and Notes, and the Heirloom Planner. $46.95 bought
+                separately, $37.99 as the bundle through December 1.
               </p>
               <span className="inline-block px-6 py-3 rounded-2xl bg-amber-600/80 text-white font-semibold shadow-lg shadow-amber-900/50">
                 Shop the Bundle
@@ -2021,6 +2115,217 @@ function ChristmasContent() {
                     <>
                       <Plus className="w-6 h-6 text-amber-300" />
                       Add the Bundle to Cart, $15.99
+                    </>
+                  )}
+                </button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* FAMILY BUNDLE (BETTER) */}
+        <section id="family-bundle-better" className="container mx-auto px-6 py-24">
+          <div className="max-w-2xl mx-auto">
+            <div className="relative overflow-hidden rounded-3xl bg-white/10 backdrop-blur-xl border-2 border-white/20 p-8 shadow-2xl">
+              <div className="absolute inset-0 bg-gradient-to-br from-white/5 via-transparent to-amber-500/10 animate-pulse" />
+
+              <div className="relative z-10 text-center">
+                <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-amber-500/20 border border-amber-400/50 text-amber-300 text-sm font-bold mb-5">
+                  <Star className="w-5 h-5 fill-amber-300" />
+                  NEW BUNDLE
+                  <Star className="w-5 h-5 fill-amber-300" />
+                </div>
+
+                <h2 className="text-4xl md:text-5xl font-serif text-white mb-4">
+                  The Family Nights Bundle
+                </h2>
+                <p className="text-lg text-white/80 mb-4">
+                  One hosted family night, the elf days, and peekers on every door,
+                  in one purchase
+                </p>
+
+                <div className="max-w-sm mx-auto mb-6 overflow-hidden rounded-2xl bg-gradient-to-br from-white/5 to-white/10">
+                  <img
+                    src={betterBundleProducts[0].images[0]}
+                    alt="The Christmas Memory Night Kit, included in the Family Nights Bundle"
+                    loading="lazy"
+                    className="w-full h-full object-contain"
+                  />
+                </div>
+
+                <div className="flex items-baseline justify-center gap-3 mb-2">
+                  <span className="text-5xl font-bold text-amber-300">$22.99</span>
+                  <span className="text-xl text-white/50 line-through">$26.97</span>
+                </div>
+                <p className="text-lg text-amber-200 mb-6">
+                  Bought separately they come to $26.97, so the bundle saves you $3.98.
+                  Launch price through December 1, then $27.99.
+                </p>
+
+                <div className="space-y-3 mb-8 text-left max-w-md mx-auto">
+                  <div className="flex items-start gap-3 text-base text-white/90">
+                    <div className="mt-2 w-2 h-2 shrink-0 rounded-full bg-amber-400" />
+                    Christmas Memory Night Kit: a whole evening that runs itself. Everyone
+                    arrives, you play the games, pass the conversation cards, cook from the
+                    recipe cards, and keep the keepsake. Host guide, 6 games, 36 conversation
+                    cards, a photo scavenger hunt, 8 recipe cards, and a family keepsake,
+                    43 pages in all
+                  </div>
+                  <div className="flex items-start gap-3 text-base text-white/90">
+                    <div className="mt-2 w-2 h-2 shrink-0 rounded-full bg-amber-400" />
+                    The 24 Day Elf Kit: 78 pages of elf magic planned for you, with arrival
+                    and goodbye letters, 24 daily notes, tiny cards, games, props, and a
+                    24 night staging calendar
+                  </div>
+                  <div className="flex items-start gap-3 text-base text-white/90">
+                    <div className="mt-2 w-2 h-2 shrink-0 rounded-full bg-amber-400" />
+                    Peeking Christmas: 24 characters in 3 peek poses each, every one in
+                    white and transparent files so they work anywhere, on doors, cards,
+                    and gift tags, plus card fronts for all 24 and a classroom door sign
+                  </div>
+                  <div className="flex items-start gap-3 text-base text-white/90">
+                    <div className="mt-2 w-2 h-2 shrink-0 rounded-full bg-amber-400" />
+                    Instant download, delivered by email, print at home
+                  </div>
+                </div>
+
+                {/* Better bundle: Stripe price price_1UdssYBsr66TjEhQ80HgTsFm,
+                    product prod_VfDJDsdpjkMxNn, wired in src/stripe-config.ts and
+                    both checkout and webhook functions. */}
+                <button
+                  onClick={() => {
+                    addToCart({
+                      id: 'better_bundle',
+                      type: 'better_bundle',
+                      name: 'The Family Nights Bundle',
+                      description:
+                        'The Christmas Memory Night Kit (43 pages) plus The 24 Day Elf Kit (78 pages) plus Peeking Christmas (24 characters in white and transparent files).',
+                      image: betterBundleProducts[0].images[0],
+                      price: 22.99,
+                      priceId: 'price_1UdssYBsr66TjEhQ80HgTsFm',
+                    });
+                  }}
+                  disabled={isInCart('better_bundle')}
+                  className={`w-full sm:w-auto px-8 py-4 rounded-2xl text-amber-100 text-xl font-bold shadow-2xl transition-all duration-300 flex items-center justify-center gap-3 border-2 border-amber-400/40 ${
+                    isInCart('better_bundle')
+                      ? 'bg-green-600/60 cursor-default'
+                      : 'bg-gradient-to-r from-red-600 via-red-700 to-red-800 hover:shadow-red-500/50 transform hover:scale-105'
+                  }`}
+                >
+                  {isInCart('better_bundle') ? (
+                    <>
+                      <Check className="w-6 h-6 text-amber-300" />
+                      Bundle in Cart
+                    </>
+                  ) : (
+                    <>
+                      <Plus className="w-6 h-6 text-amber-300" />
+                      Add the Bundle to Cart, $22.99
+                    </>
+                  )}
+                </button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* FAMILY BUNDLE (BEST) */}
+        <section id="family-bundle-best" className="container mx-auto px-6 py-24">
+          <div className="max-w-2xl mx-auto">
+            <div className="relative overflow-hidden rounded-3xl bg-white/10 backdrop-blur-xl border-2 border-amber-400/50 p-8 shadow-2xl">
+              <div className="absolute inset-0 bg-gradient-to-br from-white/5 via-transparent to-amber-500/10 animate-pulse" />
+
+              <div className="relative z-10 text-center">
+                <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-amber-500/20 border border-amber-400/50 text-amber-300 text-sm font-bold mb-5">
+                  <Star className="w-5 h-5 fill-amber-300" />
+                  BEST VALUE
+                  <Star className="w-5 h-5 fill-amber-300" />
+                </div>
+
+                <h2 className="text-4xl md:text-5xl font-serif text-white mb-4">
+                  The Whole Season Bundle
+                </h2>
+                <p className="text-lg text-white/80 mb-4">
+                  Everything in the family ladder in one purchase, $46.95 bought
+                  separately, so the whole season is handled in one sitting
+                </p>
+
+                <div className="max-w-sm mx-auto mb-6 overflow-hidden rounded-2xl bg-gradient-to-br from-white/5 to-white/10">
+                  <img
+                    src={bestBundleProducts[0].images[0]}
+                    alt="The Christmas Heirloom Planner, included in the Whole Season Bundle"
+                    loading="lazy"
+                    className="w-full h-full object-contain"
+                  />
+                </div>
+
+                <div className="flex items-baseline justify-center gap-3 mb-2">
+                  <span className="text-5xl font-bold text-amber-300">$37.99</span>
+                  <span className="text-xl text-white/50 line-through">$46.95</span>
+                </div>
+                <p className="text-lg text-amber-200 mb-6">
+                  Bought separately everything in here comes to $46.95, so the bundle
+                  saves you $8.96, the largest saving in the store.
+                  Launch price through December 1, then $47.99.
+                </p>
+
+                <div className="space-y-3 mb-8 text-left max-w-md mx-auto">
+                  <div className="flex items-start gap-3 text-base text-white/90">
+                    <div className="mt-2 w-2 h-2 shrink-0 rounded-full bg-amber-400" />
+                    Everything in The Family Nights Bundle: the hosted Memory Night that
+                    runs itself, the 78 page Elf Kit, and Peeking Christmas in white
+                    and transparent files
+                  </div>
+                  <div className="flex items-start gap-3 text-base text-white/90">
+                    <div className="mt-2 w-2 h-2 shrink-0 rounded-full bg-amber-400" />
+                    All 20 Santa Letters and all 4 Christmas Notes, a letter for every
+                    child and every occasion
+                  </div>
+                  <div className="flex items-start gap-3 text-base text-white/90">
+                    <div className="mt-2 w-2 h-2 shrink-0 rounded-full bg-amber-400" />
+                    The Christmas Heirloom Planner: 67 pages plus fillable gift and
+                    budget forms and an Excel gift and budget tracker that does the
+                    math, so gifts, spending, menus, and calendars stay in one place
+                  </div>
+                  <div className="flex items-start gap-3 text-base text-white/90">
+                    <div className="mt-2 w-2 h-2 shrink-0 rounded-full bg-amber-400" />
+                    Instant download, delivered by email, print at home. One purchase,
+                    no subscription
+                  </div>
+                </div>
+
+                {/* Best bundle: Stripe price price_1UdstfBsr66TjEhQ15Gj2yD6,
+                    product prod_VfDK8Kc80VwrAT, wired in src/stripe-config.ts and
+                    both checkout and webhook functions. */}
+                <button
+                  onClick={() => {
+                    addToCart({
+                      id: 'best_bundle',
+                      type: 'best_bundle',
+                      name: 'The Whole Season Bundle',
+                      description:
+                        'The 24 Day Elf Kit plus the Christmas Memory Night Kit plus Peeking Christmas plus the Christmas Classics Bundle (20 Santa Letters + 4 Christmas Notes) plus The Christmas Heirloom Planner. Bought separately $46.95.',
+                      image: bestBundleProducts[0].images[0],
+                      price: 37.99,
+                      priceId: 'price_1UdstfBsr66TjEhQ15Gj2yD6',
+                    });
+                  }}
+                  disabled={isInCart('best_bundle')}
+                  className={`w-full sm:w-auto px-8 py-4 rounded-2xl text-amber-100 text-xl font-bold shadow-2xl transition-all duration-300 flex items-center justify-center gap-3 border-2 border-amber-400/40 ${
+                    isInCart('best_bundle')
+                      ? 'bg-green-600/60 cursor-default'
+                      : 'bg-gradient-to-r from-red-600 via-red-700 to-red-800 hover:shadow-red-500/50 transform hover:scale-105'
+                  }`}
+                >
+                  {isInCart('best_bundle') ? (
+                    <>
+                      <Check className="w-6 h-6 text-amber-300" />
+                      Bundle in Cart
+                    </>
+                  ) : (
+                    <>
+                      <Plus className="w-6 h-6 text-amber-300" />
+                      Add the Bundle to Cart, $37.99
                     </>
                   )}
                 </button>
