@@ -3,11 +3,11 @@
   "functions": {
     "christmas-checkout": {
       "hasChanged": false,
-      "hash": "540e148bc0eb1ebe6a2205505397d4924227dbc36ce21aeeb7cdd7c7ecc97352"
+      "hash": "4d8ac7dcbfbaa5c71996ccbe14f230774d60ff4cb5dcb203c0878923b6cfa77b"
     },
     "christmas-multi-checkout": {
       "hasChanged": false,
-      "hash": "1c8fcdceeca24b17fd739cb4dad8b7a78466f1db60f70079e2d22671f11f9273"
+      "hash": "c5302a513e2ff2458b9099fb7e28c4b86b86a066ceef99b7c8b81a282ad0a7b5"
     },
     "download-file": {
       "hasChanged": false,
@@ -19,7 +19,7 @@
     },
     "send-order-email": {
       "hasChanged": false,
-      "hash": "95a4a431b2a8fe67cfa8b6c6972b046ed028d593166d89cb59cda16ef8c57bb1"
+      "hash": "4a89b79a26919f44f1535141beae017375881c2f79b28d26cc761aea1ea5e990"
     },
     "stripe-checkout": {
       "hasChanged": false,
