@@ -938,6 +938,7 @@ function ChristmasContent() {
         'https://drive.google.com/thumbnail?id=1CuXzJttHGo9_IgVuC1I3v5ZsMiqL8KAc&sz=w1200',
         'https://drive.google.com/thumbnail?id=1fZZm_nlK1rFuT-L5pNhaVzDpyZYPKoNZ&sz=w1200',
         'https://drive.google.com/thumbnail?id=1o4bwlw_jhyMh9u4tkKJz4-s1J8vh8NaM&sz=w1200',
+        'https://drive.google.com/thumbnail?id=1Q6sKZahtc9r9fqjJhj_t0_YMfNzBX36Z&sz=w1200',
       ],
       price: 6.99,
       priceId: 'price_1UcDbOBsr66TjEhQoFSFfaYF',
