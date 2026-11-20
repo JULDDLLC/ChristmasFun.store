@@ -177,6 +177,7 @@ interface DesignCardProps {
   image: string;
   onAddToCart: () => void;
   isInCart: boolean;
+  loading?: "lazy" | "eager";
 }
 
 const SUPABASE_URL = 'https://kvnbgubooykiveogifwt.supabase.co';
@@ -189,6 +190,7 @@ const DesignCard = ({
   image,
   onAddToCart,
   isInCart,
+  loading,
 }: DesignCardProps) => {
   const [isHovered, setIsHovered] = useState(false);
 
@@ -205,7 +207,8 @@ const DesignCard = ({
           <img
             src={image}
             alt={title}
-            loading="lazy"
+            loading={loading ?? "lazy"}
+            decoding="async"
             className="w-full h-full object-contain transition-transform duration-500 group-hover:scale-110"
           />
         </div>
@@ -447,6 +450,13 @@ function ChristmasContent() {
         'https://drive.google.com/thumbnail?id=1PFUKgPVDhONlaUxsf8GROeyrZxTjtdPZ&sz=w1200',
     },
   ];
+
+  const preloadDesignImages = () => {
+    designs.slice(4).forEach((design) => {
+      const img = new Image();
+      img.src = design.image;
+    });
+  };
 
   const christmasNotes = [
     {
@@ -1604,6 +1614,7 @@ function ChristmasContent() {
                 title={design.title}
                 description={design.description}
                 image={design.image}
+                loading={showAllDesigns && index >= 4 && index < 8 ? "eager" : "lazy"}
                 onAddToCart={() => {
                   addToCart({
                     id: `santa_letter_${index + 1}`,
@@ -1623,6 +1634,8 @@ function ChristmasContent() {
           <div className="text-center mt-12">
             <button
               onClick={() => setShowAllDesigns((prev) => !prev)}
+              onMouseEnter={preloadDesignImages}
+              onFocus={preloadDesignImages}
               className="px-10 py-4 rounded-2xl bg-white/10 backdrop-blur-xl border-2 border-amber-400/30 text-amber-100 text-lg font-semibold hover:bg-amber-900/30 transition-all duration-300 transform hover:scale-105"
             >
               {showAllDesigns ? 'Show fewer designs' : 'See all 20 designs'}
