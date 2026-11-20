@@ -67,6 +67,14 @@ const PRICE_ID_TO_PRODUCT = new Map<string, { product_id: string; label: string 
   ["price_1UcDbOBsr66TjEhQoFSFfaYF", { product_id: "peeking_christmas", label: "Peeking Christmas" }],
   ["price_1UdHBWBsr66TjEhQIADhwpY2", { product_id: "good_bundle", label: "The Santa Letters and Elf Kit Bundle" }],
   ["price_1UdHBzBsr66TjEhQcGV2rJo1", { product_id: "good_bundle", label: "The Santa Letters and Elf Kit Bundle" }],
+  // TODO (Julie, before launch): replace with the real Better and Best bundle
+  // price IDs once the products exist in Stripe, then redeploy this function
+  // in Bolt (publishing the site does not redeploy functions). See
+  // bundles-better-best-golive.md.
+  ["price_1UdssYBsr66TjEhQ80HgTsFm", { product_id: "better_bundle", label: "The Family Nights Bundle" }],
+  ["price_1UdssuBsr66TjEhQUKdEFaZb", { product_id: "better_bundle", label: "The Family Nights Bundle" }],
+  ["price_1UdstfBsr66TjEhQ15Gj2yD6", { product_id: "best_bundle", label: "The Whole Season Bundle" }],
+  ["price_1Udsu3Bsr66TjEhQnkAo54NO", { product_id: "best_bundle", label: "The Whole Season Bundle" }],
   ["price_1UUZROBsr66TjEhQpbSjSgQ0", { product_id: "elf_kit", label: "The 24 Day Elf Kit" }],
   ["price_1UWfd3Bsr66TjEhQRFIzmTcX", { product_id: "elf_kit", label: "The 24 Day Elf Kit" }],
   ["price_1UXNDfBsr66TjEhQHF9s0EXH", { product_id: "heirloom_planner", label: "The Christmas Heirloom Planner & Gift Budget Tracker" }],

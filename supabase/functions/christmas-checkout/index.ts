@@ -23,6 +23,12 @@ const PRODUCT_TO_PRICE: Record<string, string> = {
   'classroom_ready_bundle': 'price_1UaSAMBsr66TjEhQmzmmLNbZ',
   'good_bundle_1599': 'price_1UdHBWBsr66TjEhQIADhwpY2',
   'good_bundle': 'price_1UdHBWBsr66TjEhQIADhwpY2',
+  // TODO (Julie, before launch): replace with the real Better and Best bundle
+  // price IDs once the products exist in Stripe. See bundles-better-best-golive.md.
+  'better_bundle_2299': 'price_1UdssYBsr66TjEhQ80HgTsFm',
+  'better_bundle': 'price_1UdssYBsr66TjEhQ80HgTsFm',
+  'best_bundle_3799': 'price_1UdstfBsr66TjEhQ15Gj2yD6',
+  'best_bundle': 'price_1UdstfBsr66TjEhQ15Gj2yD6',
   'grandparents_countdown_699': 'price_1UamVqBsr66TjEhQ6QrQCvX6',
   'grandparents_countdown': 'price_1UamVqBsr66TjEhQ6QrQCvX6',
   'peeking_christmas_699': 'price_1UcDbOBsr66TjEhQoFSFfaYF',
