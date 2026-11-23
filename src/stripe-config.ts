@@ -123,21 +123,21 @@ export const STRIPE_PRODUCTS: StripeProduct[] = [
     mode: 'payment',
   },
   {
-    // TODO (Julie, before launch): the Best bundle (The Whole Season Bundle)
-    // does not exist in Stripe yet. Create the product and its $37.99 launch
-    // price in the Stripe Dashboard, then replace both TODO placeholders below
-    // with the real prod_ and price_ IDs. The same price placeholder appears in
-    // src/pages/Christmas.tsx and in the christmas-checkout,
-    // christmas-multi-checkout, and stripe-webhook functions. See
-    // bundles-better-best-golive.md for the full order.
+    // The Best bundle (The Whole Season Bundle), prod_VfDK8Kc80VwrAT.
+    // Nov 23, 2026: the North Pole Keepsake Kit was added to the bundle, with
+    // new prices $41.99 launch (price_1Uf2J4Bsr66TjEhQTebh7TgU) and $53.99
+    // list (price_1Uf2J8Bsr66TjEhQ7qC1eRAB). The old $37.99/$47.99 prices stay
+    // active in Stripe and in the stripe-webhook fallback map. The same launch
+    // price ID appears in src/pages/Christmas.tsx and in the
+    // christmas-checkout and christmas-multi-checkout functions.
     id: 'prod_VfDK8Kc80VwrAT',
-    priceId: 'price_1UdstfBsr66TjEhQ15Gj2yD6',
+    priceId: 'price_1Uf2J4Bsr66TjEhQTebh7TgU',
     name: 'The Whole Season Bundle',
     description:
-      'The whole season in one purchase: The 24 Day Elf Kit, the Christmas Memory Night Kit, Peeking Christmas, all 20 Santa Letters and all 4 Christmas Notes, and The Christmas Heirloom Planner with its Excel gift and budget tracker. Bought separately they come to $46.95, so the bundle saves you $8.96, the largest saving in the store. Instant download, delivered by email.',
-    price: 37.99,
-    listPrice: 47.99,
-    launchNote: 'Launch price through December 1, then $47.99',
+      'The whole season in one purchase: The 24 Day Elf Kit, the Christmas Memory Night Kit, Peeking Christmas, all 20 Santa Letters and all 4 Christmas Notes, The Christmas Heirloom Planner with its Excel gift and budget tracker, and the North Pole Keepsake Kit. Bought separately they come to $52.94, so the bundle saves you $10.95, the largest saving in the store. Instant download, delivered by email.',
+    price: 41.99,
+    listPrice: 53.99,
+    launchNote: 'Launch price through December 1, then $53.99',
     currency: 'usd',
     mode: 'payment',
   },

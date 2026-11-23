@@ -1,3 +1,4 @@
+// best bundle adds keepsake kit Nov 23
 // keepsake kit launch Nov 23
 // bundle launch Nov 20
 // deploy refresh 2026-11-18
@@ -77,6 +78,11 @@ const PRICE_ID_TO_PRODUCT = new Map<string, { product_id: string; label: string 
   ["price_1UdssuBsr66TjEhQUKdEFaZb", { product_id: "better_bundle", label: "The Family Nights Bundle" }],
   ["price_1UdstfBsr66TjEhQ15Gj2yD6", { product_id: "best_bundle", label: "The Whole Season Bundle" }],
   ["price_1Udsu3Bsr66TjEhQnkAo54NO", { product_id: "best_bundle", label: "The Whole Season Bundle" }],
+  // Nov 23, 2026: Best bundle now includes the North Pole Keepsake Kit.
+  // New prices on prod_VfDK8Kc80VwrAT: $41.99 launch and $53.99 list. The
+  // old prices above stay mapped so earlier checkouts still deliver.
+  ["price_1Uf2J4Bsr66TjEhQTebh7TgU", { product_id: "best_bundle", label: "The Whole Season Bundle" }],
+  ["price_1Uf2J8Bsr66TjEhQ7qC1eRAB", { product_id: "best_bundle", label: "The Whole Season Bundle" }],
   ["price_1UUZROBsr66TjEhQpbSjSgQ0", { product_id: "elf_kit", label: "The 24 Day Elf Kit" }],
   ["price_1UWfd3Bsr66TjEhQRFIzmTcX", { product_id: "elf_kit", label: "The 24 Day Elf Kit" }],
   ["price_1UehvEBsr66TjEhQQ6CCzirg", { product_id: "keepsake_kit", label: "North Pole Keepsake Kit" }],

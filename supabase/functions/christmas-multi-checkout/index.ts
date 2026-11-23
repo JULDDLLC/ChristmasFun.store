@@ -54,7 +54,7 @@ const PRICE_ID_BY_TYPE: Record<string, string> = {
   // TODO (Julie, before launch): replace with the real Better and Best bundle
   // price IDs once the products exist in Stripe. See bundles-better-best-golive.md.
   better_bundle: "price_1UdssYBsr66TjEhQ80HgTsFm",
-  best_bundle: "price_1UdstfBsr66TjEhQ15Gj2yD6",
+  best_bundle: "price_1Uf2J4Bsr66TjEhQTebh7TgU",
   free_coloring: "price_1SctvEBsr66TjEhQ5XQ8NUxl",
   gothmas_ornaments: "price_1UPbfPBsr66TjEhQAgZ52nsc",
   gothmas_wall_art: "price_1UPbfkBsr66TjEhQKvjSkHYW",
