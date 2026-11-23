@@ -268,6 +268,14 @@ PRODUCT_FILES['peeking-christmas'] = {
   ],
 };
 
+PRODUCT_FILES['north-pole-keepsake-kit'] = {
+  name: 'North Pole Keepsake Kit',
+  note: 'Your kit comes as one ZIP with all ten pieces plus the bonus blank keepsake page: the letter from Santa, the letter from Mrs. Claus, the Nice List certificate in portrait and landscape, the matching envelopes for both letters, the Dear Santa letter, the good deeds checklist, the Christmas memory cards, the Nice List verification cards, the North Pole mail labels, and the seals and stickers page.',
+  files: [
+    { label: 'North Pole Keepsake Kit, Complete Set (ZIP)', url: 'https://drive.usercontent.google.com/download?id=1x-llZwUm5BQ_U0iq2gv0huUZrR4OHoBU&export=download&confirm=t', filename: 'North-Pole-Keepsake-Kit.zip' },
+  ],
+};
+
 function defaultFilename(label: string, url: string): string {
   const base = label.replace(/\s+\((ZIP|43 page PDF)\)\s*$/, '').replace(/'/g, '').replace(/[^A-Za-z0-9]+/g, '_').replace(/^_+|_+$/g, '');
   const m = url.match(/\.(png|jpe?g|pdf)(?:$|\?)/i);

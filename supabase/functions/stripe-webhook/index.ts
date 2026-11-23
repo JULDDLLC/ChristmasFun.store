@@ -78,6 +78,8 @@ const PRICE_ID_TO_PRODUCT = new Map<string, { product_id: string; label: string 
   ["price_1Udsu3Bsr66TjEhQnkAo54NO", { product_id: "best_bundle", label: "The Whole Season Bundle" }],
   ["price_1UUZROBsr66TjEhQpbSjSgQ0", { product_id: "elf_kit", label: "The 24 Day Elf Kit" }],
   ["price_1UWfd3Bsr66TjEhQRFIzmTcX", { product_id: "elf_kit", label: "The 24 Day Elf Kit" }],
+  ["price_1UehvEBsr66TjEhQQ6CCzirg", { product_id: "keepsake_kit", label: "North Pole Keepsake Kit" }],
+  ["price_1Uehw4Bsr66TjEhQVxsjIIaa", { product_id: "keepsake_kit", label: "North Pole Keepsake Kit" }],
   ["price_1UXNDfBsr66TjEhQHF9s0EXH", { product_id: "heirloom_planner", label: "The Christmas Heirloom Planner & Gift Budget Tracker" }],
   ["price_1UXNCPBsr66TjEhQGtBDZ4pd", { product_id: "heirloom_planner", label: "The Christmas Heirloom Planner & Gift Budget Tracker" }],
 ]);

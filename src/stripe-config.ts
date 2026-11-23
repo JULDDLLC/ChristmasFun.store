@@ -342,6 +342,18 @@ export const STRIPE_PRODUCTS: StripeProduct[] = [
     mode: 'payment',
   },
   {
+    id: 'prod_Vg43tCjSpXvUrT',
+    priceId: 'price_1UehvEBsr66TjEhQQ6CCzirg',
+    name: 'North Pole Keepsake Kit',
+    description:
+      'The complete North Pole keepsake set in one printable kit: a letter from Santa and a letter from Mrs. Claus, a Nice List certificate in portrait and landscape, matching printable envelopes for both letters, a Dear Santa letter for your child to send back, a good deeds checklist, Christmas memory cards, Nice List verification cards, North Pole mail labels, and a seals and stickers page, plus a bonus blank keepsake page. Ten pieces plus the bonus page. The letters and certificate are fillable: type your child\'s name and it appears in signature red script, no Canva and no account needed. Instant download, print at home on US Letter paper.',
+    price: 5.99,
+    listPrice: 9.99,
+    launchNote: 'Launch price through December 1, then $9.99',
+    currency: 'usd',
+    mode: 'payment',
+  },
+  {
     id: 'prod_VYUA0QxAr4JgWI',
     priceId: 'price_1UXNCPBsr66TjEhQGtBDZ4pd',
     name: 'The Christmas Heirloom Planner & Gift Budget Tracker',
