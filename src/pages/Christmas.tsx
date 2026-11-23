@@ -46,8 +46,8 @@ const PRODUCT_ID_TO_PRICE_ID: Record<string, string> = {
   // price IDs once the products exist in Stripe. See bundles-better-best-golive.md.
   better_bundle_2299: 'price_1UdssYBsr66TjEhQ80HgTsFm',
   better_bundle: 'price_1UdssYBsr66TjEhQ80HgTsFm',
-  best_bundle_3799: 'price_1UdstfBsr66TjEhQ15Gj2yD6',
-  best_bundle: 'price_1UdstfBsr66TjEhQ15Gj2yD6',
+  best_bundle_4199: 'price_1Uf2J4Bsr66TjEhQTebh7TgU',
+  best_bundle: 'price_1Uf2J4Bsr66TjEhQTebh7TgU',
   santa_letter: 'price_1ScHCUBsr66TjEhQI5HBQqtU',
   christmas_note: 'price_1ScGfNBsr66TjEhQxdfKXMcn',
 };
@@ -1044,6 +1044,11 @@ function ChristmasContent() {
   // src/stripe-config.ts and in the christmas-checkout,
   // christmas-multi-checkout, and stripe-webhook functions. See
   // bundles-better-best-golive.md for the full order.
+  // Nov 23, 2026: the Best bundle now includes the North Pole Keepsake Kit.
+  // New Best prices on prod_VfDK8Kc80VwrAT: $41.99 launch
+  // price_1Uf2J4Bsr66TjEhQTebh7TgU, $53.99 list
+  // price_1Uf2J8Bsr66TjEhQ7qC1eRAB. The old $37.99/$47.99 price IDs stay
+  // wired in the webhook fallback map only.
   const betterBundleProducts: Array<{
     id: string;
     type: 'better_bundle';
@@ -1085,14 +1090,14 @@ function ChristmasContent() {
       id: 'best_bundle',
       type: 'best_bundle',
       name: 'The Whole Season Bundle',
-      description: 'The whole season in one purchase: The 24 Day Elf Kit, the Christmas Memory Night Kit, Peeking Christmas, all 20 Santa Letters and all 4 Christmas Notes, and The Christmas Heirloom Planner with its Excel gift and budget tracker. Bought separately they come to $46.95, so the bundle saves you $8.96.',
+      description: 'The whole season in one purchase: The 24 Day Elf Kit, the Christmas Memory Night Kit, Peeking Christmas, all 20 Santa Letters and all 4 Christmas Notes, The Christmas Heirloom Planner with its Excel gift and budget tracker, and the North Pole Keepsake Kit. Bought separately they come to $52.94, so the bundle saves you $10.95.',
       images: [
         'https://drive.google.com/thumbnail?id=1tx7Syor8Z-sIAgFvTmfxDfv7i0EtH9D8&sz=w1200',
       ],
-      price: 37.99,
-      priceId: 'price_1UdstfBsr66TjEhQ15Gj2yD6',
-      listPrice: 47.99,
-      launchNote: 'Launch price through December 1, then $47.99',
+      price: 41.99,
+      priceId: 'price_1Uf2J4Bsr66TjEhQTebh7TgU',
+      listPrice: 53.99,
+      launchNote: 'Launch price through December 1, then $53.99',
     },
   ];
 
@@ -1600,11 +1605,11 @@ function ChristmasContent() {
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
             <a
               href="#elf-kit"
-              className="block rounded-3xl border border-red-400/30 bg-gradient-to-br from-red-950/80 via-rose-900/50 to-slate-900/80 backdrop-blur-xl px-7 py-7 shadow-2xl shadow-red-950/50 hover:border-red-300/60 transition-colors"
+              className="block rounded-3xl border border-red-400/30 bg-white/5 backdrop-blur-xl px-7 py-7 shadow-2xl shadow-black/40 hover:border-red-300/60 transition-colors"
             >
               <Sparkles className="w-9 h-9 text-amber-300 mb-4" />
               <h3 className="text-2xl font-serif text-white mb-2">The 24 Day Elf Kit</h3>
-              <p className="text-red-100/70 text-sm leading-relaxed mb-5">
+              <p className="text-white/70 text-sm leading-relaxed mb-5">
                 Every night of December, planned: boy and girl elf letters, 24 daily notes,
                 handwritten mini cards, games, props, North Pole seals, and a staging calendar
                 with a believability trick for every scene.
@@ -1615,11 +1620,11 @@ function ChristmasContent() {
             </a>
             <a
               href="#memory-night"
-              className="block rounded-3xl border border-green-400/30 bg-gradient-to-br from-green-950/80 via-green-900/50 to-slate-900/80 backdrop-blur-xl px-7 py-7 shadow-2xl shadow-green-950/50 hover:border-green-300/60 transition-colors"
+              className="block rounded-3xl border border-green-400/30 bg-white/5 backdrop-blur-xl px-7 py-7 shadow-2xl shadow-black/40 hover:border-green-300/60 transition-colors"
             >
               <Star className="w-9 h-9 text-amber-300 mb-4" />
               <h3 className="text-2xl font-serif text-white mb-2">Christmas Memory Night Kit</h3>
-              <p className="text-green-100/70 text-sm leading-relaxed mb-5">
+              <p className="text-white/70 text-sm leading-relaxed mb-5">
                 One hosted family night, fully planned for you: games for every age, conversation
                 cards that get Grandma and Grandpa's stories told, a photo scavenger hunt, recipes,
                 and a keepsake to reopen next Christmas.
@@ -1630,26 +1635,26 @@ function ChristmasContent() {
             </a>
             <a
               href="#keepsake-kit"
-              className="block rounded-3xl border border-orange-400/30 bg-gradient-to-br from-orange-950/80 via-red-900/50 to-slate-900/80 backdrop-blur-xl px-7 py-7 shadow-2xl shadow-orange-950/50 hover:border-orange-300/60 transition-colors"
+              className="block rounded-3xl border border-orange-400/30 bg-white/5 backdrop-blur-xl px-7 py-7 shadow-2xl shadow-black/40 hover:border-orange-300/60 transition-colors"
             >
               <Mail className="w-9 h-9 text-orange-300 mb-4" />
               <h3 className="text-2xl font-serif text-white mb-2">North Pole Keepsake Kit</h3>
-              <p className="text-orange-100/70 text-sm leading-relaxed mb-5">
+              <p className="text-white/70 text-sm leading-relaxed mb-5">
                 Letters from Santa and Mrs. Claus, the Nice List certificate, matching envelopes,
                 and six more keepsake pieces, all fillable with your child's name in red script.
                 No Canva, no account: type the name once.
               </p>
-              <span className="inline-block px-6 py-3 rounded-2xl bg-orange-600/80 text-white font-semibold shadow-lg shadow-orange-900/50">
+              <span className="inline-block px-6 py-3 rounded-2xl bg-red-600/80 text-white font-semibold shadow-lg shadow-red-900/50">
                 Shop the Keepsake Kit
               </span>
             </a>
             <a
               href="#nutcrackercore"
-              className="block rounded-3xl border border-red-400/30 bg-gradient-to-br from-red-950/80 via-rose-900/50 to-slate-900/80 backdrop-blur-xl px-7 py-7 shadow-2xl shadow-red-950/50 hover:border-red-300/60 transition-colors"
+              className="block rounded-3xl border border-red-400/30 bg-white/5 backdrop-blur-xl px-7 py-7 shadow-2xl shadow-black/40 hover:border-red-300/60 transition-colors"
             >
               <Sparkles className="w-9 h-9 text-red-300 mb-4" />
               <h3 className="text-2xl font-serif text-white mb-2">Nutcrackercore</h3>
-              <p className="text-red-100/70 text-sm leading-relaxed mb-5">
+              <p className="text-white/70 text-sm leading-relaxed mb-5">
                 A Nutcracker Christmas: storybook wall art, a printable party kit, a
                 personalized ornament, and a Sugar Plum cocoa bar set.
               </p>
@@ -1659,11 +1664,11 @@ function ChristmasContent() {
             </a>
             <a
               href="#personalized"
-              className="block rounded-3xl border border-emerald-400/30 bg-gradient-to-br from-emerald-950/80 via-emerald-900/50 to-slate-900/80 backdrop-blur-xl px-7 py-7 shadow-2xl shadow-emerald-950/50 hover:border-emerald-300/60 transition-colors"
+              className="block rounded-3xl border border-emerald-400/30 bg-white/5 backdrop-blur-xl px-7 py-7 shadow-2xl shadow-black/40 hover:border-emerald-300/60 transition-colors"
             >
               <Gift className="w-9 h-9 text-emerald-300 mb-4" />
               <h3 className="text-2xl font-serif text-white mb-2">Personalized Ornaments</h3>
-              <p className="text-emerald-100/70 text-sm leading-relaxed mb-5">
+              <p className="text-white/70 text-sm leading-relaxed mb-5">
                 Their name on the tree: editable ornaments for newlyweds, baby's first
                 Christmas, pets, and gingerbread name tags for the whole family.
               </p>
@@ -1673,11 +1678,11 @@ function ChristmasContent() {
             </a>
             <a
               href="#gothmas"
-              className="block rounded-3xl border border-purple-400/30 bg-gradient-to-br from-purple-950/80 via-purple-900/60 to-slate-900/80 backdrop-blur-xl px-7 py-7 shadow-2xl shadow-purple-950/50 hover:border-purple-300/60 transition-colors"
+              className="block rounded-3xl border border-purple-400/30 bg-white/5 backdrop-blur-xl px-7 py-7 shadow-2xl shadow-black/40 hover:border-purple-300/60 transition-colors"
             >
               <Moon className="w-9 h-9 text-purple-300 mb-4" />
               <h3 className="text-2xl font-serif text-white mb-2">The Gothmas Collection</h3>
-              <p className="text-purple-100/70 text-sm leading-relaxed mb-5">
+              <p className="text-white/70 text-sm leading-relaxed mb-5">
                 Christmas, but darker: printable ornaments, gothic wall art, greeting cards,
                 gift tags and wrap, and a 25-day countdown, in black, burgundy, and gold.
               </p>
@@ -1687,25 +1692,25 @@ function ChristmasContent() {
             </a>
             <a
               href="#heirloom-planner"
-              className="block rounded-3xl border border-amber-400/30 bg-gradient-to-br from-amber-950/80 via-amber-900/50 to-slate-900/80 backdrop-blur-xl px-7 py-7 shadow-2xl shadow-amber-950/50 hover:border-amber-300/60 transition-colors"
+              className="block rounded-3xl border border-amber-400/30 bg-white/5 backdrop-blur-xl px-7 py-7 shadow-2xl shadow-black/40 hover:border-amber-300/60 transition-colors"
             >
               <BookOpen className="w-9 h-9 text-amber-300 mb-4" />
               <h3 className="text-2xl font-serif text-white mb-2">The Christmas Heirloom Planner</h3>
-              <p className="text-amber-100/70 text-sm leading-relaxed mb-5">
+              <p className="text-white/70 text-sm leading-relaxed mb-5">
                 A 67 page heirloom planner for the whole season: gift lists, a budget tracker
                 that does the math, menus, calendars, and keepsake pages.
               </p>
-              <span className="inline-block px-6 py-3 rounded-2xl bg-amber-600/80 text-white font-semibold shadow-lg shadow-amber-900/50">
+              <span className="inline-block px-6 py-3 rounded-2xl bg-red-600/80 text-white font-semibold shadow-lg shadow-red-900/50">
                 Shop the Planner
               </span>
             </a>
             <a
               href="#peeking-christmas"
-              className="block rounded-3xl border border-teal-400/30 bg-gradient-to-br from-teal-950/80 via-teal-900/50 to-slate-900/80 backdrop-blur-xl px-7 py-7 shadow-2xl shadow-teal-950/50 hover:border-teal-300/60 transition-colors"
+              className="block rounded-3xl border border-teal-400/30 bg-white/5 backdrop-blur-xl px-7 py-7 shadow-2xl shadow-black/40 hover:border-teal-300/60 transition-colors"
             >
               <Sparkles className="w-9 h-9 text-teal-300 mb-4" />
               <h3 className="text-2xl font-serif text-white mb-2">Peeking Christmas</h3>
-              <p className="text-teal-100/70 text-sm leading-relaxed mb-5">
+              <p className="text-white/70 text-sm leading-relaxed mb-5">
                 24 playful characters peeking around doors, cards, and classroom boards, each in
                 three poses, on white backgrounds and as full size transparent PNGs, with card
                 fronts for all 24 and a classroom door sign.
@@ -1716,46 +1721,46 @@ function ChristmasContent() {
             </a>
             <a
               href="#family-bundle"
-              className="block rounded-3xl border border-amber-400/30 bg-gradient-to-br from-amber-950/80 via-amber-900/50 to-slate-900/80 backdrop-blur-xl px-7 py-7 shadow-2xl shadow-amber-950/50 hover:border-amber-300/60 transition-colors"
+              className="block rounded-3xl border border-amber-400/30 bg-white/5 backdrop-blur-xl px-7 py-7 shadow-2xl shadow-black/40 hover:border-amber-300/60 transition-colors"
             >
               <Gift className="w-9 h-9 text-amber-300 mb-4" />
               <h3 className="text-2xl font-serif text-white mb-2">The Santa Letters and Elf Kit Bundle</h3>
-              <p className="text-amber-100/70 text-sm leading-relaxed mb-5">
+              <p className="text-white/70 text-sm leading-relaxed mb-5">
                 Over 100 pages in one purchase: the 78 page Elf Kit plus all 20 Santa Letters
                 and all 4 Christmas Notes. $17.98 bought separately, $15.99 as the bundle
                 through December 1.
               </p>
-              <span className="inline-block px-6 py-3 rounded-2xl bg-amber-600/80 text-white font-semibold shadow-lg shadow-amber-900/50">
+              <span className="inline-block px-6 py-3 rounded-2xl bg-red-600/80 text-white font-semibold shadow-lg shadow-red-900/50">
                 Shop the Bundle
               </span>
             </a>
             <a
               href="#family-bundle-better"
-              className="block rounded-3xl border border-amber-400/30 bg-gradient-to-br from-amber-950/80 via-amber-900/50 to-slate-900/80 backdrop-blur-xl px-7 py-7 shadow-2xl shadow-amber-950/50 hover:border-amber-300/60 transition-colors"
+              className="block rounded-3xl border border-amber-400/30 bg-white/5 backdrop-blur-xl px-7 py-7 shadow-2xl shadow-black/40 hover:border-amber-300/60 transition-colors"
             >
               <Gift className="w-9 h-9 text-amber-300 mb-4" />
               <h3 className="text-2xl font-serif text-white mb-2">The Family Nights Bundle</h3>
-              <p className="text-amber-100/70 text-sm leading-relaxed mb-5">
+              <p className="text-white/70 text-sm leading-relaxed mb-5">
                 A hosted Memory Night, the 78 page Elf Kit, and Peeking Christmas in white
                 and transparent files. $26.97 bought separately, $22.99 as the bundle
                 through December 1.
               </p>
-              <span className="inline-block px-6 py-3 rounded-2xl bg-amber-600/80 text-white font-semibold shadow-lg shadow-amber-900/50">
+              <span className="inline-block px-6 py-3 rounded-2xl bg-red-600/80 text-white font-semibold shadow-lg shadow-red-900/50">
                 Shop the Bundle
               </span>
             </a>
             <a
               href="#family-bundle-best"
-              className="block rounded-3xl border border-amber-400/30 bg-gradient-to-br from-amber-950/80 via-amber-900/50 to-slate-900/80 backdrop-blur-xl px-7 py-7 shadow-2xl shadow-amber-950/50 hover:border-amber-300/60 transition-colors"
+              className="block rounded-3xl border border-amber-400/30 bg-white/5 backdrop-blur-xl px-7 py-7 shadow-2xl shadow-black/40 hover:border-amber-300/60 transition-colors"
             >
               <Gift className="w-9 h-9 text-amber-300 mb-4" />
               <h3 className="text-2xl font-serif text-white mb-2">The Whole Season Bundle</h3>
-              <p className="text-amber-100/70 text-sm leading-relaxed mb-5">
+              <p className="text-white/70 text-sm leading-relaxed mb-5">
                 Everything in one purchase: the Elf Kit, Memory Night, Peeking Christmas,
-                all the Santa Letters and Notes, and the Heirloom Planner. $46.95 bought
-                separately, $37.99 as the bundle through December 1.
+                all the Santa Letters and Notes, the Heirloom Planner, and the North Pole
+                Keepsake Kit. $52.94 bought separately, $41.99 as the bundle through December 1.
               </p>
-              <span className="inline-block px-6 py-3 rounded-2xl bg-amber-600/80 text-white font-semibold shadow-lg shadow-amber-900/50">
+              <span className="inline-block px-6 py-3 rounded-2xl bg-red-600/80 text-white font-semibold shadow-lg shadow-red-900/50">
                 Shop the Bundle
               </span>
             </a>
@@ -2347,7 +2352,7 @@ function ChristmasContent() {
                   The Whole Season Bundle
                 </h2>
                 <p className="text-lg text-white/80 mb-4">
-                  Everything in the family ladder in one purchase, $46.95 bought
+                  Everything in the family ladder in one purchase, $52.94 bought
                   separately, so the whole season is handled in one sitting
                 </p>
 
@@ -2361,11 +2366,11 @@ function ChristmasContent() {
                 </div>
 
                 <div className="flex items-baseline justify-center gap-3 mb-2">
-                  <span className="text-5xl font-bold text-amber-300">$37.99</span>
-                  <span className="text-xl text-white/50 line-through">$46.95</span>
+                  <span className="text-5xl font-bold text-amber-300">$41.99</span>
+                  <span className="text-xl text-white/50 line-through">$52.94</span>
                 </div>
                 <p className="text-lg text-amber-200 mb-6">
-                  Launch price through December 1, then $47.99.
+                  Launch price through December 1, then $53.99.
                 </p>
 
                 <div className="space-y-3 mb-8 text-left max-w-md mx-auto">
@@ -2388,18 +2393,24 @@ function ChristmasContent() {
                   </div>
                   <div className="flex items-start gap-3 text-base text-white/90">
                     <div className="mt-2 w-2 h-2 shrink-0 rounded-full bg-amber-400" />
+                    The North Pole Keepsake Kit: the Santa letter, Nice List
+                    certificate, and keepsake envelopes, personalized with your
+                    child's name, no Canva and no account needed
+                  </div>
+                  <div className="flex items-start gap-3 text-base text-white/90">
+                    <div className="mt-2 w-2 h-2 shrink-0 rounded-full bg-amber-400" />
                     Instant download, delivered by email, print at home. One purchase,
                     no subscription
                   </div>
                 </div>
 
                 <p className="text-lg text-amber-200 mb-4">
-                  Bought separately everything in here comes to $46.95, so the bundle
-                  saves you $8.96, the largest saving in the store.
+                  Bought separately everything in here comes to $52.94, so the bundle
+                  saves you $10.95, the largest saving in the store.
                 </p>
 
                 <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-                {/* Best bundle: Stripe price price_1UdstfBsr66TjEhQ15Gj2yD6,
+                {/* Best bundle: Stripe price price_1Uf2J4Bsr66TjEhQTebh7TgU,
                     product prod_VfDK8Kc80VwrAT, wired in src/stripe-config.ts and
                     both checkout and webhook functions. */}
                 <button
@@ -2409,10 +2420,10 @@ function ChristmasContent() {
                       type: 'best_bundle',
                       name: 'The Whole Season Bundle',
                       description:
-                        'The 24 Day Elf Kit plus the Christmas Memory Night Kit plus Peeking Christmas plus the Christmas Classics Bundle (20 Santa Letters + 4 Christmas Notes) plus The Christmas Heirloom Planner. Bought separately $46.95.',
+                        'The 24 Day Elf Kit plus the Christmas Memory Night Kit plus Peeking Christmas plus the Christmas Classics Bundle (20 Santa Letters + 4 Christmas Notes) plus The Christmas Heirloom Planner plus the North Pole Keepsake Kit. Bought separately $52.94.',
                       image: bestBundleProducts[0].images[0],
-                      price: 37.99,
-                      priceId: 'price_1UdstfBsr66TjEhQ15Gj2yD6',
+                      price: 41.99,
+                      priceId: 'price_1Uf2J4Bsr66TjEhQTebh7TgU',
                     });
                   }}
                   disabled={isInCart('best_bundle')}
@@ -2430,16 +2441,16 @@ function ChristmasContent() {
                   ) : (
                     <>
                       <Plus className="w-6 h-6 text-amber-300" />
-                      Add the Bundle to Cart, $37.99
+                      Add the Bundle to Cart, $41.99
                     </>
                   )}
                 </button>
                 <button
-                  onClick={() => handleCheckout('best_bundle', undefined, 'price_1UdstfBsr66TjEhQ15Gj2yD6')}
+                  onClick={() => handleCheckout('best_bundle', undefined, 'price_1Uf2J4Bsr66TjEhQTebh7TgU')}
                   className="w-full sm:w-auto px-8 py-4 rounded-2xl text-white text-xl font-bold shadow-2xl transition-all duration-300 flex items-center justify-center gap-3 border-2 border-amber-300/50 bg-gradient-to-r from-amber-500 via-amber-600 to-amber-700 hover:shadow-amber-500/40 transform hover:scale-105"
                 >
                   <Download className="w-6 h-6 text-amber-100" />
-                  Get the Whole Season, $37.99
+                  Get the Whole Season, $41.99
                 </button>
                 </div>
                 <p className="mt-3 text-sm text-white/60">

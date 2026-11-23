@@ -1,3 +1,4 @@
+// best bundle adds keepsake kit Nov 23
 // keepsake kit launch Nov 23
 // bundle launch Nov 20
 // peeking launch 2026-11-15
@@ -85,14 +86,17 @@ const PRODUCT_DOWNLOAD_EXPANSIONS: Record<string, string[]> = {
   ],
   // The Best bundle (The Whole Season Bundle) is the Elf Kit plus the
   // Christmas Memory Night Kit plus the Christmas Heirloom Planner plus the
-  // Classics Bundle plus Peeking Christmas, so its delivery email must carry
-  // all five download links.
+  // Classics Bundle plus Peeking Christmas plus the North Pole Keepsake Kit
+  // (added Nov 23, 2026), so its delivery email must carry all six download
+  // links. The keepsake link serves the same Drive package as the standalone
+  // Keepsake Kit delivery.
   'best_bundle': [
     'https://christmasfun.store/download/elf-kit',
     'https://christmasfun.store/download/memory-night-kit',
     'https://christmasfun.store/download/christmas-heirloom-planner',
     'https://christmasfun.store/download/all-24-bundle',
     'https://christmasfun.store/download/peeking-christmas',
+    'https://christmasfun.store/download/north-pole-keepsake-kit',
   ],
 };
 
