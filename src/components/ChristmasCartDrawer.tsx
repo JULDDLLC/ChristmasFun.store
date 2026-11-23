@@ -302,6 +302,11 @@ export function ChristmasCartDrawer({ isOpen, onClose, customerEmail }: Props) {
           </div>
         ) : null}
 
+        <p className="mb-4 text-center text-sm leading-relaxed text-amber-100/90">
+          You pay, and your download is in your inbox in minutes. No waiting, no
+          wondering, no chasing a seller who never writes back.
+        </p>
+
         <button
           disabled={busy}
           onClick={handleCheckout}
