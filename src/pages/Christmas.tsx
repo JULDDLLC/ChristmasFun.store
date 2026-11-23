@@ -16,6 +16,7 @@ import {
   Plus,
   Check,
   BookOpen,
+  Mail,
 } from 'lucide-react';
 import { BackgroundMusic } from '../components/BackgroundMusic';
 import { PremiumSnowfall } from '../components/PremiumSnowfall';
@@ -979,6 +980,37 @@ function ChristmasContent() {
   ];
 
 
+  const keepsakeKitProducts: Array<{
+    id: string;
+    type: 'keepsake_kit';
+    name: string;
+    description: string;
+    images: string[];
+    price: number;
+    priceId: string;
+    listPrice?: number;
+    launchNote?: string;
+  }> = [
+    {
+      id: 'keepsake_kit',
+      type: 'keepsake_kit',
+      name: 'North Pole Keepsake Kit',
+      description: 'Ten pieces plus a bonus blank keepsake page: a letter from Santa and a letter from Mrs. Claus, a Nice List certificate in portrait and landscape, matching envelopes for both letters, a Dear Santa letter for your child to send back, a good deeds checklist, Christmas memory cards, Nice List verification cards, North Pole mail labels, and a seals and stickers page. The letters and certificate are fillable: type your child\'s name and it appears in signature red script. Instant download, print at home.',
+      images: [
+        'https://drive.google.com/thumbnail?id=11eYY0ogLC-XBZGk7WJwfWyazMGAsd4yj&sz=w1200',
+        'https://drive.google.com/thumbnail?id=1R5KVrKJQFLAOvauXTKu497zaY6gZlYMP&sz=w1200',
+        'https://drive.google.com/thumbnail?id=1duY-0RBhMh6QeDRMI1mNb2Gh0JwfBc4K&sz=w1200',
+        'https://drive.google.com/thumbnail?id=1D4hrhhh6EiWLkh6Sao2jluMcYEdLX-u-&sz=w1200',
+        'https://drive.google.com/thumbnail?id=1PrYxLDGMpqfK8wYDs-qQjr_gKprJ_Kx0&sz=w1200',
+      ],
+      price: 5.99,
+      priceId: 'price_1UehvEBsr66TjEhQQ6CCzirg',
+      listPrice: 9.99,
+      launchNote: 'Launch price through December 1, then $9.99',
+    },
+  ];
+
+
   const goodBundleProducts: Array<{
     id: string;
     type: 'good_bundle';
@@ -1318,6 +1350,13 @@ function ChristmasContent() {
               <span className="ml-1.5 rounded-full bg-amber-400 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-green-950">New</span>
             </a>
             <a
+              href="#keepsake-kit"
+              className="flex-none whitespace-nowrap text-xs text-orange-200 hover:text-white transition-colors font-semibold border border-orange-400/50 rounded-full px-3 py-1 bg-orange-500/20 hover:bg-orange-500/40"
+            >
+              Keepsake Kit
+              <span className="ml-1.5 rounded-full bg-amber-400 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-orange-950">New</span>
+            </a>
+            <a
               href="#grandparents-countdown"
               className="flex-none whitespace-nowrap text-xs text-rose-200 hover:text-white transition-colors font-semibold border border-rose-400/50 rounded-full px-3 py-1 bg-rose-500/20 hover:bg-rose-500/40"
             >
@@ -1426,6 +1465,13 @@ function ChristmasContent() {
                 <span className="ml-1.5 rounded-full bg-amber-400 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-green-950">New</span>
               </a>
               <a
+                href="#keepsake-kit"
+                className="inline-flex items-center shrink-0 text-orange-200 font-semibold border border-orange-400/50 rounded-full px-3 py-1.5 bg-orange-500/20"
+              >
+                Keepsake Kit
+                <span className="ml-1.5 rounded-full bg-amber-400 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-orange-950">New</span>
+              </a>
+              <a
                 href="#grandparents-countdown"
                 className="inline-flex items-center shrink-0 text-rose-200 font-semibold border border-rose-400/50 rounded-full px-3 py-1.5 bg-rose-500/20"
               >
@@ -1508,7 +1554,7 @@ function ChristmasContent() {
               </h1>
 
               <p className="text-lg md:text-xl text-amber-100/80 max-w-2xl mx-auto leading-relaxed tracking-wide">
-  Includes 20 Santa Letters · 4 Christmas Notes · 10 Free Coloring Pages · Plus Gothmas, Nutcrackercore, Personalized Ornaments, the Memory Night Kit &amp; the 24 Day Elf Kit &amp; the Christmas Heirloom Planner, the Grandparents' Christmas Countdown &amp; the Classroom Ready Bundle &amp; the Santa Letters and Elf Kit Bundle &amp; Peeking Christmas &amp; the Family Nights Bundle &amp; the Whole Season Bundle
+  Includes 20 Santa Letters · 4 Christmas Notes · 10 Free Coloring Pages · Plus Gothmas, Nutcrackercore, Personalized Ornaments, the Memory Night Kit &amp; the 24 Day Elf Kit &amp; the Christmas Heirloom Planner, the Grandparents' Christmas Countdown &amp; the Classroom Ready Bundle &amp; the Santa Letters and Elf Kit Bundle &amp; Peeking Christmas &amp; the Family Nights Bundle &amp; the Whole Season Bundle &amp; the North Pole Keepsake Kit
 </p>
 
               <div className="flex flex-col sm:flex-row items-center justify-center gap-6 mt-8">
@@ -1571,6 +1617,21 @@ function ChristmasContent() {
               </p>
               <span className="inline-block px-6 py-3 rounded-2xl bg-green-600/80 text-white font-semibold shadow-lg shadow-green-900/50">
                 Shop Memory Night
+              </span>
+            </a>
+            <a
+              href="#keepsake-kit"
+              className="block rounded-3xl border border-orange-400/30 bg-gradient-to-br from-orange-950/80 via-red-900/50 to-slate-900/80 backdrop-blur-xl px-7 py-7 shadow-2xl shadow-orange-950/50 hover:border-orange-300/60 transition-colors"
+            >
+              <Mail className="w-9 h-9 text-orange-300 mb-4" />
+              <h3 className="text-2xl font-serif text-white mb-2">North Pole Keepsake Kit</h3>
+              <p className="text-orange-100/70 text-sm leading-relaxed mb-5">
+                Letters from Santa and Mrs. Claus, the Nice List certificate, matching envelopes,
+                and six more keepsake pieces, all fillable with your child's name in red script.
+                No Canva, no account: type the name once.
+              </p>
+              <span className="inline-block px-6 py-3 rounded-2xl bg-orange-600/80 text-white font-semibold shadow-lg shadow-orange-900/50">
+                Shop the Keepsake Kit
               </span>
             </a>
             <a
@@ -2426,6 +2487,102 @@ function ChristmasContent() {
           <div className="text-center mt-12">
             <p className="text-xl text-red-100/90">
               One kit, every night of December handled, an instant download you can print tonight and use again every year.
+            </p>
+          </div>
+        </section>
+
+        <section id="keepsake-kit" className="container mx-auto px-6 py-24">
+          <div className="text-center mb-16">
+            <p className="text-amber-300 font-semibold uppercase tracking-[0.25em] text-sm mb-4">
+              New for 2026
+            </p>
+            <div className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-gradient-to-r from-orange-700/30 to-amber-600/30 backdrop-blur-xl border border-orange-300/40 text-orange-100 font-medium mb-6">
+              <Mail className="w-5 h-5 text-amber-200" />
+              The North Pole Keepsake Kit
+            </div>
+            <h2 className="text-5xl md:text-6xl font-serif text-white mb-6">
+              No Canva. No account. Type the name once.
+            </h2>
+            <p className="text-lg md:text-xl text-white/80 max-w-2xl mx-auto leading-relaxed">
+              The whole North Pole mailbox in one printable kit, in warm vintage reds and greens
+              with gold foil touches: letters from Santa and from Mrs. Claus, the official Nice
+              List certificate, and every matching extra, all fillable right in the PDF. Type
+              your child's name and it appears in signature red script.
+            </p>
+            <p className="text-lg md:text-xl text-white/80 max-w-2xl mx-auto leading-relaxed mt-4">
+              10 pieces plus a bonus blank keepsake page: letter from Santa, letter from Mrs. Claus, Nice List certificate in portrait and landscape, matching envelopes, Dear Santa letter, good deeds checklist, Christmas memory cards, Nice List verification cards, North Pole mail labels, and a seals and stickers page.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {keepsakeKitProducts.map((product) => {
+              const inCart = isInCart(product.id);
+
+              return (
+                <div
+                  key={product.id}
+                  className="group relative overflow-hidden rounded-3xl bg-white/10 backdrop-blur-xl border border-white/20 shadow-2xl transition-all duration-500 hover:scale-105 hover:shadow-amber-500/30 lg:col-start-2"
+                >
+                  <div className="absolute inset-0 bg-gradient-to-br from-amber-500/20 via-transparent to-orange-600/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                  <div className="relative p-6">
+                    <div className="aspect-[4/3] bg-gradient-to-br from-white/5 to-white/10 rounded-2xl mb-4 flex items-center justify-center overflow-hidden">
+                      <GothmasGallery images={product.images} name={product.name} />
+                    </div>
+                    <h3 className="text-xl font-serif text-white mb-2">{product.name}</h3>
+                    <p className="text-sm text-white/70 mb-3">{product.description}</p>
+                    <p className="text-lg font-bold text-white mb-1">
+                      ${product.price.toFixed(2)}
+                      {product.listPrice ? (
+                        <span className="ml-2 text-base font-medium text-white/50 line-through">
+                          ${product.listPrice.toFixed(2)}
+                        </span>
+                      ) : null}
+                    </p>
+                    {product.launchNote ? (
+                      <p className="text-sm font-semibold text-amber-300 mb-3">{product.launchNote}</p>
+                    ) : (
+                      <div className="mb-3" />
+                    )}
+                    <button
+                      onClick={() => {
+                        addToCart({
+                          id: product.id,
+                          type: product.type,
+                          name: product.name,
+                          description: product.description,
+                          image: product.images[0],
+                          price: product.price,
+                          priceId: product.priceId,
+                        });
+                      }}
+                      disabled={inCart}
+                      className={`w-full py-2 px-4 rounded-xl font-semibold transition-all duration-300 border border-amber-300/30 flex items-center justify-center gap-2 ${
+                        inCart
+                          ? 'bg-green-600/50 text-white cursor-default'
+                          : 'bg-gradient-to-r from-orange-700 to-red-900 text-orange-50 hover:from-orange-800 hover:to-rose-950'
+                      }`}
+                    >
+                      {inCart ? (
+                        <>
+                          <Check className="w-4 h-4" />
+                          In Cart
+                        </>
+                      ) : (
+                        <>
+                          <Plus className="w-4 h-4" />
+                          Add to Cart
+                        </>
+                      )}
+                    </button>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          <div className="text-center mt-12">
+            <p className="text-xl text-orange-100/90">
+              One kit, the whole North Pole mailbox: an instant download you can print tonight and keep forever.
             </p>
           </div>
         </section>

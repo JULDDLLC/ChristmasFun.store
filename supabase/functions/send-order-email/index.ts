@@ -44,6 +44,7 @@ const PRODUCT_DOWNLOAD_MAP: Record<string, string> = {
   'grandparents_countdown': 'https://christmasfun.store/download/grandparents-countdown',
   'peeking_christmas': 'https://christmasfun.store/download/peeking-christmas',
   'elf_kit': 'https://christmasfun.store/download/elf-kit',
+  'keepsake_kit': 'https://christmasfun.store/download/north-pole-keepsake-kit',
   'heirloom_planner': 'https://christmasfun.store/download/christmas-heirloom-planner',
 };
 
@@ -54,6 +55,7 @@ const DOWNLOAD_LINK_LABELS: Record<string, string> = {
   'https://christmasfun.store/download/grandparents-countdown': "Grandparents' Christmas Countdown",
   'https://christmasfun.store/download/peeking-christmas': 'Peeking Christmas',
   'https://christmasfun.store/download/elf-kit': 'The 24 Day Elf Kit',
+  'https://christmasfun.store/download/north-pole-keepsake-kit': 'North Pole Keepsake Kit',
   'https://christmasfun.store/download/christmas-heirloom-planner': 'The Christmas Heirloom Planner & Gift Budget Tracker',
   'https://christmasfun.store/download/all-24-bundle': 'Christmas Classics Bundle',
 };

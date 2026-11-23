@@ -34,6 +34,8 @@ const PRODUCT_TO_PRICE: Record<string, string> = {
   'grandparents_countdown': 'price_1UamVqBsr66TjEhQ6QrQCvX6',
   'peeking_christmas_699': 'price_1UcDbOBsr66TjEhQoFSFfaYF',
   'peeking_christmas': 'price_1UcDbOBsr66TjEhQoFSFfaYF',
+  'keepsake_kit_599': 'price_1UehvEBsr66TjEhQQ6CCzirg',
+  'keepsake_kit': 'price_1UehvEBsr66TjEhQQ6CCzirg',
   'santa_letter': 'price_1ScHCUBsr66TjEhQI5HBQqtU',
   'christmas_note': 'price_1ScGfNBsr66TjEhQxdfKXMcn',
   'free_coloring': 'price_1SctvEBsr66TjEhQ5XQ8NUxl',
