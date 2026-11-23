@@ -1,3 +1,4 @@
+// keepsake kit launch Nov 23
 // bundle launch Nov 20
 // peeking launch 2026-11-15
 // attribution ship Nov 2
