@@ -284,6 +284,7 @@ function ChristmasContent() {
   const [emailPrompt, setEmailPrompt] = useState<{
     productId: string;
     designNumber?: number;
+    priceId?: string;
   } | null>(null);
   const [promptEmail, setPromptEmail] = useState('');
   const [promptEmailError, setPromptEmailError] = useState('');
@@ -1163,7 +1164,8 @@ function ChristmasContent() {
   const proceedCheckout = async (
     productId: string,
     designNumber: number | undefined,
-    emailToUse: string
+    emailToUse: string,
+    directPriceId?: string
   ) => {
     if (emailToUse && emailToUse.includes('@')) {
       localStorage.setItem('christmas_customer_email', emailToUse);
@@ -1179,6 +1181,10 @@ function ChristmasContent() {
         },
         body: JSON.stringify({
           productId,
+          // Some premium kits (Elf Kit, Memory Night Kit, Heirloom Planner)
+          // are not keys in the christmas-checkout productId map; the
+          // function accepts the Stripe priceId directly for those.
+          priceId: directPriceId,
           email: emailToUse,
           designNumber,
           attribution: getAttribution() ?? undefined,
@@ -1208,7 +1214,7 @@ function ChristmasContent() {
         // Stash the order so the ThankYou page can fire the GA4 purchase
         // event. Only when the productId resolves to a known product with a
         // known price; never guess a price for analytics.
-        const priceId = PRODUCT_ID_TO_PRICE_ID[productId];
+        const priceId = PRODUCT_ID_TO_PRICE_ID[productId] ?? directPriceId;
         const product = priceId ? getProductByPriceId(priceId) : undefined;
         if (product) {
           savePendingOrder(
@@ -1237,11 +1243,11 @@ function ChristmasContent() {
     }
   };
 
-  const handleCheckout = async (productId: string, designNumber?: number) => {
+  const handleCheckout = async (productId: string, designNumber?: number, priceId?: string) => {
     const currentEmail = email || localStorage.getItem('christmas_customer_email') || '';
 
     if (currentEmail && currentEmail.includes('@')) {
-      await proceedCheckout(productId, designNumber, currentEmail);
+      await proceedCheckout(productId, designNumber, currentEmail, priceId);
       return;
     }
 
@@ -1249,7 +1255,7 @@ function ChristmasContent() {
     // bouncing the visitor back to the top of the page.
     setPromptEmail(email || '');
     setPromptEmailError('');
-    setEmailPrompt({ productId, designNumber });
+    setEmailPrompt({ productId, designNumber, priceId });
   };
 
   const closeEmailPrompt = () => {
@@ -1266,11 +1272,11 @@ function ChristmasContent() {
       return;
     }
 
-    const { productId, designNumber } = emailPrompt;
+    const { productId, designNumber, priceId } = emailPrompt;
     setEmail(trimmed);
     localStorage.setItem('christmas_customer_email', trimmed);
     closeEmailPrompt();
-    await proceedCheckout(productId, designNumber, trimmed);
+    await proceedCheckout(productId, designNumber, trimmed, priceId);
   };
 
   return (
@@ -1559,13 +1565,16 @@ function ChristmasContent() {
 
               <div className="flex flex-col sm:flex-row items-center justify-center gap-6 mt-8">
                 <button
-                  onClick={() => handleCheckout('bundle_14_999')}
+                  onClick={() => {
+                    const element = document.getElementById('kits');
+                    element?.scrollIntoView({ behavior: 'smooth' });
+                  }}
                   className="group relative px-10 py-5 rounded-2xl bg-gradient-to-r from-red-600 via-red-700 to-red-800 text-white text-xl font-bold shadow-2xl hover:shadow-red-500/50 transition-all duration-300 transform hover:scale-105 hover:-translate-y-1 overflow-hidden border-2 border-amber-400/30"
                 >
                   <div className="absolute inset-0 bg-gradient-to-r from-transparent via-amber-300/30 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
                   <div className="relative flex items-center gap-3">
                     <Gift className="w-6 h-6 text-amber-300" />
-                    <span className="text-amber-100">Get the Classics Bundle, $9.99</span>
+                    <span className="text-amber-100">Shop the Kits, Print Tonight</span>
                   </div>
                 </button>
 
@@ -1584,7 +1593,7 @@ function ChristmasContent() {
         </section>
 
         {/* NEW FOR 2026 COLLECTIONS BANNER */}
-        <section className="container mx-auto px-6 pt-16 relative z-10">
+        <section id="kits" className="container mx-auto px-6 pt-16 relative z-10">
           <p className="text-center text-amber-300 font-semibold uppercase tracking-[0.25em] text-sm mb-6">
             New for 2026 Collections
           </p>
@@ -2120,7 +2129,6 @@ function ChristmasContent() {
                   <span className="text-xl text-white/50 line-through">$17.98</span>
                 </div>
                 <p className="text-lg text-amber-200 mb-6">
-                  Bought separately they come to $17.98, so the bundle saves you $1.99.
                   Launch price through December 1, then $17.99.
                 </p>
 
@@ -2145,6 +2153,11 @@ function ChristmasContent() {
                   </div>
                 </div>
 
+                <p className="text-lg text-amber-200 mb-4">
+                  Bought separately they come to $17.98, so the bundle saves you $1.99.
+                </p>
+
+                <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
                 {/* Good bundle: Stripe price price_1UdHBWBsr66TjEhQIADhwpY2
                     (product prod_VeaL1uDb5tjIQH), wired in src/stripe-config.ts and
                     both checkout and webhook functions. */}
@@ -2180,6 +2193,17 @@ function ChristmasContent() {
                     </>
                   )}
                 </button>
+                <button
+                  onClick={() => handleCheckout('good_bundle', undefined, 'price_1UdHBWBsr66TjEhQIADhwpY2')}
+                  className="w-full sm:w-auto px-8 py-4 rounded-2xl text-white text-xl font-bold shadow-2xl transition-all duration-300 flex items-center justify-center gap-3 border-2 border-amber-300/50 bg-gradient-to-r from-amber-500 via-amber-600 to-amber-700 hover:shadow-amber-500/40 transform hover:scale-105"
+                >
+                  <Download className="w-6 h-6 text-amber-100" />
+                  Get Santa Letters + Elf Kit, $15.99
+                </button>
+                </div>
+                <p className="mt-3 text-sm text-white/60">
+                  Instant download. In your inbox in minutes.
+                </p>
               </div>
             </div>
           </div>
@@ -2220,7 +2244,6 @@ function ChristmasContent() {
                   <span className="text-xl text-white/50 line-through">$26.97</span>
                 </div>
                 <p className="text-lg text-amber-200 mb-6">
-                  Bought separately they come to $26.97, so the bundle saves you $3.98.
                   Launch price through December 1, then $27.99.
                 </p>
 
@@ -2251,6 +2274,11 @@ function ChristmasContent() {
                   </div>
                 </div>
 
+                <p className="text-lg text-amber-200 mb-4">
+                  Bought separately they come to $26.97, so the bundle saves you $3.98.
+                </p>
+
+                <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
                 {/* Better bundle: Stripe price price_1UdssYBsr66TjEhQ80HgTsFm,
                     product prod_VfDJDsdpjkMxNn, wired in src/stripe-config.ts and
                     both checkout and webhook functions. */}
@@ -2286,6 +2314,17 @@ function ChristmasContent() {
                     </>
                   )}
                 </button>
+                <button
+                  onClick={() => handleCheckout('better_bundle', undefined, 'price_1UdssYBsr66TjEhQ80HgTsFm')}
+                  className="w-full sm:w-auto px-8 py-4 rounded-2xl text-white text-xl font-bold shadow-2xl transition-all duration-300 flex items-center justify-center gap-3 border-2 border-amber-300/50 bg-gradient-to-r from-amber-500 via-amber-600 to-amber-700 hover:shadow-amber-500/40 transform hover:scale-105"
+                >
+                  <Download className="w-6 h-6 text-amber-100" />
+                  Get Family Nights, $22.99
+                </button>
+                </div>
+                <p className="mt-3 text-sm text-white/60">
+                  Instant download. In your inbox in minutes.
+                </p>
               </div>
             </div>
           </div>
@@ -2326,8 +2365,6 @@ function ChristmasContent() {
                   <span className="text-xl text-white/50 line-through">$46.95</span>
                 </div>
                 <p className="text-lg text-amber-200 mb-6">
-                  Bought separately everything in here comes to $46.95, so the bundle
-                  saves you $8.96, the largest saving in the store.
                   Launch price through December 1, then $47.99.
                 </p>
 
@@ -2356,6 +2393,12 @@ function ChristmasContent() {
                   </div>
                 </div>
 
+                <p className="text-lg text-amber-200 mb-4">
+                  Bought separately everything in here comes to $46.95, so the bundle
+                  saves you $8.96, the largest saving in the store.
+                </p>
+
+                <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
                 {/* Best bundle: Stripe price price_1UdstfBsr66TjEhQ15Gj2yD6,
                     product prod_VfDK8Kc80VwrAT, wired in src/stripe-config.ts and
                     both checkout and webhook functions. */}
@@ -2391,6 +2434,17 @@ function ChristmasContent() {
                     </>
                   )}
                 </button>
+                <button
+                  onClick={() => handleCheckout('best_bundle', undefined, 'price_1UdstfBsr66TjEhQ15Gj2yD6')}
+                  className="w-full sm:w-auto px-8 py-4 rounded-2xl text-white text-xl font-bold shadow-2xl transition-all duration-300 flex items-center justify-center gap-3 border-2 border-amber-300/50 bg-gradient-to-r from-amber-500 via-amber-600 to-amber-700 hover:shadow-amber-500/40 transform hover:scale-105"
+                >
+                  <Download className="w-6 h-6 text-amber-100" />
+                  Get the Whole Season, $37.99
+                </button>
+                </div>
+                <p className="mt-3 text-sm text-white/60">
+                  Instant download. In your inbox in minutes.
+                </p>
               </div>
             </div>
           </div>
@@ -2478,6 +2532,16 @@ function ChristmasContent() {
                         </>
                       )}
                     </button>
+                    <button
+                      onClick={() => handleCheckout(product.id, undefined, product.priceId)}
+                      className="mt-3 w-full py-2 px-4 rounded-xl font-semibold transition-all duration-300 border border-amber-300/50 flex items-center justify-center gap-2 bg-gradient-to-r from-amber-500 to-amber-600 text-white hover:from-amber-600 hover:to-amber-700 shadow-lg"
+                    >
+                      <Download className="w-4 h-4" />
+                      Buy Now, Print Tonight
+                    </button>
+                    <p className="mt-2 text-center text-xs text-white/60">
+                      Instant download. In your inbox in minutes.
+                    </p>
                   </div>
                 </div>
               );
@@ -2543,6 +2607,9 @@ function ChristmasContent() {
                     ) : (
                       <div className="mb-3" />
                     )}
+                    <p className="text-sm text-orange-100/90 mb-3">
+                      Santa and Mrs. Claus letters, Nice List certificates, envelopes. Type the name, print it tonight.
+                    </p>
                     <button
                       onClick={() => {
                         addToCart({
@@ -2574,6 +2641,16 @@ function ChristmasContent() {
                         </>
                       )}
                     </button>
+                    <button
+                      onClick={() => handleCheckout(product.id, undefined, product.priceId)}
+                      className="mt-3 w-full py-2 px-4 rounded-xl font-semibold transition-all duration-300 border border-amber-300/50 flex items-center justify-center gap-2 bg-gradient-to-r from-amber-500 to-amber-600 text-white hover:from-amber-600 hover:to-amber-700 shadow-lg"
+                    >
+                      <Download className="w-4 h-4" />
+                      Buy Now, Print Tonight
+                    </button>
+                    <p className="mt-2 text-center text-xs text-white/60">
+                      Instant download. In your inbox in minutes.
+                    </p>
                   </div>
                 </div>
               );
@@ -2669,6 +2746,16 @@ function ChristmasContent() {
                         </>
                       )}
                     </button>
+                    <button
+                      onClick={() => handleCheckout(product.id, undefined, product.priceId)}
+                      className="mt-3 w-full py-2 px-4 rounded-xl font-semibold transition-all duration-300 border border-amber-300/50 flex items-center justify-center gap-2 bg-gradient-to-r from-amber-500 to-amber-600 text-white hover:from-amber-600 hover:to-amber-700 shadow-lg"
+                    >
+                      <Download className="w-4 h-4" />
+                      Buy Now, Print Tonight
+                    </button>
+                    <p className="mt-2 text-center text-xs text-white/60">
+                      Instant download. In your inbox in minutes.
+                    </p>
                   </div>
                 </div>
               );
@@ -2861,6 +2948,16 @@ function ChristmasContent() {
                         </>
                       )}
                     </button>
+                    <button
+                      onClick={() => handleCheckout(product.id, undefined, product.priceId)}
+                      className="mt-3 w-full py-2 px-4 rounded-xl font-semibold transition-all duration-300 border border-amber-300/50 flex items-center justify-center gap-2 bg-gradient-to-r from-amber-500 to-amber-600 text-white hover:from-amber-600 hover:to-amber-700 shadow-lg"
+                    >
+                      <Download className="w-4 h-4" />
+                      Buy Now, Print Tonight
+                    </button>
+                    <p className="mt-2 text-center text-xs text-white/60">
+                      Instant download. In your inbox in minutes.
+                    </p>
                   </div>
                 </div>
               );
@@ -2977,6 +3074,16 @@ function ChristmasContent() {
                         </>
                       )}
                     </button>
+                    <button
+                      onClick={() => handleCheckout(product.id, undefined, product.priceId)}
+                      className="mt-3 w-full py-2 px-4 rounded-xl font-semibold transition-all duration-300 border border-amber-300/50 flex items-center justify-center gap-2 bg-gradient-to-r from-amber-500 to-amber-600 text-white hover:from-amber-600 hover:to-amber-700 shadow-lg"
+                    >
+                      <Download className="w-4 h-4" />
+                      Buy Now, Print Tonight
+                    </button>
+                    <p className="mt-2 text-center text-xs text-white/60">
+                      Instant download. In your inbox in minutes.
+                    </p>
                   </div>
                 </div>
               );
