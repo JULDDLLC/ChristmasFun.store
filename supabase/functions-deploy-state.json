@@ -3,11 +3,11 @@
   "functions": {
     "christmas-checkout": {
       "hasChanged": false,
-      "hash": "c010e4b3c96b615193456a8c3946db04cac2d7e78536828880220deb2ffd5435"
+      "hash": "50eca3051966464564a2c1d25b18c0e2db5843e70c980060f08fe5a319e95357"
     },
     "christmas-multi-checkout": {
       "hasChanged": false,
-      "hash": "4ba6f7ad37b30dc11530e5978e4b58378ae1a4bb7f83237bbdd422d91c29c09f"
+      "hash": "9029ce4ae40be1cff658d7efc3237409aca04db12cb44338c839dca649624587"
     },
     "download-file": {
       "hasChanged": false,
@@ -19,7 +19,7 @@
     },
     "send-order-email": {
       "hasChanged": false,
-      "hash": "92aff40b55d977122d297ef5a9a5af8ba963f3b525e4108e95073d70f0abfb17"
+      "hash": "48dedea3968541fc4ed35d97378c3dd1fdd41f24889b776e6f44b9cf29060e61"
     },
     "stripe-checkout": {
       "hasChanged": false,
@@ -27,7 +27,7 @@
     },
     "stripe-webhook": {
       "hasChanged": false,
-      "hash": "0af571c41896a27ff7e775a694586bb9fcf6d673767e7f3e86bc02c8c8eb07a3"
+      "hash": "0cc04b4d71afea34cf337f572811651f38cd26d1a56d2c74185b43cb44b105d8"
     }
   }
 }
