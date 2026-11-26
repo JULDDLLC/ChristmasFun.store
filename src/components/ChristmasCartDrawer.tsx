@@ -114,10 +114,7 @@ export function ChristmasCartDrawer({ isOpen, onClose, customerEmail }: Props) {
         )
       );
 
-      const newWindow = window.open(data.url, '_blank');
-      if (!newWindow || newWindow.closed) {
-        window.location.href = data.url;
-      }
+      window.location.href = data.url;
     } catch (e) {
       setError("Configuration error. Please try again later.");
     } finally {
