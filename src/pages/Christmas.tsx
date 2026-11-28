@@ -18,7 +18,7 @@ import {
   BookOpen,
   Mail,
 } from 'lucide-react';
-import { BackgroundMusic } from '../components/BackgroundMusic';
+import { JingleRadio } from '../components/JingleRadio';
 import { PremiumSnowfall } from '../components/PremiumSnowfall';
 import { ChristmasCartProvider, useChristmasCart } from '../contexts/ChristmasCartContext';
 import { ChristmasCartButton } from '../components/ChristmasCartButton';
@@ -1282,8 +1282,8 @@ function ChristmasContent() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-blue-950 to-slate-950 relative overflow-hidden">
-      <BackgroundMusic />
+    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-blue-950 to-slate-950 relative overflow-hidden pb-[100px]">
+      <JingleRadio />
       <div className="fixed inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZGVmcz48cGF0dGVybiBpZD0iZ3JpZCIgd2lkdGg9IjQwIiBoZWlnaHQ9IjQwIiBwYXR0ZXJuVW5pdHM9InVzZXJTcGFjZU9uVXNlIj48cGF0aCBkPSJNIDQwIDAgTCAwIDAgMCA0MCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJ3aGl0ZSIgc3Ryb2tlLW9wYWNpdHk9IjAuMDUiIHN0cm9rZS13aWR0aD0iMSIvPjwvcGF0dGVybj48L2RlZnM+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0idXJsKCNncmlkKSIvPjwvc3ZnPg==')] opacity-30" />
 
       <PremiumSnowfall />
