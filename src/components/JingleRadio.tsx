@@ -43,7 +43,8 @@ export const JingleRadio = () => {
   const [status, setStatus] = useState<RadioStatus>('blocked');
   const [muted, setMuted] = useState(false);
   const [volume, setVolume] = useState<number>(() => {
-    const saved = Number(sessionStorage.getItem(VOLUME_KEY));
+    const raw = sessionStorage.getItem(VOLUME_KEY);
+    const saved = raw === null ? NaN : Number(raw);
     return Number.isFinite(saved) && saved >= 0 && saved <= 10 ? saved : DEFAULT_VOLUME;
   });
 
